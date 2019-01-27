@@ -22,12 +22,15 @@ from django.conf.urls.static import static
 from cdmsoro.views import PermintaanBukisView as BukisView
 from django.contrib.auth.views import LoginView, LogoutView
 
+from masterdata.views import order_bulk_update_view as bulk_update
+
 urlpatterns = [
     path('', BukisView.as_view(), name='home'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('admingo/', admin.site.urls),
     path('cdm/', include('cdmsoro.urls')),
+    path('bulk-update/', bulk_update, name='bulk_update'),
 ]
 
 
