@@ -7,6 +7,9 @@ from core.models import CommonBase
 class Customer(CommonBase):
     account_number = models.CharField(max_length=8, unique=True)
 
+    class Meta:
+        ordering = ['-timestamp']
+
     def __str__(self):
         return self.account_number
 
@@ -16,6 +19,9 @@ class Circuit(CommonBase):
     sid = models.CharField(max_length=30, unique=True)
     account = models.ForeignKey(Customer, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['-timestamp']
 
     def __str__(self):
         return self.sid
@@ -40,6 +46,9 @@ class Order(CommonBase):
     circuit = models.ForeignKey(Circuit, on_delete=models.CASCADE)
     create_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     closed = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-timestamp']
 
     def __str__(self):
         return self.order_number

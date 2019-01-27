@@ -38,6 +38,17 @@ def index(request):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_validator, name='dispatch')
+class UclosedOrderView(ListView):
+    template_name = 'cdmsoro/pg-unclosed-order.html'
+    paginate_by = 20
+    context_object_name = 'order_list'
+
+    def get_queryset(self):
+        return Order.objects.filter(executor=self.request.user, closed=False)
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_validator, name='dispatch')
 class UnValidateBukisView(ListView):
     template_name = 'cdmsoro/pg-unvalidate.html'
     paginate_by = 20

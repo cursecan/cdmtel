@@ -12,4 +12,5 @@ urlpatterns = [
     path('validasi/<int:id>/', views.detailUnvalidateView, name='detail_unvalidate'),
     path('monitor/', views.ValidateInactionView.as_view(), name='bukis_action'),
     path('monitor/<int:id>/', views.detailValidateActionView, name='bukis_action_detail'),
+    path('unclose-order/', views.UclosedOrderView.as_view(), name='unclose_order'),
 ]

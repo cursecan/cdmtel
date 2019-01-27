@@ -83,6 +83,20 @@ Unvalidate Request
                             {% endfor %}
                         </tbody>
                     </table>
+                    {% if is_paginated %}
+                    <div class="ui pagination menu">
+                        {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" class="item">Prev</a>
+                        {% else %}
+                        <div class="item">Prev</div>
+                        {% endif %}
+                        {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="item">Next</a>
+                        {% else %}
+                        <div class="item">Next</div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
