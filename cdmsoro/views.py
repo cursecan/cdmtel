@@ -30,14 +30,14 @@ import random
 def index(request):
     if request.user.profile.group == 'EX':
         return redirect('cdmsoro:bukis_action')
-    elif request.user.profile.group == 'VA':
+    elif request.user.profile.group == 'VD':
         return redirect('cdmsoro:unvalidate')
     
     return redirect('cdmsoro:bukis')
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_validator, name='dispatch')
+@method_decorator(user_executor, name='dispatch')
 class UclosedOrderView(ListView):
     template_name = 'cdmsoro/pg-unclosed-order.html'
     paginate_by = 20
