@@ -2,17 +2,17 @@
 
 {% block content %}
 <div class="ui basic vertical segment">
-    <div class="ui container">
+    <div class="ui fluid container">
         <div class="ui padded stackable grid">
             <div class="row">
                 <div class="three wide column">
-                    <div class="ui vertical menu">
+                    <div class="ui vertical fluid menu">
                         <a href="{% url 'cdmsoro:bukis_action' %}" class="item">Bukis Saya</a>
                         <a href="{% url 'cdmsoro:unclose_order' %}" class="active item">Order Not Complete</a>
                     </div>
                 </div>
                 <div class="thirteen wide column">
-                    <table class="ui table">
+                    <table class="ui celled striped table">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -30,7 +30,7 @@
                                 <td>{{ order.order_number }}</td>
                                 <td>{{ order.status }}</td>
                                 <td>{{ order.get_type_order_display|title }}</td>
-                                <td>{{ order.create_by.username||title }}</td>
+                                <td>{{ order.create_by.username|title }}</td>
                                 <td>{{ order.timestamp }}</td>
                             </tr>
                             {% empty %}

@@ -44,7 +44,7 @@ class UclosedOrderView(ListView):
     context_object_name = 'order_list'
 
     def get_queryset(self):
-        return Order.objects.filter(executor=self.request.user, closed=False)
+        return Order.objects.filter(create_by=self.request.user, closed=False)
 
 
 @method_decorator(login_required, name='dispatch')
