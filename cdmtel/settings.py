@@ -150,6 +150,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'env_root', 'static_root')
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'env_root', 'media_root')
 
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'cdmsoro:index'
 LOGOUT_REDIRECT_URL = 'login'
 
