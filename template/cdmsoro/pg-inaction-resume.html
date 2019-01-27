@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Unvalidate Request
+{% endblock %}
+
+{% block content %}
+<div class="ui basic vertical segment">
+    <div class="ui fluid container">
+        <div class="ui padded stackable grid">
+            <div class="row">
+                {% for bukis in bukis_list %}
+                <div class="four wide column">
+                    <div class="ui red segment">
+                        <div class="ui items">
+                            <div class="item">
+                                <div class="content">
+                                    <div class="header">{{ bukis.sid }}</div>
+                                    <div class="meta">
+                                        <small>
+                                            <i class="calendar icon"></i>
+                                            {{ bukis.timestamp }}
+                                        </small>
+                                    </div>
+                                    <div class="description">
+                                        {{ bukis.suspend }} <br>
+                                        {{ bukis.suspend.status|default:"-" }}
+                                        <p>
+                                            <a class="link" href="{% url 'cdmsoro:bukis_action_detail' bukis.id %}">Detail <i class="right arrow icon"></i></a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="center aligned column">
+                    <h4>Tidak ada order permintaan bukis.</h4>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

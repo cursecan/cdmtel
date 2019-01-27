@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Detail Unvalidate Request
+{% endblock %}
+
+{% block content %}
+<div class="ui basic vertical segment">
+    <div class="ui container">
+        <div class="ui stackable grid">
+            <div class="row">
+                <div class="column">
+                    <div class="ui segment">
+                        <div class="ui breadcrumb">
+                            <a href="{% url 'cdmsoro:bukis_action' %}" class="section">Queues Order</a>
+                            <div class="divider">/</div>
+                            <div class="active section">{{ bukis.sid }}</div>
+                        </div>
+                    </div>
+                    <div class="ui info message">
+                        <strong>Penting! </strong>
+                        Pastikan resume order / bukis yang dibuat sesuai dengan nomor sirkuit <strong>{{ bukis.sid }}.</strong>
+                    </div>
+                    <div class="ui orange segment">
+                        <h4 class="ui header">No. SID {{ bukis.sid }}</h4>
+                        <form action="" method="post" class="ui form">
+                            {% csrf_token %}
+                            <div class="three wide field">
+                                <label for="{{ form.order_number.id_for_label }}">Order Bukis</label>
+                                {{ form.order_number }}
+                                {% if form.order_number.errors %}
+                                {% for error in form.order_number.errors %}
+                                <small style="color:brown">{{ error }}</small>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                            <a href="{% url 'cdmsoro:bukis_action' %}" class="ui red icon button">Cancel</a>
+                            <button class="ui orange button">Simpan Order</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

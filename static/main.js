@@ -1,0 +1,2 @@
+// js
+$('.ui.sidebar').sidebar();

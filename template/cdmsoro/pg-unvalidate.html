@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Unvalidate Request
+{% endblock %}
+
+{% block css %}
+<style>
+    body {
+        background-color: #f3f3f3;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ui basic vertical segment">
+    <div class="ui fluid container">
+        <div class="ui stackable padded grid">
+            <div class="row">
+                <div class="three wide column">
+                    <div class="ui vertical fluid menu">
+                        <div class="item">Item 1</div>
+                        <div class="item">Item 2</div>
+                    </div>
+                </div>
+                <div class="thirteen wide column">
+                    <div class="ui menu">
+                        <div class="item">
+                            <form action="" class="ui form">
+                                <div class="field">
+                                    <div class="ui action input">
+                                        <input type="text" name="search" placeholder="Search Circuit">
+                                        <button class="ui basic button"><i class="search icon"></i></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% for message in messages %}
+                    <div class="ui info message">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    <table class="ui celled striped compact table">
+                        <thead>
+                            <tr>
+                                <th>Account / SID</th>
+                                <th>Suspend</th>
+                                <th>Keterangan</th>
+                                <th>Date</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bukis in bukis_list %}
+                            <tr>
+                                <td>
+                                    <h5 class="ui header">
+                                        {{ bukis.sid.account }}
+                                        <div class="sub header">
+                                            SID {{ bukis.sid }}
+                                        </div>
+                                    </h5>                                    
+                                </td>
+                                <td>
+                                    {{ bukis.suspend }} <br>
+                                    {{ bukis.suspend.status|default:'-' }}
+                                </td>
+                                <td>
+                                    {{ bukis.message|truncatechars:100 }}
+                                </td>
+                                <td>
+                                    {{ bukis.timestamp|date:"M d, Y H:i " }}
+                                </td>
+                                <td>
+                                    <a href="{% url 'cdmsoro:detail_unvalidate' bukis.id %}">View</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">Empty</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

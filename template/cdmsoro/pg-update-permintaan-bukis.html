@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Detail Permintaan Bukis
+{% endblock %}
+
+{% block content %}
+<div class="ui basic vertical segment">
+    <div class="ui container">
+        <div class="ui stackable grid">
+            <div class="row">
+                <div class="column">
+                    <div class="ui segments">
+                        <div class="ui segment">
+                            <h4 class="ui header">
+                                {{ bukis.sid }}
+                                <div class="sub header">
+                                    Create date {{ bukis.timestamp }}
+                                </div>
+                            </h4>
+                            <p>
+                                {{ bukis.message }}
+                            </p>
+                        </div>
+                        <div class="ui segment">
+                            <div class="ui comments">
+                                <div class="comment">
+                                    <a class="avatar">
+                                        <img src="https://semantic-ui.com/images/avatar/small/steve.jpg" alt="">
+                                    </a>
+                                    <div class="content">
+                                        <a class="author">Steve Bobes</a>
+                                        {{ bukis.get_validation.get_action_display|lower }}
+                                        <div class="metadata">
+                                            <div class="date"> at {{ bukis.get_validation.timestamp }}.</div>
+                                        </div>
+                                        <div class="text">
+                                            {{ bukis.get_validation.message }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% for job in bukis.updatepermintaan_set.all %}
+                                <div class="comment">
+                                    <a class="avatar">
+                                        <img src="https://semantic-ui.com/images/avatar/small/jenny.jpg" alt="">
+                                    </a>
+                                    <div class="content">
+                                        <a class="author">You</a>
+                                        update post at
+                                        <div class="metadata">
+                                            <div class="date">{{ job.timestamp }}</div>
+                                        </div>
+                                        <div class="text">
+                                            {{ job.message }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                <form action="" class="ui fluid reply form" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="field">
+                                        {{ form.message }}
+                                    </div>
+                                    <div class="field">
+                                        {{ form.doc }}
+                                    </div>
+                                    <button class="ui green button">Post New Update</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Buka Isolir
+{% endblock %}
+
+{% block css %}
+<style>
+    body {
+        background-color: #f3f3f3;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ui basic vertical segment">
+    <div class="ui container">
+        <div class="ui stackable grid">
+            <div class="row">
+                <div class="five wide column">
+                    <div class="ui segment">
+                        <h3 class="ui header">
+                            Permintaan Bukis Datin
+                        </h3>
+                        <form action="" method="post" class="ui form" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="field">
+                                <label for="{{ form.circuit.id_for_label }}">SID / Sircuit ID</label>
+                                {{ form.circuit }}
+                                {% if form.circuit.errors %}
+                                    {% for error in form.circuit.errors %}
+                                    <small style="color:brown">{{ error }}</small>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div class="field">
+                                <label for="{{ form.pic.id_for_label }}">PIC Phone Number</label>
+                                {{ form.pic }}
+                            </div>
+                            <div class="field">
+                                <label for="{{ form.message.id_for_label }}">Keterangan</label>
+                                {{ form.message }}
+                            </div>
+                            <div class="field">
+                                <label for="{{ form.avident.id_for_label }}">Aviden</label>
+                                {{ form.avident }}
+                            </div> 
+                            <button class="ui button">Submit Permintaan</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="eleven wide column">
+                    <div class="ui menu">
+                        <div class="item">
+                            <form action="" class="ui form">
+                                <div class="field">
+                                        <div class="ui action search input">
+                                            <input type="text" name="search" placeholder="Search Circuit...">
+                                            <button class="ui basic button">
+                                                <i class="search icon"></i>
+                                            </button>
+                                        </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% for message in messages %}
+                    <div class="ui info message">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    <table class="ui table">
+                        <tbody>
+                            {% for bukis in bukis_list %}
+                            <tr>
+                                <td>
+                                    <div class="ui items">
+                                        <div class="item">
+                                            <div class="content">
+                                                <h6 class="ui right floated {% if bukis.is_approved %} green {% else %} red {% endif %} header">
+                                                    {{ bukis.get_validation.get_action_display|default:"WAITING VALIDATION" }}
+                                                </h6>
+                                                <div class="ui header">
+                                                    {{ bukis.sid }}
+                                                </div>
+                                                <div class="meta">
+                                                    <small>
+                                                        <i class="calendar icon"></i> {{ bukis.timestamp }} |
+                                                        <i class="user icon"></i> {{ bukis.pic }}
+                                                    </small>
+                                                </div>
+                                                <div class="description">
+                                                    <p>{{ bukis.message|truncatechars:100 }}</p>
+                                                </div>
+                                                <div class="meta">
+                                                    <div class="ui orange label">SO {{ bukis.suspend }}</div>
+                                                    {% if bukis.suspend != bukis.sid.get_last_order %}
+                                                    <div class="ui green label">RO {{ bukis.sid.get_last_order }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                {% if not bukis.is_approved %}
+                                                <div class="right aligned actions">
+                                                    <a href="{% url 'cdmsoro:detail_bukis' bukis.id %}">Update</a>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td>Empty</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if is_paginated %}
+                    <div class="ui pagination menu">
+                        {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" class="item">Prev</a>
+                        {% else %}
+                        <div class="item">Prev</div>
+                        {% endif %}
+                        {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="item">Next</a>
+                        {% else %}
+                        <div class="item">Next</div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
