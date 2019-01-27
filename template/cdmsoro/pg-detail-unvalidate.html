@@ -33,7 +33,7 @@ Detail Unvalidate Request
                                 </tr>
                                 <tr>
                                     <td>Phone</td>
-                                    <td>{{ bukis.pic }}</td>
+                                    <td>{{ bukis.pic }} {% if bukis.has_telegram %}<a title="Send telegram message" href="https://t.me/{{ bukis.has_telegram }}"><i class="telegram icon"></i></a>{% endif %}</td>
                                 </tr>
                                 <tr>
                                     <td>Keterangan</td>

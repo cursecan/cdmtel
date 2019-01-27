@@ -29,6 +29,10 @@ class PermintaanResume(CommonBase):
     def is_approved(self):
         return self.get_validation().action == 'APP'
 
+    def has_telegram(self):
+        if self.pic[0] == '@':
+            return self.pic[1:]
+        return None
 
 class UpdatePermintaan(CommonBase):
     permintaan_resume = models.ForeignKey(PermintaanResume, on_delete=models.CASCADE)

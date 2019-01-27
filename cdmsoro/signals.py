@@ -28,10 +28,13 @@ def validation_triger(sender, instance, created, **kwargs):
         )
         if instance.action == 'APP':
             notifi_validation_req(instance.permintaan_resume.id, verbose_name="New Validation", creator=instance.permintaan_resume)
-        
+
+
 @receiver(post_save, sender=UpdatePermintaan)
 def update_validation_triger(sender, instance, created, **kwargs):
     if created:
         PermintaanResume.objects.filter(id=instance.permintaan_resume.id).update(
             validate=False
         )
+
+        notify_new_request(instance.permintaan_resume.id, verbose_name='Update resume request', creator=instance.permintaan_resume)
