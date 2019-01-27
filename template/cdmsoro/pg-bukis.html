@@ -34,8 +34,14 @@ Buka Isolir
                                 {% endif %}
                             </div>
                             <div class="field">
-                                <label for="{{ form.pic.id_for_label }}">PIC Phone Number</label>
+                                <label for="{{ form.pic.id_for_label }}">Telegram User PIC</label>
+                                <small>@telegram_username</small>
                                 {{ form.pic }}
+                                {% if form.pic.errors %}
+                                {% for error in form.pic.errors %}
+                                    <small style="color:brown">{{ error }}</small>
+                                {% endfor %}
+                                {% endif %}
                             </div>
                             <div class="field">
                                 <label for="{{ form.message.id_for_label }}">Keterangan</label>
@@ -44,6 +50,11 @@ Buka Isolir
                             <div class="field">
                                 <label for="{{ form.avident.id_for_label }}">Aviden</label>
                                 {{ form.avident }}
+                                {% if form.avident.errors %}
+                                {% for error in form.avident.errors %}
+                                    <small style="color:brown">{{ error }}</small>
+                                {% endfor %}
+                                {% endif %}
                             </div> 
                             <button class="ui button">Submit Permintaan</button>
                         </form>

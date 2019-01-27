@@ -21,7 +21,7 @@ class BukisForm(forms.Form):
         )
 
         if not circuit_objs.exists():
-            raise forms.ValidationError('Link tidak ditemukan atau tidak terisolir.')
+            raise forms.ValidationError('Tidak ditemukan record isolir pada link tersebut.')
 
 
         circuit_obj = circuit_objs.get()
@@ -29,9 +29,15 @@ class BukisForm(forms.Form):
             sid = circuit_obj, suspend = circuit_obj.get_last_order()
         )
         if permintaan_obj.exists():
-            raise forms.ValidationError('Permintaan buka isolir pada SID ini telah di request.')
+            raise forms.ValidationError('Request buka isolir telah dibuat sebelumnya.')
         
         return circuit
+
+    def clean_pic(self):
+        pic = self.cleaned_data['pic']
+        if pic[0] != '@':
+            raise forms.ValidationError('Username telegram harus diawali "@"')
+        return pic
 
     
 class BukisValidationForm(forms.ModelForm):

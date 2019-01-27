@@ -3,8 +3,8 @@ import os
 
 def validate_file_size(value):
     filesize = value.size
-    if filesize > 2000000:
-        raise ValidationError('Max file size 2MB.')
+    if filesize > 1048576:
+        raise ValidationError('Max file size 1MB.')
     return value
 
 
