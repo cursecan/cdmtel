@@ -1,5 +1,7 @@
 from django import forms
 
+from .validators import validate_file_extension, validate_file_size
+
 from .models import (
     PermintaanResume, Validation
 )
@@ -9,7 +11,7 @@ class BukisForm(forms.Form):
     pic = forms.CharField(max_length=15, required=True)
     circuit = forms.CharField(max_length=30, required=True)
     message = forms.CharField(widget=forms.Textarea)
-    avident = forms.FileField(max_length=200, required=True)
+    avident = forms.FileField(max_length=200, required=True, validators=[validate_file_extension, validate_file_size])
 
 
     def clean_circuit(self):
@@ -46,4 +48,4 @@ class BukisValidationForm(forms.ModelForm):
 
 class UpdateBukisForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea(), required=True)
-    doc = forms.FileField(required=True)
+    doc = forms.FileField(required=True, validators=[validate_file_extension, validate_file_size])

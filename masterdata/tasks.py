@@ -1,4 +1,5 @@
 from background_task import background
+from django.conf import settings
 from .models import Order
 
 import cx_Oracle
