@@ -18,7 +18,7 @@ def notify_new_request(req_id):
     payload = {
         "chat_id": receiver_id,
         "parse_mode": "HTML",
-        "text": "[+ Validasi] %s %s.\n<a href='http://10.35.31.78/cdmsoro/validasi/%d/'>Link</a>" %(instance.sid.sid, ' '.join(validators), instance.id)
+        "text": "[+ Validasi] %s %s.\n<a href='http://10.35.31.78/cdm/validasi/%d/'>Link</a>" %(instance.sid.sid, ' '.join(validators), instance.id)
     }
 
     try:
@@ -35,7 +35,7 @@ def notifi_validation_req(req_id):
     payload = {
         "chat_id": receiver_id,
         "parse_mode": "HTML",
-        "text": "[+ RO] Mohon bukis %s %s.\n<a href='http://10.35.31.78/cdmsoro/monitor/%d/'>Link</a>" %(instance.sid.sid, instance.executor.profile.telegram_user, instance.id)
+        "text": "[+ RO] Mohon bukis %s %s.\n<a href='http://10.35.31.78/cdm/monitor/%d/'>Link</a>" %(instance.sid.sid, instance.executor.profile.telegram_user, instance.id)
     }
 
     try:
