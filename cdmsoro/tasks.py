@@ -12,7 +12,7 @@ def notify_new_request(req_id):
     instance = PermintaanResume.objects.get(pk=req_id)
     url = "https://api.telegram.org/bot{}/".format(settings.TELEGRAM_KEY)
     receiver_id = settings.REMOT_TELEHOST
-    validator_obj = Profile.objects.filter(group='VA').values_list('telegram_user')
+    validator_obj = Profile.objects.filter(group='VD').values_list('telegram_user')
     validators = [i[0] for i in list(validator_obj)]
 
     payload = {
