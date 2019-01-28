@@ -18,13 +18,13 @@ def notify_new_request(req_id):
     payload = {
         "chat_id": receiver_id,
         "parse_mode": "HTML",
-        "text": "[+ Validasi] %s %s.\n<a href='http://10.35.31.78/cdm/validasi/%d/'>Link</a>" %(instance.sid.sid, ' '.join(validators), instance.id)
+        "text": "[+ Validasi] %s %s.\n<a href='http://10.35.31.78/cdm/validasi/%d/'>Link</a>" %(instance.sid.sid, instance.executor.profile.telegram_user, instance.id)
     }
 
-    try:
-        requests.post(url=url+'sendMessage', data=payload)
-    except:
-        pass
+    # try:
+    requests.post(url=url+'sendMessage', data=payload)
+    # except:
+    #     pass
 
 @background(schedule=3)
 def notifi_validation_req(req_id):

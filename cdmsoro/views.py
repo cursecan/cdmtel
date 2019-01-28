@@ -48,19 +48,19 @@ class UclosedOrderView(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_validator, name='dispatch')
+# @method_decorator(user_validator, name='dispatch')
 class UnValidateBukisView(ListView):
     template_name = 'cdmsoro/pg-unvalidate.html'
     paginate_by = 20
     context_object_name = 'bukis_list'
 
     def get_queryset(self):
-        queryset = PermintaanResume.objects.filter(validate=False)
+        queryset = PermintaanResume.objects.filter(validate=False, executor=self.request.user)
         return queryset
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_validator, name='dispatch')
+# @method_decorator(user_validator, name='dispatch')
 class DetailUnvalidateView(DetailView):
     model = PermintaanResume
     template_name = 'cdmsoro/pg-detail-unvalidate.html'
@@ -69,7 +69,7 @@ class DetailUnvalidateView(DetailView):
 
 
 @login_required
-@user_validator
+# @user_validator
 def detailUnvalidateView(request, id):
     bukis_obj = get_object_or_404(PermintaanResume, pk=id, validate=False)
     form = BukisValidationForm(request.POST or None)
