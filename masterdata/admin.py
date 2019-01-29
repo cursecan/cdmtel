@@ -29,6 +29,7 @@ class CircuitAdmin(ImportExportModelAdmin):
 class OrderAdmin(ImportExportModelAdmin):
     resource_class = OrderResource
     list_display = [
+        'get_sid', 'get_account',
         'order_number', 'type_order', 'status', 'create_by'
     ]
     list_per_page = 50
@@ -36,7 +37,7 @@ class OrderAdmin(ImportExportModelAdmin):
         'status'
     ]
     search_fields = [
-        'order_number'
+        'order_number', 'circuit__sid', 'circuit__account__account_number'
     ]
 
 

@@ -52,3 +52,9 @@ class Order(CommonBase):
 
     def __str__(self):
         return self.order_number
+
+    def get_sid(self):
+        return self.circuit.sid
+
+    def get_account(self):
+        return self.circuit.account.account_number
