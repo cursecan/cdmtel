@@ -1,5 +1,6 @@
 certifi==2018.11.29
 chardet==3.0.4
+cx-Oracle==7.0.0
 defusedxml==0.5.0
 diff-match-patch==20181111
 Django==2.1.5
