@@ -55,7 +55,7 @@ class UnValidateBukisView(ListView):
     context_object_name = 'bukis_list'
 
     def get_queryset(self):
-        queryset = PermintaanResume.objects.filter(validate=False, executor=self.request.user)
+        queryset = PermintaanResume.objects.filter(validate=False)
         return queryset
 
 
