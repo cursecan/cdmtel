@@ -20,7 +20,7 @@ def permin_bukis_detail_view(request, id):
     data = dict()
     per_bukis = get_object_or_404(PermintaanResume, pk=id)
     form = BukisValidationForm(request.POST or None)
-    resume_form = ResumeOrderForm(request.POST or None, initial={'circuit': per_bukis.id})
+    resume_form = ResumeOrderForm(request.POST or None, initial={'circuit': per_bukis.sid})
     if request.method == 'POST':
         if form.is_valid():
             instance = form.save(commit=False)
