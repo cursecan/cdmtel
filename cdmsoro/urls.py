@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views
+from .views import views, v2
 
 
 app_name = 'cdmsoro'
@@ -13,4 +13,7 @@ urlpatterns = [
     path('monitor/', views.ValidateInactionView.as_view(), name='bukis_action'),
     path('monitor/<int:id>/', views.detailValidateActionView, name='bukis_action_detail'),
     path('unclose-order/', views.UclosedOrderView.as_view(), name='unclose_order'),
+
+    path('v2/', v2.index, name='v2_index'),
+    path('v2/api/permintaan-bukis-detail/<int:id>/', v2.permin_bukis_detail_view, name='v2_per_bukis'),
 ]

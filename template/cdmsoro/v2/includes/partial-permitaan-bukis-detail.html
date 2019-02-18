@@ -1,0 +1,109 @@
+<i class="close icon"></i>
+<div class="ui header">
+    Permintaan Buka Isolir
+</div>
+<div class="scrolling content">
+    <div class="ui items">
+        <div class="item">
+            <div class="content">
+                <div class="header">Detail</div>
+                <div class="meta">
+                    <span> {{ per_bukis.timestamp }}</span>
+                </div>
+                <table class="ui table">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <h5 class="ui header">
+                                    <div class="sub header">
+                                        Account
+                                    </div>
+                                    {{ per_bukis.sid.account }}
+                                </h5>
+                            </td>
+                            <td>
+                                <h5 class="ui header">
+                                    <div class="sub header">Circuit</div>
+                                    {{ per_bukis.sid }}
+                                </h5>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="description">
+                    <p>{{ per_bukis.message }}</p>
+                </div>
+                <div class="extra">
+                    <div class="ui teal label">SO {{ per_bukis.suspend }}</div>
+                </div>
+                <div class="extra">
+                    {% for av in per_bukis.avident_set.all %}
+                        <a href="/media/{{ av.document }}" class="link">
+                            <i class="file alternate icon huge"></i>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui styled fluid accordion">
+        <div class="title">
+            <i class="dropdown icon"></i>
+            Validation
+        </div>
+        <div class="content">
+            {% if per_bukis.is_approved %}
+            <div class="ui info message">
+                <strong>Approved.</strong> <br>
+                Request has been approved.
+            </div>
+            {% else %}
+            <form action="{% url 'cdmsoro:v2_per_bukis' per_bukis.id %}" method="post" class="ui small form validation-form">
+                {% csrf_token %}
+                <div class="field">
+                    <label for="">Action</label>
+                    {{ form.action }}
+                </div>
+                <div class="field">
+                    <label for="">Post Message</label>
+                    {{ form.message }}
+                </div>
+                <button type="submit" class="ui orange button">Save Validation</button>
+            </form>
+            {% endif %}
+        </div>
+        <div class="title">
+            <i class="dropdown icon"></i>
+            Resume Order
+        </div>
+        <div class="content">
+            {% if per_bukis.is_approved %}
+            <form action="{% url 'cdmsoro:v2_per_bukis' per_bukis.id %}" method="post" class="ui small form order-form">
+                {% csrf_token %}
+                <div class="field disabled">
+                    <label for="">Circuit ID</label>
+                    {{ bukis_form.circuit }}
+                </div>
+                <div class="field">
+                    <label for="">Resume Order</label>
+                    {{ bukis_form.order_number }}
+                </div>
+                <button type="submit" class="ui primary button">Create Order</button>
+            </form>
+            {% else %}
+            <div class="ui message">
+                <strong>No Approval.</strong> <br>
+                Request need get approval before creating order.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div class="actions">
+    <div class="ui cancel red button">Cancel</div>
+</div>
+<script>
+    $(document).ready(function(){
+        $('.ui.accordion').accordion();
+    });
+</script>

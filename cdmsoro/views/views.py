@@ -14,8 +14,8 @@ from django.contrib import messages
 
 from core.decorators import user_executor, user_validator
 
-from .forms import BukisForm, BukisValidationForm, UpdateBukisForm
-from .models import (
+from cdmsoro.forms import BukisForm, BukisValidationForm, UpdateBukisForm
+from cdmsoro.models import (
     PermintaanResume, Avident, UpdatePermintaan
 )
 from userprofile.models import Profile
@@ -28,10 +28,8 @@ import random
 
 @login_required
 def index(request):
-    if request.user.profile.group == 'EX':
-        return redirect('cdmsoro:bukis_action')
-    elif request.user.profile.group == 'VD':
-        return redirect('cdmsoro:unvalidate')
+    if request.user.is_authenticated:
+        return redirect('cdmsoro:v2_index')
     
     return redirect('cdmsoro:bukis')
 

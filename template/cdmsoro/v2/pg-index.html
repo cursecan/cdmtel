@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui vertical basic segment">
+    <div class="ui fluid container">
+        <div class="ui stackable padded grid">
+            <div class="row">
+                <div class="three wide column">
+                    <div class="ui vertical fluid menu">
+                        <a href="" class="item">
+                            <i class="bars icon"></i> Permintaan Buka Isolir
+                        </a>
+                        <a href="" class="item">
+                            <i class="home icon"></i> Order No.Bilcom
+                        </a>
+                    </div>
+                </div>
+                <div class="thirteen wide column">
+                    <!-- content -->
+                    <table class="ui table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Circuit</th>
+                                <th>Ket. Bukis</th>
+                                <th>Suspend</th>
+                                <th>Resume</th>
+                                <th>Executor</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for per_bukis in bukis_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ per_bukis.sid }}</td>
+                                <td>{{ per_bukis.message|truncatechars:30 }}</td>
+                                <td>{{ per_bukis.suspend }}</td>
+                                <td>{{ per_bukis.resume|default:'-' }}</td>
+                                <td>{{ per_bukis.executor|title }}</td>
+                                <td>
+                                    <button target-url="{% url 'cdmsoro:v2_per_bukis' per_bukis.id %}" class="ui small orange button btn-validation">
+                                        Action
+                                    </button>
+                                    <button class="ui small disabled button">
+                                        Create Resume
+                                    </button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td>No found data.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        var load_modal = function() {
+            var btn = $(this);
+            $.ajax({
+                url: btn.attr('target-url'),
+                dataType: 'json',
+                beforeSend: function() {
+                    $('.ui.modal').modal('show');
+                },
+                success: function(data) {
+                    $('.ui.modal').html(data.html);
+                }
+            });
+            return false;
+        }
+
+        var post_form = function() {
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                dataType: 'json',
+                type: form.attr('method'),
+                data: form.serialize(),
+                success: function(data) {
+                    console.log('ok');
+                }
+            });
+            return false;
+        }
+
+        $('.btn-validation').on('click', load_modal);
+        $('.ui.modal').on('submit', '.validation-form', post_form);
+        $('.ui.modal').on('submit', '.order-form', post_form);
+    });
+</script>
+{% endblock %}
