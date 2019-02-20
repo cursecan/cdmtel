@@ -6,16 +6,16 @@
         <div class="ui stackable padded grid">
             <div class="row">
                 <div class="three wide column">
-                    <div class="ui vertical fluid menu">
-                        <a href="" class="item">
+                    <div id="v2-menu" class="ui vertical fluid menu">
+                        <a href="" target-url="" class="item">
                             <i class="bars icon"></i> Permintaan Buka Isolir
                         </a>
-                        <a href="" class="item">
+                        <a href="" target-url="{% url 'cdmsoro:v2_uncomplete' %}" class="item">
                             <i class="home icon"></i> Order No.Bilcom
                         </a>
                     </div>
                 </div>
-                <div class="thirteen wide column">
+                <div id="table-content" class="thirteen wide column">
                     <!-- content -->
                     <table class="ui table">
                         <thead>
@@ -93,9 +93,23 @@
             return false;
         }
 
+        var opentab = function() {
+            var btn = $(this);
+            $.ajax({
+                url: btn.attr('target-url'),
+                dataType: 'json',
+                success: function(data) {
+                    $('#table-content').html(data.html);
+                }
+            });
+            return false;
+        }
+
         $('.btn-validation').on('click', load_modal);
         $('.ui.modal').on('submit', '.validation-form', post_form);
         $('.ui.modal').on('submit', '.order-form', post_form);
+
+        $('#v2-menu').on('click', '.item', opentab);
     });
 </script>
 {% endblock %}

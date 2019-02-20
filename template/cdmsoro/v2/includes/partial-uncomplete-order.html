@@ -1,0 +1,22 @@
+<table class="ui table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Order Number</th>
+            <th>Status Milestone</th>
+            <th>#</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in order_list %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ order.order_number }}</td>
+            <td>{{ order.status|default:'-'}}</td>
+            <td>
+                <button class="ui small orange button">Lapor </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

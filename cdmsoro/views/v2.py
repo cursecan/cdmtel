@@ -1,17 +1,29 @@
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from cdmsoro.models import PermintaanResume
 from cdmsoro.forms import BukisValidationForm
 from masterdata.forms import (
     ResumeOrderForm, ResumeOrderForm_v2
 )
+from masterdata.models import Order
 
 def index(request):
-    per_bukis_objs = PermintaanResume.objects.filter(resume__isnull=True)[:10]
+    page = request.GET.get('page', 1)
+    per_bukis_objs = PermintaanResume.objects.filter(resume__isnull=True)
+    paginator = Paginator(per_bukis_objs, 20)
+
+    try:
+        per_page_bukis = paginator.page(page)
+    except PageNotAnInteger:
+        per_page_bukis = paginator.page(1)
+    except EmptyPage:
+        per_page_bukis = paginator.page(paginator.num_pages)
+
     content = {
-        'bukis_list': per_bukis_objs
+        'bukis_list': per_page_bukis
     }
     return render(request, 'cdmsoro/v2/pg-index.html', content)
 
@@ -47,4 +59,29 @@ def permin_bukis_detail_view(request, id):
         request = request
     )
     
+    return JsonResponse(data)
+
+
+
+def uncomplete_order_view(request):
+    data = dict()
+    page = request.GET.get('page', 1)
+    order_objs = Order.objects.filter(closed=False)
+
+    paginator = Paginator(order_objs, 20)
+    try:
+        perpage_order = paginator.page(page)
+    except PageNotAnInteger:
+        perpage_order = paginator.page(1)
+    except EmptyPage:
+        perpage_order = paginator.page(paginator.num_pages)
+
+    content = {
+        'order_list': perpage_order
+    }
+    data['html'] = render_to_string(
+        'cdmsoro/v2/includes/partial-uncomplete-order.html',
+        content,
+        request = request
+    )
     return JsonResponse(data)

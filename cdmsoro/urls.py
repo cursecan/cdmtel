@@ -16,4 +16,5 @@ urlpatterns = [
 
     path('v2/', v2.index, name='v2_index'),
     path('v2/api/permintaan-bukis-detail/<int:id>/', v2.permin_bukis_detail_view, name='v2_per_bukis'),
+    path('v2/api/uncomplete/', v2.uncomplete_order_view, name='v2_uncomplete'),
 ]
