@@ -57,6 +57,6 @@ def sending_telegram(data_id, token, send_to):
         'parse_mode': 'HTML'
     }
     try :
-        r = requests.post(url, data=json.dumps(payload), timeout=15)
+        r = requests.post(url, data=payload, timeout=15)
     except:
         pass
