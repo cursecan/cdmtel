@@ -14,7 +14,7 @@
             <td>{{ order.order_number }}</td>
             <td>{{ order.status|default:'-'}}</td>
             <td>
-                <button class="ui small orange button">Lapor </button>
+                <button target-url="{% url 'cdmsoro:v2_lapor' order.id %}" class="ui small orange button js-lapor">Lapor </button>
             </td>
         </tr>
         {% endfor %}

@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.conf import settings
 
 from cdmsoro.models import PermintaanResume
 from cdmsoro.forms import BukisValidationForm
@@ -9,6 +10,7 @@ from masterdata.forms import (
     ResumeOrderForm, ResumeOrderForm_v2
 )
 from masterdata.models import Order
+from cdmsoro.tasks import sending_telegram
 
 def index(request):
     page = request.GET.get('page', 1)
@@ -84,4 +86,15 @@ def uncomplete_order_view(request):
         content,
         request = request
     )
+    return JsonResponse(data)
+
+
+def lapor_soro(requests, id):
+    data = dict()
+    order_obj = get_object_or_404(Order, pk=id)
+    data['html'] = render_to_string(
+        'cdmsoro/v2/includes/lapor-soro.html',
+        {'order': order_obj}
+    )
+    sending_telegram(order_obj.id, settings.TELEGRAM_KEY, -142758899)
     return JsonResponse(data)

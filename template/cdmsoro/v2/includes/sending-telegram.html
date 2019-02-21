@@ -1,0 +1,4 @@
+{% autoescape off %}
+{{ msg }}.
+<a href="">{{ order.order_number }}</a> - {{ order.status|title|default:''}}.
+{% endautoescape %}
