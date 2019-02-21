@@ -96,5 +96,5 @@ def lapor_soro(requests, id):
         'cdmsoro/v2/includes/lapor-soro.html',
         {'order': order_obj}
     )
-    sending_telegram(order_obj.id, settings.TELEGRAM_KEY, -142758899)
+    sending_telegram(order_obj.id, settings.TELEGRAM_KEY, -245044203)
     return JsonResponse(data)
