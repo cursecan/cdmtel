@@ -20,7 +20,8 @@
             <td>
                 <h5 class="ui header">
                     <div class="sub header">Circuit</div>
-                    {{ per_bukis.sid }}
+                    {{ per_bukis.sid }} <br>
+                    {{ per_bukis.suspend.status }}
                 </h5>
             </td>
             <td>
@@ -56,7 +57,7 @@
                     Request has been approved.
                 </div>
                 {% else %}
-                <form action="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" method="post" class="ui small">
+                <form action="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" method="post" class="ui small form">
                     {% csrf_token %}
                     <div class="field">
                         <label for="">Action</label>
