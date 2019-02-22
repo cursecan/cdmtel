@@ -17,7 +17,9 @@ from cdmsoro.tasks import sending_to_pic
 @login_required()
 def index(request):
     page = request.GET.get('page', 1)
-    per_bukis_objs = PermintaanResume.objects.filter(resume__isnull=True)
+    per_bukis_objs = PermintaanResume.objects.filter(
+        resume__isnull=True, validate=False
+    )
     paginator = Paginator(per_bukis_objs, 20)
 
     try:
