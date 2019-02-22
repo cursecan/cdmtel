@@ -97,7 +97,7 @@ def uncomplete_order_list_view(request):
     content = {
         'order_list': perpage_order
     }
-    return render(request, 'cdmsoro/v2/pg-uncomplete-order.html')
+    return render(request, 'cdmsoro/v2/pg-uncomplete-order.html', content)
 
 
 
