@@ -36,4 +36,16 @@
         {% endfor %}
     </tbody>
 </table>
+
+{% if bukis_list.has_other_pages %}
+    <div class="ui pagination menu"></div>
+        {% for i in bukis_list.paginator.page_range %}
+            {% if i == bukis_list.number %}
+            <div class="item">{{ i }}</div>
+            {% else %}
+            <a href="?page={{ i }}" class="item">{{ i }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
 {% endblock %}
