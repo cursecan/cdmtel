@@ -35,10 +35,11 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ per_bukis.sid }}</td>
                                 <td>{{ per_bukis.message|truncatechars:30 }}</td>
-                                <td>{{ per_bukis.suspend }}</td>
+                                <td>{{ per_bukis.suspend }} <br>{{ per_bukis.suspend.status|default:'-'}} </td>
                                 <td>{{ per_bukis.resume|default:'-' }}</td>
                                 <td>{{ per_bukis.executor|title }}</td>
                                 <td>
+                                    <button target-url="{% url 'cdmsoro:v2_lapor' per_bukis.suspend.id %}" class="ui small red button btn-lapor">Req. Bilcom</button>
                                     <button target-url="{% url 'cdmsoro:v2_per_bukis' per_bukis.id %}" class="ui small orange button btn-validation">
                                         Action
                                     </button>
@@ -106,6 +107,7 @@
         }
 
         $('.btn-validation').on('click', load_modal);
+        $('.btn-lapor').on('click', load_modal);
         $('.ui.modal').on('submit', '.validation-form', post_form);
         $('.ui.modal').on('submit', '.order-form', post_form);
 
