@@ -1,0 +1,39 @@
+{% extends 'cdmsoro/v2/base.html' %}
+
+{% block cdmsoro_content %}
+<table class="ui table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Circuit</th>
+            <th>Ket. Bukis</th>
+            <th>Suspend</th>
+            <th>Entry By</th>
+            <th>Executor</th>
+            <th>#</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for per_bukis in bukis_list %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ per_bukis.sid }}</td>
+            <td>{{ per_bukis.message|truncatechars:30 }}</td>
+            <td>{{ per_bukis.suspend }} <br>{{ per_bukis.suspend.status|default:'-'}} </td>
+            <td><a href="https://t.me/{{ per_bukis.has_telegram }}" target="_blank"><i class="telegram icon"></i> {{ per_bukis.has_telegram }}</a></td>
+            <td>{{ per_bukis.executor|title }}</td>
+            <td>
+                <a href="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" class="ui small orange button">
+                    Action
+                </a>
+                <button target-url="{% url 'cdmsoro:v2_lapor' per_bukis.suspend.id %}" class="ui small red button btn-lapor {% if per_bukis.suspend.closed %} disabled {% endif %}">Req. Bilcom</button>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td>No found data.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

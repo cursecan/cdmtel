@@ -1,0 +1,32 @@
+{% extends 'cdmsoro/v2/base.html' %}
+
+{% block cdmsoro_content %}
+<table class="ui table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Order Number</th>
+                <th>Status Milestone</th>
+                <th>Create By</th>
+                <th>#</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in order_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ order.order_number }}</td>
+                <td>{{ order.status|default:'-'}}</td>
+                <td>{{ order.create_by }}</td>
+                <td>
+                    <button  class="ui small orange button">Uncompete</button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td>Not found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

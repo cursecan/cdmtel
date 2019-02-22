@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui basic vertical segment">
+    <div class="ui fluid container">
+        <div class="ui padded stackable grid">
+            <div class="row">
+                <div class="three wide column">
+                    <div id="v2-menu" class="ui vertical fluid menu">
+                        <a href="{% url 'cdmsoro:per_bukis_list' %}" class="item">
+                            <i class="bars icon"></i> Permintaan Buka Isolir
+                        </a>
+                        <a href="{% url 'cdmsoro:uncomplete' %}" class="item">
+                            <i class="home icon"></i> Order No.Bilcom
+                        </a>
+                    </div>
+                </div>
+                <div class="thirteen wide column">
+                    {% block cdmsoro_content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

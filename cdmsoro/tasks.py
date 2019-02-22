@@ -20,7 +20,7 @@ def notify_new_request(req_id):
     payload = {
         "chat_id": receiver_id,
         "parse_mode": "HTML",
-        "text": "[+ Validasi] %s %s.\n<a href='http://10.35.31.78/cdm/'>Link</a>" %(instance.sid.sid, instance.executor.profile.telegram_user)
+        "text": "[+ Validasi] %s %s.\n<a href='http://10.35.31.78/cdm/v2/permintaan-bukis/%d/'>Link</a>" %(instance.sid.sid, instance.executor.profile.telegram_user, instance.id)
     }
 
     # try:
@@ -54,6 +54,23 @@ def sending_telegram(data_id, token, send_to):
     payload = {
         'chat_id': send_to,
         'text': render_to_string('cdmsoro/v2/includes/sending-telegram.html', {'order': order_obj, 'msg':msg}),
+        'parse_mode': 'HTML'
+    }
+    try :
+        r = requests.post(url, data=payload, timeout=15)
+    except:
+        pass
+
+
+
+@background(schedule=1)
+def sending_to_pic(data_id, token, send_to):
+    order_obj = PermintaanResume.objects.get(pk=data_id)
+    url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
+    msg = '[+] Sudah bukis SID {} dengan nomor RO {}, {}.\nTerima kasih~'.format(order_obj.sid.sid, order_obj.resume.order_number, order_obj.pic)
+    payload = {
+        'chat_id': send_to,
+        'text': msg,
         'parse_mode': 'HTML'
     }
     try :

@@ -18,4 +18,8 @@ urlpatterns = [
     path('v2/api/permintaan-bukis-detail/<int:id>/', v2.permin_bukis_detail_view, name='v2_per_bukis'),
     path('v2/api/uncomplete/', v2.uncomplete_order_view, name='v2_uncomplete'),
     path('v2/api/lapor/<int:id>/', v2.lapor_soro, name='v2_lapor'),
+
+    path('v2/permintaan-bukis/', v2.permintaan_bukis_list_view, name='per_bukis_list'),
+    path('v2/permintaan-bukis/<int:id>/', v2.per_bukis_detail_view, name='detail_per_bukis'),
+    path('v2/uncomplete/', v2.uncomplete_order_list_view, name='uncomplete'),
 ]

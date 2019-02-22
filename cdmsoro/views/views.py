@@ -29,7 +29,7 @@ import random
 @login_required
 def index(request):
     if request.user.is_authenticated:
-        return redirect('cdmsoro:v2_index')
+        return redirect('cdmsoro:per_bukis_list')
     
     return redirect('cdmsoro:bukis')
 

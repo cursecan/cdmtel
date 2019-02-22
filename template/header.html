@@ -1,6 +1,7 @@
 <div class="ui vertical inverted segment">
     <div class="ui secondary inverted pointing menu container">
         <div class="item">CDM TEL</div>
+        <a href="{% url 'cdmsoro:index' %}" class="item">CDM Management</a>
         <div class="right menu">
             {% if user.is_authenticated %}
                 <a class="item"><i class="ui user icon"></i> {{ request.user|upper }}</a>
