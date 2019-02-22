@@ -20,7 +20,7 @@ def notify_new_request(req_id):
     payload = {
         "chat_id": receiver_id,
         "parse_mode": "HTML",
-        "text": "[+ Validasi] %s %s.\n<a href='http://10.35.31.78/cdm/'>Link</a>" %(instance.sid.sid, instance.executor.profile.telegram_user, instance.id)
+        "text": "[+ Validasi] %s %s.\n<a href='http://10.35.31.78/cdm/'>Link</a>" %(instance.sid.sid, instance.executor.profile.telegram_user)
     }
 
     # try:
