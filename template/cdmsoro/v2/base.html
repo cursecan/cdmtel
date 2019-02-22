@@ -28,3 +28,26 @@ Bukis CDM
     </div>
 </div>
 {% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+    var load_modal = function() {
+        var btn = $(this);
+        $.ajax({
+            url: btn.attr('target-url'),
+            dataType: 'json',
+            beforeSend: function() {
+                $('.ui.modal').modal('show');
+            },
+            success: function(data) {
+                $('.ui.modal').html(data.html);
+            }
+        });
+        return false;
+    }
+
+    $('.js-laporsoro').click(load_modal);
+});
+</script>
+{% endblock %}

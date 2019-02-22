@@ -34,6 +34,7 @@ def index(request):
     }
     return render(request, 'cdmsoro/v2/pg-index.html', content)
 
+
 @login_required()
 def permintaan_bukis_list_view(request):
     page = request.GET.get('page', 1)
@@ -80,8 +81,6 @@ def per_bukis_detail_view(request, id):
     }
 
     return render(request, 'cdmsoro/v2/pg-detail-per-bukis.html', content)
-
-
 
 @login_required()
 def uncomplete_order_list_view(request):

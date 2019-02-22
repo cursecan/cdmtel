@@ -26,7 +26,7 @@
                 <a href="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" class="ui small orange button">
                     Action
                 </a>
-                <button target-url="{% url 'cdmsoro:v2_lapor' per_bukis.suspend.id %}" class="ui small red button btn-lapor {% if per_bukis.suspend.closed %} disabled {% endif %}">Req. Bilcom</button>
+                <button target-url="{% url 'cdmsoro:v2_lapor' per_bukis.suspend.id %}" class="ui small red button btn-lapor {% if per_bukis.suspend.closed %} disabled {% endif %} js-laporsoro">Req. Bilcom</button>
             </td>
         </tr>
         {% empty %}
