@@ -27,14 +27,15 @@
             <td>{% if per_bukis.validate %} {{ per_bukis.get_validation.get_action_display|default:'-' }} {% endif %}</td>
             <td>{{ per_bukis.timestamp }}</td>
             <td>
-                {% if not per_bukis.suspend.closed %}
                 <a href="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" class="">
                     <i class="bolt icon"></i> Action
-                </a> <br>
-                {% endif %}
+                </a>
+                {% if not per_bukis.suspend.closed %}
+                <br>
                 <a href="#" target-url="{% url 'cdmsoro:v2_lapor' per_bukis.suspend.id %}" class=" btn-lapor {% if per_bukis.suspend.closed %} disabled {% endif %} js-laporsoro">
                     <i class="bullhorn icon"></i> Lapor
                 </a>
+                {% endif %}
             </td>
         </tr>
         {% empty %}
