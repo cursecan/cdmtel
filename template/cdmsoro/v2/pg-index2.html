@@ -10,6 +10,8 @@
             <th>Suspend</th>
             <th>Entry By</th>
             <th>Executor</th>
+            <th>Status Validation</th>
+            <th>Create On</th>
             <th>#</th>
         </tr>
     </thead>
@@ -18,15 +20,19 @@
         <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ per_bukis.sid }}</td>
-            <td>{{ per_bukis.message|truncatechars:30 }}</td>
+            <td>{{ per_bukis.message|truncatechars:25 }}</td>
             <td>{{ per_bukis.suspend }} <br>{{ per_bukis.suspend.status|default:'-'}} </td>
-            <td><a href="https://t.me/{{ per_bukis.has_telegram }}" target="_blank"><i class="telegram icon"></i> {{ per_bukis.has_telegram }}</a></td>
+            <td><a class="ui mini icon blue button" href="https://t.me/{{ per_bukis.has_telegram }}" target="_blank"><i class="telegram icon"></i>{{ per_bukis.has_telegram }}</a></td>
             <td>{{ per_bukis.executor|title }}</td>
+            <td>{{ per_bukis.get_validation.get_status_display|default:'-' }}</td>
+            <td>{{ per_bukis.timestamp }}</td>
             <td>
-                <a href="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" class="ui small orange button">
-                    Action
+                <a href="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" class="">
+                    <i class="bolt icon"></i> Action
+                </a> <br>
+                <a href="#" target-url="{% url 'cdmsoro:v2_lapor' per_bukis.suspend.id %}" class=" btn-lapor {% if per_bukis.suspend.closed %} disabled {% endif %} js-laporsoro">
+                    <i class="bullhorn icon"></i> Lapor
                 </a>
-                <button target-url="{% url 'cdmsoro:v2_lapor' per_bukis.suspend.id %}" class="ui small red button btn-lapor {% if per_bukis.suspend.closed %} disabled {% endif %} js-laporsoro">Req. Bilcom</button>
             </td>
         </tr>
         {% empty %}
