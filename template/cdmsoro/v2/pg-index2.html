@@ -24,7 +24,7 @@
             <td>{{ per_bukis.suspend }} <br>{{ per_bukis.suspend.status|default:'-'}} </td>
             <td><a class="" href="https://t.me/{{ per_bukis.has_telegram }}" target="_blank" title="Telegram to {{ per_bukis.pic }}"><i class="telegram icon"></i> Send</a></td>
             <td>{{ per_bukis.executor|title }}</td>
-            <td>{{ per_bukis.get_validation.get_action_display|default:'-' }}</td>
+            <td>{% if per_bukis.validate %} {{ per_bukis.get_validation.get_action_display|default:'-' }} {% endif %}</td>
             <td>{{ per_bukis.timestamp }}</td>
             <td>
                 <a href="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" class="">
