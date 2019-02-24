@@ -109,11 +109,27 @@ Buka Isolir
                                                     <div class="ui green label">RO {{ bukis.sid.get_last_order }}</div>
                                                     {% endif %}
                                                 </div>
-                                                {% if not bukis.is_approved %}
-                                                <div class="right aligned actions">
-                                                    <a href="{% url 'cdmsoro:detail_bukis' bukis.id %}">Update</a>
+                                                
+                                            
+                                                <div class="extra right aligned">
+                                                    {% if request.user.is_authenticated %}
+                                                    <div class="info">
+                                                        <a href="{% url 'cdmsoro:detail_per_bukis' bukis.id %}">
+                                                            <i class="rocketchat icon"></i> View
+                                                        </a>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if bukis.validate %}
+                                                        {% if not bukis.is_approved %}
+                                                        <div class="info">
+                                                            <a href="{% url 'cdmsoro:detail_bukis' bukis.id %}">
+                                                                <i class="info circle icon"></i> Info detail
+                                                            </a>
+                                                        </div>
+                                                        {% endif %}
+                                                    {% endif %}
                                                 </div>
-                                                {% endif %}
+                                                    
                                             </div>
                                         </div>
                                     </div>
