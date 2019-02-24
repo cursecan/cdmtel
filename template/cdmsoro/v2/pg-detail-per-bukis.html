@@ -51,10 +51,10 @@
                 Validation
             </div>
             <div class="content">
-                {% if per_bukis.is_approved %}
+                {% if per_bukis.validate %}
                 <div class="ui info message">
-                    <strong>Approved.</strong> <br>
-                    Request has been approved.
+                    <strong>{{ per_bukis.get_validation.get_action_display|title }}</strong> <br>
+                    {{ per_bukis.get_validation.message }}
                 </div>
                 {% else %}
                 <form action="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" method="post" class="ui small form">
