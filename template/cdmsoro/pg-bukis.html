@@ -113,19 +113,19 @@ Buka Isolir
                                             
                                                 <div class="extra right aligned">
                                                     {% if request.user.is_authenticated %}
-                                                    <div class="info">
+                                                    <span class="info">
                                                         <a href="{% url 'cdmsoro:detail_per_bukis' bukis.id %}">
                                                             <i class="rocketchat icon"></i> View
                                                         </a>
-                                                    </div>
+                                                    </span>
                                                     {% endif %}
                                                     {% if bukis.validate %}
                                                         {% if not bukis.is_approved %}
-                                                        <div class="info">
+                                                        <span class="info">
                                                             <a href="{% url 'cdmsoro:detail_bukis' bukis.id %}">
                                                                 <i class="info circle icon"></i> Info detail
                                                             </a>
-                                                        </div>
+                                                        </span>
                                                         {% endif %}
                                                     {% endif %}
                                                 </div>
