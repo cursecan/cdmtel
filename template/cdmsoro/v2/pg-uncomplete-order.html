@@ -32,7 +32,7 @@
     </tbody>
 </table>
 {% if order_list.has_other_pages %}
-    <div class="ui pagination menu"></div>
+    <div class="ui pagination menu">
         {% for i in order_list.paginator.page_range %}
             {% if i == order_list.number %}
             <div class="item">{{ i }}</div>

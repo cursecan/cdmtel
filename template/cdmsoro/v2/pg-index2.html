@@ -46,7 +46,7 @@
 </table>
 
 {% if bukis_list.has_other_pages %}
-    <div class="ui pagination menu"></div>
+    <div class="ui pagination menu">
         {% for i in bukis_list.paginator.page_range %}
             {% if i == bukis_list.number %}
             <div class="item">{{ i }}</div>
