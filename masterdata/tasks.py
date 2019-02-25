@@ -82,7 +82,7 @@ def record_data():
         AND li_sid IS NOT NULL \
         AND ORDER_CREATED_DATE >= TO_DATE('20190101', 'yyyyMMdd') \
         AND LI_SID NOT LIKE '%X%' \
-        AND li_milestone IS NOT NULL AND ROWNUM=1
+        AND li_milestone IS NOT NULL
     """
     
     cur.execute(quer)
