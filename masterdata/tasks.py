@@ -94,9 +94,9 @@ def record_data():
         account, sid, order, status, create_on, create_by = i
         user_obj = User.objects.get(username=create_by)
         try :
-            create, acc_obj = Customer.objects.create_or_get(account_number=account)
-            create, sid_obj = Circuit.objects.create_or_get(sid=sid, account=acc_obj)
-            create, order_obj = Order.objects.create_or_get(order_number=order, circuit=sid_obj, create_by=user_obj)
+            acc_obj, create = Customer.objects.get_or_create(account_number=account)
+            sid_obj, create = Circuit.objects.get_or_create(sid=sid, account=acc_obj)
+            order_obj, create = Order.objects.get_or_create(order_number=order, circuit=sid_obj, create_by=user_obj)
             order_obj.status = status
             if status == 'FULFILL BILLING COMPLETE':
                 order.closed = True
