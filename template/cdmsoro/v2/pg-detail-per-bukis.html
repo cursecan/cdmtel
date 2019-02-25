@@ -46,11 +46,11 @@
 
 <div class="ui segment">
     <div class="ui styled fluid accordion">
-            <div class="title active">
+            <div class="title {% if not per_bukis.validate %} active {% endif %}">
                 <i class="dropdown icon"></i>
                 Validation
             </div>
-            <div class="content active">
+            <div class="content {% if not per_bukis.validate %} active {% endif %}">
                 {% if per_bukis.validate %}
                 <div class="ui info message">
                     <strong>{{ per_bukis.get_validation.get_action_display|title }}</strong> <br>
@@ -71,11 +71,11 @@
                 </form>
                 {% endif %}
             </div>
-            <div class="title">
+            <div class="title {% if per_bukis.is_approved %} active {% endif %}">
                 <i class="dropdown icon"></i>
                 Create Resume Order
             </div>
-            <div class="content">
+            <div class="content {% if per_bukis.is_approved %} active {% endif %}">
                 {% if per_bukis.is_approved %}
                 <form action="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" method="post" class="ui small form">
                     {% csrf_token %}
