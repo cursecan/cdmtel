@@ -1,12 +1,16 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.db.models import F
+from django.conf import settings
 
 from .models import (
     PermintaanResume, Validation,
     UpdatePermintaan, ManualOrder
 )
-from .tasks import notify_new_request, notifi_validation_req
+from .tasks import (
+    notify_new_request, notifi_validation_req,
+    sending_notif_manual_ro
+)
 
 from userprofile.models import Profile
 
@@ -46,3 +50,5 @@ def  create_manual_order(sender, instance, created, **kwargs):
         PermintaanResume.objects.filter(
             manualorder = instance
         ).update(manual_bukis=True)
+
+        sending_notif_manual_ro(instance.id, settings.TELEGRAM_KEY, settings.REMOT_TELEHOST)

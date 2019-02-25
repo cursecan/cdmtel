@@ -4,7 +4,10 @@ from django.template.loader import render_to_string
 
 from userprofile.models import Profile
 
-from cdmsoro.models import PermintaanResume
+from cdmsoro.models import (
+    PermintaanResume, ManualOrder
+)
+
 from masterdata.models import Order
 import requests, json
 
@@ -68,6 +71,21 @@ def sending_to_pic(data_id, token, send_to):
     order_obj = PermintaanResume.objects.get(pk=data_id)
     url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
     msg = '[+] Sudah bukis SID {} dengan nomor RO {}, {}.\nTerima kasih~'.format(order_obj.sid.sid, order_obj.resume.order_number, order_obj.pic)
+    payload = {
+        'chat_id': send_to,
+        'text': msg,
+        'parse_mode': 'HTML'
+    }
+    try :
+        r = requests.post(url, data=payload, timeout=15)
+    except:
+        pass
+
+@background(schedule=1)
+def sending_notif_manual_ro(data_id, token, send_to):
+    man_obj = ManualOrder.objects.get(pk=data_id)
+    url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
+    msg = '[+] Sudah bukis via FFM,  SID {}'.format(man_order.permintaa_resume.sid.sid)
     payload = {
         'chat_id': send_to,
         'text': msg,
