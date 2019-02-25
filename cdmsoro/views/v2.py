@@ -113,7 +113,11 @@ def uncomplete_order_list_view(request):
 @login_required()
 def manual_bukis_list(request):
     page = request.GET.get('page', 1)
+    search = request.GET.get('search', None)
     per_bukis = PermintaanResume.objects.filter(manual_bukis=True)
+    if search:
+        per_bukis = per_bukis.filter(sid__sid=search)
+
     paginator = Paginator(per_bukis, 10)
     try :
         bukis_list = paginator.page(page)
