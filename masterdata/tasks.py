@@ -1,6 +1,9 @@
 from background_task import background
+from django.contrib.auth.models import User
 from django.conf import settings
-from .models import Order
+from .models import (
+    Order, Customer, Circuit
+)
 
 import cx_Oracle
 
@@ -59,3 +62,45 @@ def bulk_order_update():
                     Order.objects.filter(order_number=order[0]).update(
                         status = get_order[0]
                     )
+
+
+@background(schedule=1)
+def record_data():
+    con = cx_Oracle.connect(settings.AMDES_USER, settings.AMDES_PASS, settings.AMDES_SERVICE)
+    cur = con.cursor()
+    query = """
+        SELECT DISTINCT accountnas, li_sid, order_id, li_milestone, order_created_date, \
+        CASE \
+            WHEN li_createdby_name='SETIAWAN, ANDERI' THEN 'anderi' \
+            WHEN li_createdby_name='MAHARANI, FRISA' THEN 'frisa' \
+            WHEN li_createdby_name='SABARUDIN, RAHMAT' THEN '710045' \
+            ELSE 'hane' \
+        END createdby \
+        FROM eas_ncrm_agree_order_line@dbl_dwh_sales_aon \
+        WHERE order_subtype='Suspend' \
+        AND li_createdby_name IN ('MAHARANI, FRISA', 'SETIAWAN, ANDERI', 'SABARUDIN, RAHMAT') \
+        AND li_sid IS NOT NULL \
+        AND ORDER_CREATED_DATE >= TO_DATE('20190101', 'yyyyMMdd') \
+        AND LI_SID NOT LIKE '%X%' \
+        AND li_milestone IS NOT NULL AND ROWNUM=1
+    """
+    
+    cur.execute(quer)
+    datas = cur.fetchall()
+    cur.close()
+    con.close()
+
+    for i in datas:
+        user_obj = User.objects.get(username=create_by)
+        account, sid, order, status, create_on, create_by = i
+        user_obj = User.objects.get(username=create_by)
+        try :
+            create, acc_obj = Customer.objects.create_or_get(account_number=account)
+            create, sid_obj = Circuit.objects.create_or_get(sid=sid, account=acc_obj)
+            create, order_obj = Order.objects.create_or_get(order_number=order, circuit=sid_obj, create_by=user_obj)
+            order_obj.status = status
+            if status == 'FULFILL BILLING COMPLETE':
+                order.closed = True
+            order_obj.save()
+        except :
+            pass
