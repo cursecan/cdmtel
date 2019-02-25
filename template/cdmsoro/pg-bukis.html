@@ -100,13 +100,18 @@ Buka Isolir
                                                         <i class="user icon"></i> {{ bukis.pic }}
                                                     </small>
                                                 </div>
-                                                <div class="description">
+                                                <div class="description" style="margin-bottom:20px">
                                                     <p>{{ bukis.message|truncatechars:100 }}</p>
                                                 </div>
                                                 <div class="meta">
                                                     <div class="ui orange label">SO {{ bukis.suspend }}</div>
                                                     {% if bukis.suspend != bukis.sid.get_last_order %}
                                                     <div class="ui green label">RO {{ bukis.sid.get_last_order }}</div>
+                                                    {% endif %}
+                                                    {% if bukis.manual_bukis %}
+                                                    <div class="ui green label">
+                                                        RO MANUAL FC-OCS
+                                                    </div>
                                                     {% endif %}
                                                 </div>
                                                 

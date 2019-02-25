@@ -42,7 +42,7 @@ class PermintaanResume(CommonBase):
 
 
 class ManualOrder(CommonBase):
-    permintaan_resume = models.ForeignKey(PermintaanResume, on_delete=models.CASCADE)
+    permintaan_resume = models.OneToOneField(PermintaanResume, on_delete=models.CASCADE)
     message = models.TextField(max_length=500)
 
 
