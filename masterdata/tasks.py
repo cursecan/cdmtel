@@ -91,7 +91,6 @@ def record_data():
     con.close()
 
     for i in datas:
-        user_obj = User.objects.get(username=create_by)
         account, sid, order, status, create_on, create_by = i
         user_obj = User.objects.get(username=create_by)
         try :
