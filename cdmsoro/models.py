@@ -37,7 +37,7 @@ class PermintaanResume(CommonBase):
 
     def get_error_msg(self):
         if self.manual_bukis:
-            return self.manualorder_set.latest('timestamp').message
+            return self.manualorder.message
         return None
 
 
