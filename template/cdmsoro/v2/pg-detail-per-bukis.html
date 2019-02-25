@@ -96,6 +96,21 @@
                 </div>
                 {% endif %}
             </div>
+            <div class="title">
+                <i class="dropdown icon"></i> Create Manual Resume</div>
+            <div class="content">
+                <form action="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" method="post" class="ui small form">
+                    {% csrf_token %}
+                    <div class="fields disabled">
+                        {{ manual_form.permintaan_resume }}
+                    </div>
+                    <div class="field">
+                        <label for="">Keterangan Error</label>
+                        {{ manual_form.message }}
+                    </div>
+                    <button type="submit" class="ui teal button">Submit Resume</button>
+                </form>
+            </div>
         </div>
 </div>
 {% endblock %}

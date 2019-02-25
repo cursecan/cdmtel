@@ -15,7 +15,7 @@
     <tbody>
         {% for order in order_list %}
         <tr>
-            <td>{{ forloop.counter }}</td>
+            <td>{{ forloop.counter0|add:order_list.start_index }}</td>
             <td>{{ order.order_number }}</td>
             <td>{{ order.status|default:'-'}}</td>
             <td>{{ order.create_by }}</td>

@@ -22,4 +22,5 @@ urlpatterns = [
     path('v2/permintaan-bukis/', v2.permintaan_bukis_list_view, name='per_bukis_list'),
     path('v2/permintaan-bukis/<int:id>/', v2.per_bukis_detail_view, name='detail_per_bukis'),
     path('v2/uncomplete/', v2.uncomplete_order_list_view, name='uncomplete'),
+    path('v2/manual-record/', v2.manual_bukis_list, name='manual_record'),
 ]

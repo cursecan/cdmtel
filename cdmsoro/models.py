@@ -15,6 +15,7 @@ class PermintaanResume(CommonBase):
     resume = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True, related_name='resume_order')
     validate = models.BooleanField(default=False)
     executor = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    manual_bukis = models.BooleanField(default=False)
 
 
     class Meta:
@@ -33,6 +34,17 @@ class PermintaanResume(CommonBase):
         if self.pic[0] == '@':
             return self.pic[1:]
         return None
+
+    def get_error_msg(self):
+        if self.manual_bukis:
+            return self.manualorder_set.latest('timestamp').message
+        return None
+
+
+class ManualOrder(CommonBase):
+    permintaan_resume = models.ForeignKey(PermintaanResume, on_delete=models.CASCADE)
+    message = models.TextField(max_length=500)
+
 
 class UpdatePermintaan(CommonBase):
     permintaan_resume = models.ForeignKey(PermintaanResume, on_delete=models.CASCADE)

@@ -6,7 +6,9 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
 from cdmsoro.models import PermintaanResume
-from cdmsoro.forms import BukisValidationForm
+from cdmsoro.forms import (
+    BukisValidationForm, ManualOrderForm
+)
 from masterdata.forms import (
     ResumeOrderForm, ResumeOrderForm_v2
 )
@@ -20,7 +22,7 @@ def index(request):
     per_bukis_objs = PermintaanResume.objects.filter(
         resume__isnull=True, validate=False
     )
-    paginator = Paginator(per_bukis_objs, 20)
+    paginator = Paginator(per_bukis_objs, 10)
 
     try:
         per_page_bukis = paginator.page(page)
@@ -38,8 +40,8 @@ def index(request):
 @login_required()
 def permintaan_bukis_list_view(request):
     page = request.GET.get('page', 1)
-    per_bukis_objs = PermintaanResume.objects.filter(resume__isnull=True)
-    paginator = Paginator(per_bukis_objs, 20)
+    per_bukis_objs = PermintaanResume.objects.filter(resume__isnull=True, manual_bukis=False)
+    paginator = Paginator(per_bukis_objs, 10)
 
     try:
         per_page_bukis = paginator.page(page)
@@ -58,6 +60,7 @@ def per_bukis_detail_view(request, id):
     per_bukis = get_object_or_404(PermintaanResume, pk=id)
     form = BukisValidationForm(request.POST or None)
     resume_form = ResumeOrderForm(request.POST or None, initial={'circuit': per_bukis.sid})
+    manual_form = ManualOrderForm(request.POST or None, initial={'permintaan_resume': per_bukis})
     if request.method == 'POST':
         if form.is_valid():
             instance = form.save(commit=False)
@@ -75,10 +78,15 @@ def per_bukis_detail_view(request, id):
             sending_to_pic(id, settings.TELEGRAM_KEY, settings.REMOT_TELEHOST)
             return redirect('cdmsoro:per_bukis_list')
 
+        if manual_form.is_valid():
+            manual_form.save()
+            return redirect('cdmsoro:per_bukis_list')
+
     content = {
         'per_bukis': per_bukis,
         'form': form,
-        'bukis_form': resume_form
+        'bukis_form': resume_form,
+        'manual_form': manual_form,
     }
 
     return render(request, 'cdmsoro/v2/pg-detail-per-bukis.html', content)
@@ -102,7 +110,22 @@ def uncomplete_order_list_view(request):
     return render(request, 'cdmsoro/v2/pg-uncomplete-order.html', content)
 
 
+@login_required()
+def manual_bukis_list(request):
+    page = request.GET.get('page', 1)
+    per_bukis = PermintaanResume.objects.filter(manual_bukis=True)
+    paginator = Paginator(per_bukis, 10)
+    try :
+        bukis_list = paginator.page(page)
+    except PageNotAnInteger:
+        bukis_list = paginator.page(1)
+    except EmptyPage:
+        bukis_list = paginator.page(paginator.num_pages)
 
+    content = {
+        'bukis_list': bukis_list
+    }
+    return render(request, 'cdmsoro/v2/pg-manual-bukis-list.html', content)
 
 
 

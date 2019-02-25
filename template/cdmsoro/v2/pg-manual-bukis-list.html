@@ -6,11 +6,9 @@
         <tr>
             <th>#</th>
             <th>Circuit</th>
-            <th>Ket. Bukis</th>
             <th>Suspend</th>
-            <th>Entry By</th>
+            <th>Ket. Error</th>
             <th>Executor</th>
-            <th>Status Validation</th>
             <th>Create On</th>
             <th>#</th>
         </tr>
@@ -20,27 +18,19 @@
         <tr>
             <td>{{ forloop.counter0|add:bukis_list.start_index }}</td>
             <td>{{ per_bukis.sid }}</td>
-            <td>{{ per_bukis.message|truncatechars:25 }}</td>
-            <td>{{ per_bukis.suspend }} <br>{{ per_bukis.suspend.status|default:'-'}} </td>
-            <td><a class="" href="https://t.me/{{ per_bukis.has_telegram }}" target="_blank" title="Telegram to {{ per_bukis.pic }}"><i class="telegram icon"></i> Send</a></td>
+            <td>{{ per_bukis.suspend }} <br>{{ per_bukis.suspend.status }}</td>
+            <td>{{ per_bukis.get_error_msg|truncatechars:100 }}</td>
             <td>{{ per_bukis.executor|title }}</td>
-            <td>{% if per_bukis.validate %} {{ per_bukis.get_validation.get_action_display|default:'-' }} {% endif %}</td>
             <td>{{ per_bukis.timestamp }}</td>
             <td>
-                <a href="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" class="">
+                <a href="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}">
                     <i class="bolt icon"></i> Action
                 </a>
-                {% if not per_bukis.suspend.closed %}
-                <br>
-                <a href="#" target-url="{% url 'cdmsoro:v2_lapor' per_bukis.suspend.id %}" class=" btn-lapor {% if per_bukis.suspend.closed %} disabled {% endif %} js-laporsoro">
-                    <i class="bullhorn icon"></i> Lapor
-                </a>
-                {% endif %}
             </td>
         </tr>
         {% empty %}
         <tr>
-            <td>No found data.</td>
+            <td>Empty data.</td>
         </tr>
         {% endfor %}
     </tbody>

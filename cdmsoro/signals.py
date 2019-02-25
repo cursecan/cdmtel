@@ -4,7 +4,7 @@ from django.db.models import F
 
 from .models import (
     PermintaanResume, Validation,
-    UpdatePermintaan
+    UpdatePermintaan, ManualOrder
 )
 from .tasks import notify_new_request, notifi_validation_req
 
@@ -38,3 +38,11 @@ def update_validation_triger(sender, instance, created, **kwargs):
         )
 
         notify_new_request(instance.permintaan_resume.id, verbose_name='Update resume request', creator=instance.permintaan_resume)
+
+
+@receiver(post_save, sender=ManualOrder)
+def  create_manual_order(sender, instance, created, **kwargs):
+    if created:
+        PermintaanResume.objects.filter(
+            manualorder = instance
+        ).update(manual_bukis=True)

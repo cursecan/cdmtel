@@ -3,7 +3,7 @@ from django import forms
 from .validators import validate_file_extension, validate_file_size
 
 from .models import (
-    PermintaanResume, Validation
+    PermintaanResume, Validation, ManualOrder
 )
 from masterdata.models import Circuit
 
@@ -55,3 +55,12 @@ class BukisValidationForm(forms.ModelForm):
 class UpdateBukisForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea(), required=True)
     doc = forms.FileField(required=True, validators=[validate_file_extension, validate_file_size])
+
+
+class ManualOrderForm(forms.ModelForm):
+    class Meta:
+        model = ManualOrder
+        fields = [
+            'permintaan_resume',
+            'message'
+        ]
