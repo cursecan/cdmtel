@@ -99,6 +99,10 @@
             <div class="title">
                 <i class="dropdown icon"></i> Create Manual Resume</div>
             <div class="content">
+                <div class="ui info message">
+                    <strong>Penting!</strong>
+                    Pastikan sudah create atau segera request percepatan FFM / OCS agar tidak kelupaan.
+                </div>
                 <form action="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" method="post" class="ui small form">
                     {% csrf_token %}
                     <div class="field disabled">
