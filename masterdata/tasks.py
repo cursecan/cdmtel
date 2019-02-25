@@ -85,7 +85,7 @@ def record_data():
         AND li_milestone IS NOT NULL
     """
     
-    cur.execute(quer)
+    cur.execute(query)
     datas = cur.fetchall()
     cur.close()
     con.close()
