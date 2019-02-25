@@ -85,7 +85,7 @@ def sending_to_pic(data_id, token, send_to):
 def sending_notif_manual_ro(data_id, token, send_to):
     man_obj = ManualOrder.objects.get(pk=data_id)
     url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
-    msg = '[+] Sudah bukis via FFM,  SID {}'.format(man_order.permintaa_resume.sid.sid)
+    msg = '[+] Sudah bukis via FFM,  SID {}'.format(man_obj.permintaa_resume.sid.sid)
     payload = {
         'chat_id': send_to,
         'text': msg,
