@@ -101,7 +101,7 @@
             <div class="content">
                 <form action="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" method="post" class="ui small form">
                     {% csrf_token %}
-                    <div class="fields disabled">
+                    <div class="field disabled">
                         {{ manual_form.permintaan_resume }}
                     </div>
                     <div class="field">
