@@ -78,9 +78,9 @@ def record_data():
         END createdby \
         FROM eas_ncrm_agree_order_line@dbl_dwh_sales_aon \
         WHERE order_subtype='Suspend' \
-        AND li_createdby_name IN ('MAHARANI, FRISA', 'SETIAWAN, ANDERI', 'SABARUDIN, RAHMAT') \
+        AND li_createdby_name IN ('MAHARANI, FRISA', 'SETIAWAN, ANDERI', 'SABARUDIN, RAHMAT', 'HASANUDIN, HANE') \
         AND li_sid IS NOT NULL \
-        AND ORDER_CREATED_DATE >= TO_DATE('20190101', 'yyyyMMdd') \
+        AND ORDER_CREATED_DATE >= TO_DATE('20190101', 'YYYYMMDD') \
         AND LI_SID NOT LIKE '%X%' \
         AND li_milestone IS NOT NULL
     """
