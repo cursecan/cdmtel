@@ -57,9 +57,9 @@ def permintaan_bukis_list_view(request):
 
 @login_required()
 def per_bukis_detail_view(request, id):
-    per_bukis = get_object_or_404(PermintaanResume, pk=id)
+    per_bukis = get_object_or_404(PermintaanResume, pk=id, resume__isnull=True)
     form = BukisValidationForm(request.POST or None)
-    resume_form = ResumeOrderForm(request.POST or None, initial={'circuit': per_bukis.sid})
+    resume_form = ResumeOrderForm(id, request.POST or None, initial={'circuit': per_bukis.sid})
     manual_form = ManualOrderForm(request.POST or None, initial={'permintaan_resume': per_bukis})
     if request.method == 'POST':
         if form.is_valid():
@@ -130,6 +130,26 @@ def manual_bukis_list(request):
         'bukis_list': bukis_list
     }
     return render(request, 'cdmsoro/v2/pg-manual-bukis-list.html', content)
+
+@login_required()
+def detail_manual_bukis_view(request, id):
+    per_bukis = get_object_or_404(PermintaanResume, pk=id, manual_bukis=True)
+    resume_form = ResumeOrderForm(per_bukis.sid.sid, request.POST or None, initial={'circuit': per_bukis.sid})
+    if request.method == 'POST':
+        if resume_form.is_valid() and per_bukis.is_approved():
+            instance = resume_form.save(commit=False)
+            instance.type_order = 'RO'
+            instance.create_by = request.user
+            instance.save()
+            PermintaanResume.objects.filter(pk=id).update(resume=instance)
+            sending_to_pic(id, settings.TELEGRAM_KEY, settings.REMOT_TELEHOST)
+            return redirect('cdmsoro:per_bukis_list')
+    content = {
+        'per_bukis': per_bukis,
+        'bukis_form': resume_form,
+    }
+
+    return render(request, 'cdmsoro/v2/pg-detail-per-bukis.html', content)
 
 
 

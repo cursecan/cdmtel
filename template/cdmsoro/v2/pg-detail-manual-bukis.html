@@ -1,0 +1,76 @@
+{% extends 'cdmsoro/v2/base.html' %}
+
+{% block cdmsoro_content %}
+<div class="ui top attached segment">
+    <h4 class="ui header">
+        Permintaan Buka Isolir Data Internet
+    </h4>
+</div>
+<div class="ui attached segment">
+    <table class="ui table">
+        <tr>
+            <td>
+                <h5 class="ui header">
+                    <div class="sub header">
+                        Account
+                    </div>
+                    {{ per_bukis.sid.account }}
+                </h5>
+            </td>
+            <td>
+                <h5 class="ui header">
+                    <div class="sub header">Circuit</div>
+                    {{ per_bukis.sid }} <br>
+                    {{ per_bukis.suspend.status }}
+                </h5>
+            </td>
+            <td>
+                <h5 class="ui header">
+                    <div class="sub header">No. Suspend</div>
+                    {{ per_bukis.suspend }}
+                </h5>
+            </td>
+        </tr>
+    </table>
+    <p>
+        {{ per_bukis.message }}
+    </p>
+</div>
+<div class="ui bottom attached segment">
+    {% for av in per_bukis.avident_set.all %}
+        <a href="/media/{{ av.document }}" class="link" target="_blank">
+            <i class="file alternate icon huge"></i>
+        </a>
+    {% endfor %}
+</div>
+
+<div class="ui segment">
+    <div class="ui styled fluid accordion">
+        <div class="title {% if per_bukis.is_approved %} active {% endif %}">
+            <i class="dropdown icon"></i>
+            Create Resume Order
+        </div>
+        <div class="content {% if per_bukis.is_approved %} active {% endif %}">
+            {% if per_bukis.is_approved %}
+            <form action="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" method="post" class="ui small form">
+                {% csrf_token %}
+                <div class="field disabled">
+                    <label for="">Circuit ID</label>
+                    {{ bukis_form.circuit }}
+                </div>
+                <div class="field">
+                    <label for="">Resume Order</label>
+                    {{ bukis_form.order_number }}
+                </div>
+                <button type="submit" class="ui primary button">Create Order</button>
+            </form>
+            {% else %}
+            <div class="ui red message">
+                <strong>No Approval.</strong> <br>
+                Request need get approval before creating order.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,8 @@
 from django import forms
 
-from .models import Order
+from .models import (
+    Order, Circuit
+)
 from cdmsoro.models import PermintaanResume
 
 class ResumeOrderForm(forms.ModelForm):
@@ -10,6 +12,10 @@ class ResumeOrderForm(forms.ModelForm):
             'circuit',
             'order_number'
         ]
+
+    def __init__(self, sid, *args, **kwargs):
+        super(ResumeOrderForm, self).__init__(*args, **kwargs)
+        self.fields['circuit'].queryset = Circuit.objects.filter(sid=sid)
 
 
 class ResumeOrderForm_v2(forms.Form):

@@ -64,3 +64,7 @@ class ManualOrderForm(forms.ModelForm):
             'permintaan_resume',
             'message'
         ]
+
+    def __init__(self, per_resume, *args, **kwargs):
+        super(ManualOrderForm, self).__init__(*args, **kwargs)
+        self.fields['permintaan_resume'].queryset = PermintaanResume.objects.filter(pk=per_resume)

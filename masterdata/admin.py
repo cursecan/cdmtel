@@ -39,18 +39,3 @@ class OrderAdmin(ImportExportModelAdmin):
     search_fields = [
         'order_number', 'circuit__sid', 'circuit__account__account_number'
     ]
-
-
-# class Order(CommonBase):
-#     RESUME = 'RO'
-#     SUSPEND = 'SO'
-#     TYPE_LIST = (
-#         (SUSPEND, 'SUSPEND'),
-#         (RESUME, 'RESUME')
-#     )
-#     order_number = models.CharField(max_length=13, unique=True)
-#     type_order = models.CharField(max_length=2, choices=TYPE_LIST, default=SUSPEND)
-#     circuit = models.ForeignKey(Circuit, on_delete=models.CASCADE)
-
-#     def __str__(self):
-#         return self.order_number

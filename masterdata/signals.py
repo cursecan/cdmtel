@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from .models import (
     Order, Circuit
 )
+from cdmsoro.models import PermintaanResume
 
 @receiver(post_save, sender=Order)
 def generate_circuit_status(sender, instance, created, **kwargs):
@@ -13,3 +14,7 @@ def generate_circuit_status(sender, instance, created, **kwargs):
             circuit_obj.update(is_active=False)
         else :
             circuit_obj.update(is_active=True)
+
+        PermintaanResume.objects.filter(
+            resume = instance
+        ).update(manual_bukis=False)
