@@ -1,5 +1,5 @@
 <div class="ui vertical inverted segment">
-    <div class="ui secondary inverted pointing menu container">
+    <div class="ui secondary inverted menu container">
         <a href="{% url 'home' %}" class="item active">CDMROSO</a>
         <a href="{% url 'cdmsoro:index' %}" class="item">MCRS</a>
         <div class="right menu">
@@ -8,7 +8,7 @@
                 <a href="{% url 'logout' %}" class="item"><i class="logout icon"></i> Logout</a>
             {% else %}
             <div class="item">
-                <a href="{% url 'login' %}" class="ui basic button">LOGIN</a>
+                <a href="{% url 'login' %}" class="ui basic inverted button">LOGIN</a>
             </div>
             {% endif %}
         </div>
