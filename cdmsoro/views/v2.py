@@ -149,7 +149,7 @@ def detail_manual_bukis_view(request, id):
         'bukis_form': resume_form,
     }
 
-    return render(request, 'cdmsoro/v2/pg-detail-per-bukis.html', content)
+    return render(request, 'cdmsoro/v2/pg-detail-manual-bukis.html', content)
 
 
 
