@@ -27,7 +27,7 @@
     </thead>
     <tbody>
         {% for per_bukis in bukis_list %}
-        <tr>
+        <tr class="{% if per_bukis.suspend.closed %} positive {% else %} negative {% endif %}">
             <td>{{ forloop.counter0|add:bukis_list.start_index }}</td>
             <td>{{ per_bukis.sid }}</td>
             <td>{{ per_bukis.suspend }} <br>{{ per_bukis.suspend.status }}</td>
