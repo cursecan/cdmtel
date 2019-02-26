@@ -59,8 +59,8 @@ def permintaan_bukis_list_view(request):
 def per_bukis_detail_view(request, id):
     per_bukis = get_object_or_404(PermintaanResume, pk=id, resume__isnull=True)
     form = BukisValidationForm(request.POST or None)
-    resume_form = ResumeOrderForm(id, request.POST or None, initial={'circuit': per_bukis.sid})
-    manual_form = ManualOrderForm(request.POST or None, initial={'permintaan_resume': per_bukis})
+    resume_form = ResumeOrderForm(per_bukis.sid.sid, request.POST or None, initial={'circuit': per_bukis.sid})
+    manual_form = ManualOrderForm(id, request.POST or None, initial={'permintaan_resume': per_bukis})
     if request.method == 'POST':
         if form.is_valid():
             instance = form.save(commit=False)

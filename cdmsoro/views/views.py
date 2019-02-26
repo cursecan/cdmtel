@@ -267,9 +267,6 @@ class PostUpdatePermintaaView(SingleObjectMixin, FormView):
     def form_valid(self, form):
         msg = form.cleaned_data.get('message')
         doc = form.cleaned_data.get('doc')
-
-        print(msg, doc)
-
         update_obj = UpdatePermintaan.objects.create(
             permintaan_resume = self.object,
             message = msg
