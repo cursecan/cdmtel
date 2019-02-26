@@ -8,7 +8,7 @@ from masterdata.models import (
  
 
 class PermintaanResume(CommonBase):
-    pic = models.CharField(max_length=15)
+    pic = models.CharField(max_length=100)
     message = models.TextField(max_length=500, blank=True)
     sid = models.ForeignKey(Circuit, on_delete=models.CASCADE)
     suspend = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='suspend_order')
