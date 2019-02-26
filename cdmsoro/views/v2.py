@@ -67,7 +67,7 @@ def per_bukis_detail_view(request, id):
             instance.user = request.user
             instance.permintaan_resume = per_bukis
             instance.save()
-            return redirect('cdmsoro:per_bukis_list')
+            return redirect('cdmsoro:detail_per_bukis', id)
 
         if resume_form.is_valid() and per_bukis.is_approved():
             instance = resume_form.save(commit=False)
