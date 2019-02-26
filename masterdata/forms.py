@@ -17,6 +17,12 @@ class ResumeOrderForm(forms.ModelForm):
         super(ResumeOrderForm, self).__init__(*args, **kwargs)
         self.fields['circuit'].queryset = Circuit.objects.filter(sid=sid)
 
+    def clean_order_number(self):
+        order_n = self.cleaned_data['order_number']
+        if order_n[:2] != '1-':
+            raise forms.ValidationError('Order not in format 1-*')
+        return order_n
+
 
 class ResumeOrderForm_v2(forms.Form):
     circuit = forms.IntegerField(required=False)

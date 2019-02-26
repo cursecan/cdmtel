@@ -57,7 +57,7 @@
                     {{ per_bukis.get_validation.message }}
                 </div>
                 {% else %}
-                <form action="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" method="post" class="ui small form">
+                <form action="" method="post" class="ui small form">
                     {% csrf_token %}
                     <div class="field">
                         <label for="">Action</label>
@@ -77,7 +77,7 @@
             </div>
             <div class="content {% if per_bukis.is_approved %} active {% endif %}">
                 {% if per_bukis.is_approved %}
-                <form action="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" method="post" class="ui small form">
+                <form action="" method="post" class="ui small form">
                     {% csrf_token %}
                     <div class="field disabled">
                         <label for="">Circuit ID</label>
@@ -86,6 +86,11 @@
                     <div class="field">
                         <label for="">Resume Order</label>
                         {{ bukis_form.order_number }}
+                        {% if bukis_form.order_number.errors %}
+                            {% for error in bukis_form.order_number.errors %}
+                            <small style="color:brown">{{ error }}</small>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     <button type="submit" class="ui primary button">Create Order</button>
                 </form>
@@ -104,7 +109,7 @@
                     <strong>Penting!</strong>
                     Pastikan sudah create atau segera request percepatan FFM / OCS agar tidak kelupaan.
                 </div>
-                <form action="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" method="post" class="ui small form">
+                <form action="" method="post" class="ui small form">
                     {% csrf_token %}
                     <div class="field disabled">
                         {{ manual_form.permintaan_resume }}

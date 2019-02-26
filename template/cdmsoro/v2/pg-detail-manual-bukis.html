@@ -61,6 +61,11 @@
                 <div class="field">
                     <label for="">Resume Order</label>
                     {{ bukis_form.order_number }}
+                    {% if bukis_form.order_number.errors %}
+                        {% for error in bukis_form.order_number.errors %}
+                        <small style="color:brown">{{ error }}</small>
+                        {% endfor %}
+                    {% endif %}
                 </div>
                 <button type="submit" class="ui primary button">Create Order</button>
             </form>
