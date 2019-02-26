@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from cdmsoro.models import PermintaanResume
 from cdmsoro.forms import (
@@ -15,6 +16,7 @@ from masterdata.forms import (
 from masterdata.models import Order
 from cdmsoro.tasks import sending_telegram
 from cdmsoro.tasks import sending_to_pic
+
 
 @login_required()
 def index(request):
@@ -76,10 +78,13 @@ def per_bukis_detail_view(request, id):
             instance.save()
             PermintaanResume.objects.filter(pk=id).update(resume=instance)
             sending_to_pic(id, settings.TELEGRAM_KEY, settings.REMOT_TELEHOST)
+            
+            messages.success(request, 'Order buka isolir berhasil disimpan.')
             return redirect('cdmsoro:per_bukis_list')
 
         if manual_form.is_valid():
             manual_form.save()
+            messages.success(request, 'Manual buka isolir telah berhasil disimpan.')
             return redirect('cdmsoro:per_bukis_list')
 
     content = {
@@ -141,9 +146,11 @@ def detail_manual_bukis_view(request, id):
             instance.type_order = 'RO'
             instance.create_by = request.user
             instance.save()
-            PermintaanResume.objects.filter(pk=id).update(resume=instance)
+            PermintaanResume.objects.filter(pk=id).update(resume=instance, manual_bukis=False)
             sending_to_pic(id, settings.TELEGRAM_KEY, settings.REMOT_TELEHOST)
-            return redirect('cdmsoro:per_bukis_list')
+            
+            messages.success(request, 'Order buka isolir berhasil disimpan.')
+            return redirect('cdmsoro:manual_record')
     content = {
         'per_bukis': per_bukis,
         'bukis_form': resume_form,

@@ -52,7 +52,7 @@
         </div>
         <div class="content {% if per_bukis.is_approved %} active {% endif %}">
             {% if per_bukis.is_approved %}
-            <form action="{% url 'cdmsoro:detail_per_bukis' per_bukis.id %}" method="post" class="ui small form">
+            <form action="" method="post" class="ui small form">
                 {% csrf_token %}
                 <div class="field disabled">
                     <label for="">Circuit ID</label>

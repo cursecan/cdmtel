@@ -14,7 +14,3 @@ def generate_circuit_status(sender, instance, created, **kwargs):
             circuit_obj.update(is_active=False)
         else :
             circuit_obj.update(is_active=True)
-
-        PermintaanResume.objects.filter(
-            resume = instance
-        ).update(manual_bukis=False)

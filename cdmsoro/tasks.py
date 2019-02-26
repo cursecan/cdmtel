@@ -85,7 +85,7 @@ def sending_to_pic(data_id, token, send_to):
 def sending_notif_manual_ro(data_id, token, send_to):
     man_obj = ManualOrder.objects.get(pk=data_id)
     url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
-    msg = '[+] Sudah bukis via FFM,  SID {}'.format(man_obj.permintaan_resume.sid.sid)
+    msg = '[+] SID {} belum bisa input RO di NCX (kendala) , sudah minta percepatan ke DSO FFM/OCS.'.format(man_obj.permintaan_resume.sid.sid)
     payload = {
         'chat_id': send_to,
         'text': msg,

@@ -41,6 +41,14 @@ Bukis CDM
 {% block js %}
 <script>
 $(document).ready(function() {
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+            .closest('.message')
+            .transition('fade')
+            ;
+        });
+        
     var load_modal = function() {
         var btn = $(this);
         $.ajax({

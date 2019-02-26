@@ -5,6 +5,17 @@
 {% endblock %}
 
 {% block cdmsoro_content %}
+
+{% if messages %}
+    {% for msg in messages %}
+    <div class="ui info message">
+        <i class="close icon"></i>
+        <div class="header">Success!</div>
+        <p>{{ msg }}</p>
+    </div>
+    {% endfor %}
+{% endif %}
+
 <table class="ui small striped table">
     <thead>
         <tr>
