@@ -123,6 +123,7 @@ def get_record_account():
         GROUP BY \
             a.bp_num, \
             a.akun, \
+            b.bpname,\
             a.CBASE_2016
     """
     
