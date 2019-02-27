@@ -4,7 +4,8 @@ from django.db.models import Count
 
 from .models import Order
 from .tasks import (
-    bulk_order_update, record_data
+    bulk_order_update, record_data,
+    get_record_account
 )
 
 def order_bulk_update_view(request):
@@ -18,3 +19,9 @@ def order_bulk_update_view(request):
 def daily_record_view(request):
     record_data()
     return JsonResponse({'daily_record': '1'})
+
+
+def record_account_view(request):
+    get_record_account()
+    return JsonResponse({'daily_record': '1'})
+

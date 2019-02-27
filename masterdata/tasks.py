@@ -2,7 +2,7 @@ from background_task import background
 from django.contrib.auth.models import User
 from django.conf import settings
 from .models import (
-    Order, Customer, Circuit
+    Order, Customer, Circuit, Segment
 )
 
 import cx_Oracle
@@ -102,4 +102,49 @@ def record_data():
                 order.closed = True
             order_obj.save()
         except :
+            pass
+
+
+@background(schedule=1)
+def get_record_account():
+    con = cx_Oracle.connect(settings.BILCOS_USER, settings.BILCOS_PASS, settings.BILCOS_SERVICE)
+    cur = con.cursor()
+    query = """
+        SELECT \
+            a.bp_num, \
+            a.akun, \
+            b.bpname, \
+            a.CBASE_2016, \
+            SUM(b.CURRENT_BALANCE) saldo \
+        FROM \
+            z_des_openitem a \
+        LEFT JOIN mybrains.trems_np_cyc b ON \
+            a.bp_num = b.partner \
+        GROUP BY \
+            a.bp_num, \
+            a.akun, \
+            a.CBASE_2016
+    """
+    
+    cur.execute(query)
+    datas = cur.fetchall()
+    cur.close()
+    con.close()
+
+    for i in datas:
+        bpnum, acc, name, segmen, saldo = i
+        try :
+            if int(acc) < 4000000:
+                acc = '0'+ acc
+
+            seg_obj, create = Segment.objects.get_or_create(segment=segmen)
+            cust_obj, create = Customer.objects.get_or_create(
+                account_number = acc
+            )            
+            cust_obj.bp = bpnum
+            cust_obj.customer_name = name
+            cust_obj.segment = seg_obj
+            cust_obj.save()
+
+        except:
             pass
