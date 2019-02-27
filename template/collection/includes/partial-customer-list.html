@@ -1,0 +1,10 @@
+{% for cust in customer_list %}
+<div class="item" target-url="{% url 'collection:api_detail_customer' cust.id %}">
+    <div class="right floated content">
+        <div class="ui label">PCS</div>
+    </div>
+    <div class="content">
+        {{ cust.account_number }} - {{ cust.customer_name|upper }}
+    </div>
+</div>
+{% endfor %}

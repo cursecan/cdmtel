@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Collection
+{% endblock %}
+
+{% block meta %}
+    <!-- Meta -->
+    {% block meta_content %}
+    {% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="ui basic vertical segment">
+    <div class="ui fluid container">
+        <div class="ui  padded grid">
+            <div class="row">
+                <div class="column">
+                    <div class="ui segment" style="min-height:450px">
+                        <div class="ui equal width grid">
+                            <div class="column">
+                                <form action="" class="ui huge form cust-form">
+                                    <div class="field">
+                                        <div class="ui left icon input">
+                                            <i class="search icon"></i>
+                                            <input type="text" placeholder="Search Customer">
+                                        </div>
+                                    </div>
+                                </form>
+                                <div id="cust-list" class="ui selection large list" target-url="{% url 'collection:api_customer' %}">
+                                    <!-- LIST CONTENT -->
+                                </div>
+                                        
+                            </div>
+                            <div id="cust-detail" class="column">
+                                <!-- CONTENT DETAIL -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+            .closest('.message')
+            .transition('fade')
+            ;
+        });
+        
+    var init_load = function(data='') {
+        var v_item = $('#cust-list');
+        $.ajax({
+            url: v_item.attr('target-url'),
+            dataType: 'json',
+            data: {'q': data},
+            success: function(data) {
+                v_item.html(data.html);
+            }
+        });
+        return false
+    }
+
+    var view_customer_data = function() {
+        var btn = $(this);
+        $.ajax({
+            url: btn.attr('target-url'),
+            dataType: 'json',
+            success: function(data) {
+                $('#cust-detail').html(data.html);
+            }
+        });
+        return false;
+    }
+
+    var submit_form_key = function() {
+        var form = $(this);
+        $.ajax({
+            url: form.attr('action'),
+            dataType: 'json',
+            type: form.attr('method'),
+            data: form.serialize(),
+            success: function(data) {
+                $('#cust-detail').html(data.html);
+            } 
+        });
+        return false;
+    }
+
+    init_load();
+
+    $('.cust-form').on('keyup', 'input', function() {
+        var data = $(this).val();
+        init_load(data);
+        return false;
+    });
+
+    $('#cust-list').on('click', '.item', view_customer_data);
+    $('#cust-detail').on('submit', 'form', submit_form_key);
+});
+</script>
+{% endblock %}

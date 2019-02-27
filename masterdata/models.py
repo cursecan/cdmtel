@@ -3,9 +3,20 @@ from django.contrib.auth.models import User
 
 from core.models import CommonBase
 
+class Segment(CommonBase):
+    segment = models.CharField(max_length=10, unique=True)
+
+    class Meta:
+        ordering = ['segment']
+
+    def __str__(self):
+        return self.segment
 
 class Customer(CommonBase):
     account_number = models.CharField(max_length=8, unique=True)
+    bp = models.CharField(max_length=30, blank=True)
+    customer_name = models.CharField(max_length=200, blank=True)
+    segment = models.ForeignKey(Segment, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
         ordering = ['-timestamp']

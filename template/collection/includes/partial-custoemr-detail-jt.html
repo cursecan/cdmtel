@@ -1,0 +1,49 @@
+<div class="ui header">
+    {{ cust.customer_name|upper }}
+    <div class="sub header">
+        {{ cust.account_number }} (PCS)
+    </div>
+</div>
+
+<form action="{% url 'collection:api_detail_customer' cust.id %}" method="post" class="ui inline form">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    
+    {% for form in formset %}
+        <div class="fields cust-formset">
+            {{ form.id }}
+            <div class="five wide field">
+                <label for="{{ form.amount.id_for_label }}">Amount</label>
+                <div class="ui labeled input">
+                    <div class="ui label">IDR</div>
+                    {{ form.amount }}
+                </div>
+                {% if form.amount.errors %}
+                    {% for error in form.amount.errors %}
+                    <small style="color:brown">{{ error }}</small>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="five wide field">
+                <label for="{{ form.amount.id_for_label }}">Date</label>
+                {{ form.due_date }}
+                {% if form.due_date.errors %}
+                    {% for error in form.due_date.errors %}
+                    <small style="color:brown">{{ error }}</small>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    <div class="field" style="padding-top:15px">
+        <button type="submit" class="ui teal button">Save Record</button>
+    </div>
+</form>
+
+<script>
+$('.cust-formset').formset({
+    addText : 'add link',
+    deleteText: 'remove',
+    prefix: '{{ formset.prefix }}'
+});
+</script>

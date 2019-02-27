@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'cdmsoro',
     'masterdata',
     'userprofile',
+    'collection',
 ]
 
 MIDDLEWARE = [

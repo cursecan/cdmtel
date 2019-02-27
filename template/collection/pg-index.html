@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui vertical basic segment">
+    <div class="ui container">
+        <div class="ui menu">
+            <div class="item">
+                <form action="" class="ui form">
+                    <div class="field">
+                        <div class="ui action input">
+                            <input type="text" name="search" placeholder="Search Customer...">
+                            <button class="ui basic button">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="right menu">
+                <a href="{% url 'collection:entry_data' %}" class="item">
+                    <i class="add icon"></i> Entry Data
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

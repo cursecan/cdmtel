@@ -1,11 +1,12 @@
 <div class="ui vertical inverted segment">
     <div class="ui secondary inverted menu container">
         <a href="{% url 'home' %}" class="item active">CDMROSO</a>
+        <!-- <a href="{% url 'collection:index' %}" class="item">COLLECTION</a> -->
         <a href="{% url 'cdmsoro:index' %}" class="item">MCRS</a>
         <div class="right menu">
             {% if user.is_authenticated %}
                 <a class="item"><i class="ui user icon"></i> {{ request.user|upper }}</a>
-                <a href="{% url 'logout' %}" class="item"><i class="logout icon"></i> Logout</a>
+                <a href="{% url 'logout' %}" class="item"><i class="logout icon"></i> LOGOUT</a>
             {% else %}
             <div class="item">
                 <a href="{% url 'login' %}" class="ui basic inverted button">LOGIN</a>
