@@ -3,11 +3,16 @@ from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 
 from .models import (
-    Customer, Circuit, Order
+    Customer, Circuit, Order, Segment
 )
 from .resources import (
     CustomerResource, CircuitResource, OrderResource
 )
+
+
+@admin.register(Segment)
+class SegmentAdmin(admin.ModelAdmin):
+    pass
 
 @admin.register(Customer)
 class CustomerAdmin(ImportExportModelAdmin):

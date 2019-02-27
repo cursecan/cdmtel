@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Q
 
 from masterdata.models import Customer
 
@@ -38,7 +39,9 @@ def jsonCustomerView(request):
     q = request.GET.get('q', None)
     customer_objs = Customer.objects.order_by('account_number')
     if q:
-        customer_objs = customer_objs.filter(account_number__contains=q)
+        customer_objs = customer_objs.filter(
+            Q(account_number__contains=q) | Q(customer_name__contains=q)
+        )
     paginator = Paginator(customer_objs, 10)
     customer_list = paginator.page(1)
     content = {
