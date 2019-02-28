@@ -45,7 +45,13 @@
                     </td>
                     <td>{{ customer.segment|default:'-' }}</td>
                     <td>{{ customer.get_saldo.amount|default:'0'|intcomma }}</td>
-                    <td>{{ customer.s_tagih|intcomma }}</td>
+                    <td>
+                        {% if customer.s_tagih < customer.get_saldo.amount %}
+                            {{ customer.s_tagih|intcomma }}
+                        {% else %}
+                            {{ customer.get_saldo.amount|default:'0'|intcomma }}
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
