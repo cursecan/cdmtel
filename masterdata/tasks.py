@@ -4,6 +4,7 @@ from django.conf import settings
 from .models import (
     Order, Customer, Circuit, Segment
 )
+from collection.models import Saldo
 
 import cx_Oracle
 
@@ -146,6 +147,11 @@ def get_record_account():
             cust_obj.customer_name = name
             cust_obj.segment = seg_obj
             cust_obj.save()
+
+            Saldo.objects.get_or_create(
+                customer = cust_obj,
+                amount = saldo
+            )
 
         except:
             pass

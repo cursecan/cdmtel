@@ -24,6 +24,9 @@ class Customer(CommonBase):
     def __str__(self):
         return self.account_number
 
+    def get_saldo(self):
+        return self.customer_saldo.latest('timestamp')
+
 
 
 class Circuit(CommonBase):

@@ -15,3 +15,14 @@ class ColTarget(CommonBase):
         
     def __str__(self):
         return str(self.customer)
+
+
+class Saldo(CommonBase):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='customer_saldo')
+    amount = models.DecimalField(max_digits=12, decimal_places=0)
+
+    class Meta:
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return str(self.customer)

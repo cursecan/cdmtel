@@ -3,7 +3,8 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, F, Sum, Value as V
+from django.db.models.functions import Coalesce 
 from django.contrib import messages
 
 from masterdata.models import Customer
@@ -17,7 +18,7 @@ from .forms import (
 def index(request):
     page = request.GET.get('page', None)
     customer_objs = Customer.objects.all()
-
+    
     paginator = Paginator(customer_objs, 10)
     try :
         customer_list = paginator.page(page)
@@ -44,7 +45,7 @@ def jsonCustomerView(request):
     customer_objs = Customer.objects.order_by('account_number')
     if q:
         customer_objs = customer_objs.filter(
-            Q(account_number__contains=q) | Q(customer_name__contains=q)
+            Q(account_number__icontains=q) | Q(customer_name__icontains=q)
         )
     paginator = Paginator(customer_objs, 10)
     customer_list = paginator.page(1)
