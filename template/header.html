@@ -1,7 +1,7 @@
 <div class="ui vertical inverted segment">
     <div class="ui secondary inverted menu container">
         <a href="{% url 'home' %}" class="item active">CDMROSO</a>
-        <!-- <a href="{% url 'collection:index' %}" class="item">COLLECTION</a> -->
+        <a href="{% url 'collection:index' %}" class="item">COLLECTION</a>
         <a href="{% url 'cdmsoro:index' %}" class="item">MCRS</a>
         <div class="right menu">
             {% if user.is_authenticated %}

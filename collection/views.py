@@ -2,7 +2,9 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.contrib import messages
 
 from masterdata.models import Customer
 
@@ -11,6 +13,7 @@ from .forms import (
     ColTargetForm,
 )
 
+@login_required()
 def index(request):
     page = request.GET.get('page', None)
     customer_objs = Customer.objects.all()
@@ -29,11 +32,12 @@ def index(request):
     return render(request, 'collection/pg-index.html', content)
 
 
+@login_required()
 def entryDataView(request):
     return render(request, 'collection/pg-entry-data.html')
 
 
-
+@login_required()
 def jsonCustomerView(request):
     data = dict()
     q = request.GET.get('q', None)
@@ -54,7 +58,7 @@ def jsonCustomerView(request):
     )
     return JsonResponse(data)
 
-
+@login_required()
 def jsonCustomerDetailJtempo(request, id):
     customer_obj = get_object_or_404(Customer, pk=id)
     data = dict()
@@ -64,6 +68,8 @@ def jsonCustomerDetailJtempo(request, id):
             formset.save()
 
             data['form_is_valid'] = True
+            messages.success(request, 'Recording data complete.')
+            # formset = Customer(request.POST, instance=customer_obj)
         else :
             data['form_is_valid'] = False
 

@@ -1,14 +1,23 @@
+{% if messages %}
+    {% for msg in messages %}
+    <div class="ui info message">
+        <i class="close icon"></i>
+        <div class="header">Success!</div>
+        <p>{{ msg }}</p>
+    </div>
+    {% endfor %}
+{% endif %}
 <div class="ui header">
     {{ cust.customer_name|upper }}
     <div class="sub header">
-        {{ cust.account_number }} (PCS)
+        {{ cust.account_number }} ({{ cust.segment }})
     </div>
 </div>
 
 <form action="{% url 'collection:api_detail_customer' cust.id %}" method="post" class="ui inline form">
     {% csrf_token %}
     {{ formset.management_form }}
-    
+    <div style="max-height:370px;overflow-y:scroll; overflow-x: hidden">
     {% for form in formset %}
         <div class="fields cust-formset">
             {{ form.id }}
@@ -35,6 +44,7 @@
             </div>
         </div>
     {% endfor %}
+    </div>
     <div class="field" style="padding-top:15px">
         <button type="submit" class="ui teal button">Save Record</button>
     </div>

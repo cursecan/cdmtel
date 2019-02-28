@@ -2,14 +2,21 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.db.models import F
 from django.conf import settings
+from django.utils.crypto import get_random_string
+
+from string import digits
 
 from .models import (
     PermintaanResume, Validation,
-    UpdatePermintaan, ManualOrder
+    UpdatePermintaan, ManualOrder, ManualOrderSoro
 )
 from .tasks import (
     notify_new_request, notifi_validation_req,
     sending_notif_manual_ro
+)
+
+from masterdata.models import (
+    Circuit, Order
 )
 
 from userprofile.models import Profile
@@ -52,3 +59,21 @@ def  create_manual_order(sender, instance, created, **kwargs):
         ).update(manual_bukis=True)
 
         sending_notif_manual_ro(instance.id, settings.TELEGRAM_KEY, settings.REMOT_TELEHOST)
+
+
+@receiver(post_save, sender=ManualOrderSoro)
+def soro_manual_signaling(sender, instance, created, **kwargs):
+    if created:
+        order_obj = Order()
+        order_obj.order_number = 'X-' + str(instance.id)
+        order_obj.circuit = instance.sid
+        order_obj.closed = True
+        order_obj.status = 'OCS MANUAL ORDER'
+        if instance.order_type == 'SO':
+            order_obj.type_order = 'SO'
+        else :
+            order_obj.type_order = 'RO'
+        order_obj.save()
+
+        instance.order_number = order_obj
+        instance.save()

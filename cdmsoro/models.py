@@ -41,6 +41,22 @@ class PermintaanResume(CommonBase):
         return None
 
 
+class ManualOrderSoro(CommonBase):
+    ISOLIR = 'SO'
+    RESUME = 'RO'
+    ORDERTYPE_LIST = (
+        (ISOLIR, 'ISOLIR'),
+        (RESUME, 'RESUME')
+    )
+    order_number = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True)
+    sid = models.ForeignKey(Circuit, on_delete=models.CASCADE)
+    order_type = models.CharField(max_length=2, choices=ORDERTYPE_LIST)
+    keterangan = models.TextField(max_length=500, blank=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+
+
 class ManualOrder(CommonBase):
     permintaan_resume = models.OneToOneField(PermintaanResume, on_delete=models.CASCADE)
     message = models.TextField(max_length=500)

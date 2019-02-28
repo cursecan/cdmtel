@@ -41,7 +41,7 @@ class Circuit(CommonBase):
         return self.order_set.filter(type_order='SO').latest('timestamp')
 
     def get_last_order(self):
-        return self.order_set.latest('timestamp')
+        return self.order_set.latest('timestamp')    
 
 
 class Order(CommonBase):
