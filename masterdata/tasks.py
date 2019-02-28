@@ -80,7 +80,6 @@ def record_data():
         FROM eas_ncrm_agree_order_line@dbl_dwh_sales_aon \
         WHERE order_subtype='Suspend' \
         AND li_createdby_name IN ('MAHARANI, FRISA', 'SETIAWAN, ANDERI', 'SABARUDIN, RAHMAT', 'HASANUDIN, HANE') \
-        AND li_sid IS NOT NULL \
         AND ORDER_CREATED_DATE >= TO_DATE('20190101', 'YYYYMMDD') \
         AND LI_SID NOT LIKE '%X%' \
         AND li_milestone IS NOT NULL
@@ -98,7 +97,7 @@ def record_data():
             acc_obj, create = Customer.objects.get_or_create(account_number=account)
             sid_obj, create = Circuit.objects.get_or_create(sid=sid, account=acc_obj)
             order_obj, create = Order.objects.get_or_create(order_number=order, circuit=sid_obj, create_by=user_obj)
-            order_obj.status = status
+            order_obj.status = status if status else 'PENDING' 
             if status == 'FULFILL BILLING COMPLETE':
                 order.closed = True
             order_obj.save()
@@ -135,23 +134,23 @@ def get_record_account():
 
     for i in datas:
         bpnum, acc, name, segmen, saldo = i
-        # try :
-        if int(acc) < 4000000:
-            acc = '0'+ acc
+        try :
+            if int(acc) < 4000000:
+                acc = '0'+ acc
 
-        seg_obj, create = Segment.objects.get_or_create(segment=segmen)
-        cust_obj, create = Customer.objects.get_or_create(
-            account_number = acc
-        )
-        cust_obj.bp = bpnum
-        cust_obj.customer_name = name
-        cust_obj.segment = seg_obj
-        cust_obj.save()
+            seg_obj, create = Segment.objects.get_or_create(segment=segmen)
+            cust_obj, create = Customer.objects.get_or_create(
+                account_number = acc
+            )
+            cust_obj.bp = bpnum
+            cust_obj.customer_name = name
+            cust_obj.segment = seg_obj
+            cust_obj.save()
 
-        Saldo.objects.get_or_create(
-            customer = cust_obj,
-            amount = saldo
-        )
+            Saldo.objects.get_or_create(
+                customer = cust_obj,
+                amount = saldo
+            )
 
-        # except:
-        #     pass
+        except:
+            pass
