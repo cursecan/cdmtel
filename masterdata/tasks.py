@@ -81,8 +81,7 @@ def record_data():
         WHERE order_subtype='Suspend' \
         AND li_createdby_name IN ('MAHARANI, FRISA', 'SETIAWAN, ANDERI', 'SABARUDIN, RAHMAT', 'HASANUDIN, HANE') \
         AND ORDER_CREATED_DATE >= TO_DATE('20190101', 'YYYYMMDD') \
-        AND LI_SID NOT LIKE '%X%' \
-        AND li_milestone IS NOT NULL
+        AND LI_SID NOT NULL
     """
     
     cur.execute(query)
