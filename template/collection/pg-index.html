@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block content %}
 <div class="ui vertical basic segment">
@@ -24,18 +25,29 @@
         <div class="ui top attached segment">
 
         </div>
-        <table class="ui celled attached table">
+        <table class="ui celled attached striped large table">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Customer</th>
-                    <th>Segmen</th>
-                    <th>Tagihan</th>
-                    <th>Layak Tagih</th>
+                    <th>CUSTOMER</th>
+                    <th>SEGMEN</th>
+                    <th>TAGIHAN (IDR)</th>
+                    <th>LAYAK TAGIH (IDR)</th>
                 </tr>
             </thead>
             <tbody>
-                
+                {% for customer in customer_list %}
+                <tr>
+                    <td>
+                        <h4 class="ui header">
+                            <div class="sub header">{{ customer.bp }} / {{ customer.account_number }}</div>
+                            {{ customer.customer_name|upper }}
+                        </h4>
+                    </td>
+                    <td>{{ customer.segment|default:'-' }}</td>
+                    <td>{{ customer.get_saldo.amount|default:'0'|intcomma }}</td>
+                    <td>{{ customer.s_tagih|intcomma }}</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

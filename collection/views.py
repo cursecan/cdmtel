@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q, F, Sum, Value as V
 from django.db.models.functions import Coalesce 
 from django.contrib import messages
+from django.utils import timezone
 
 from masterdata.models import Customer
 
@@ -17,8 +18,11 @@ from .forms import (
 
 def index(request):
     page = request.GET.get('page', None)
-    customer_objs = Customer.objects.all()
-    
+    customer_objs = Customer.objects.annotate(
+        s_tagih = Coalesce(
+            Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__lte=timezone.now().date())), V(0)
+        )
+    )
     paginator = Paginator(customer_objs, 10)
     try :
         customer_list = paginator.page(page)
