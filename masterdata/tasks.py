@@ -142,7 +142,7 @@ def get_record_account():
             seg_obj, create = Segment.objects.get_or_create(segment=segmen)
             cust_obj, create = Customer.objects.get_or_create(
                 account_number = acc
-            )            
+            )
             cust_obj.bp = bpnum
             cust_obj.customer_name = name
             cust_obj.segment = seg_obj
