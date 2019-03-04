@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
-Collection
+Entry Collection
 {% endblock %}
 
 {% block meta %}
@@ -45,6 +46,10 @@ Collection
 {% endblock %}
 
 {% block js %}
+<script src="{% static 'vendor/jquery.ui.widget.js' %}"></script>
+<script src="{% static 'jquery.iframe-transport.js' %}"></script>
+<script src="{% static 'jquery.fileupload.js' %}"></script>
+
 <script>
 $(document).ready(function() {
     $('.message .close')
@@ -103,7 +108,7 @@ $(document).ready(function() {
     });
 
     $('#cust-list').on('click', '.item', view_customer_data);
-    $('#cust-detail').on('submit', 'form', submit_form_key);
+    $('#cust-detail').on('submit', '.js-formset', submit_form_key);
 });
 </script>
 {% endblock %}

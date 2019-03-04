@@ -26,3 +26,8 @@ class Saldo(CommonBase):
 
     def __str__(self):
         return str(self.customer)
+
+
+class AvidenttargetCol(CommonBase):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=True, null=True, related_name='avident_col')
+    doc = models.FileField(max_length=200, upload_to='collection/file/')

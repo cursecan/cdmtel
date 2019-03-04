@@ -11,8 +11,7 @@ from django.utils import timezone
 from masterdata.models import Customer
 
 from .forms import (
-    CustomerColFormet,
-    ColTargetForm,
+    CustomerColFormet, AvidenttargetColForm
 )
 
 
@@ -48,7 +47,6 @@ def entryDataView(request):
     return render(request, 'collection/pg-entry-data.html')
 
 
-
 def jsonCustomerView(request):
     data = dict()
     q = request.GET.get('q', None)
@@ -73,13 +71,15 @@ def jsonCustomerView(request):
 def jsonCustomerDetailJtempo(request, id):
     customer_obj = get_object_or_404(Customer, pk=id)
     data = dict()
+    
     formset = CustomerColFormet(request.POST or None, instance=customer_obj)
-    if request.method == 'POST':
+    if request.method == 'POST':    
         if formset.is_valid():
             formset.save()
 
             data['form_is_valid'] = True
             messages.success(request, 'Recording data complete.')
+
         else :
             data['form_is_valid'] = False
 
@@ -93,3 +93,57 @@ def jsonCustomerDetailJtempo(request, id):
         request= request
     )
     return JsonResponse(data)
+
+
+def jsonUploadDocView(request, id):
+    customer_obj = get_object_or_404(Customer, pk=id)
+    data = dict()
+    if request.method == 'POST':
+        form = AvidenttargetColForm(request.POST, request.FILES)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.customer = customer_obj
+            instance.save()
+            data['is_valid'] = True
+        else :
+            data['is_valid'] = False
+
+    return JsonResponse(data)
+
+
+@login_required
+def collectionValidationView(request):
+    cust_obj = Customer.objects.filter(has_target=True)
+    page = request.GET.get('page', None)
+    q = request.GET.get('q', None)
+
+    if q:
+        cust_obj = cust_obj.filter(
+            Q(account_number__contains=q) | Q(customer_name__icontains=q)
+        )
+    
+    paginator = Paginator(cust_obj, 10)
+    try :
+        cust_list = paginator.page(page)
+    except PageNotAnInteger:
+        cust_list = paginator.page(1)
+    except EmptyPage:
+        cust_list = paginator.page(paginator.num_pages)
+
+    content = {
+        'customer_list': cust_list
+    }
+    return render(request, 'collection/pg-collection-validation.html', content)
+
+
+@login_required
+def detailColValidationView(request, id):
+    cust_obj = get_object_or_404(Customer, pk=id, has_target=True)
+    if request.method == 'POST':
+        cust_obj.is_valid = True
+        cust_obj.save()
+
+    content = {
+        'cust_obj': cust_obj
+    }
+    return render(request, 'collection/pg-detail-validation.html', content)

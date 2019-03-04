@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Validation
+{% endblock %}
+
+{% block content %}
+<div class="ui vertical basic segment">
+    <div class="ui fluid container">
+        <div class="ui stackable padded grid">
+            <!-- <div class="three wide column">
+
+            </div> -->
+            <div class="column">
+                <div class="ui menu">
+                    <div class="item">
+                        <form action="" class="ui form">
+                            <div class="field">
+                                <div class="ui action input">
+                                    <input type="text" name="q" placeholder="Search...">
+                                    <button class="ui basic button">Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="ui top attached segment">
+                    
+                </div>
+                <table class="ui attached hovering table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>CUSTOMER</th>
+                            <th>SALDO</th>
+                            <th>STATUS</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cust in customer_list %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <h4 class="ui header">
+                                    <div class="sub header">
+                                        {{ cust.bp }} / {{ cust.account_number }}
+                                    </div>
+                                    {{ cust.customer_name|upper }}
+                                </h4>
+                            </td>
+                            <td>
+                                {{ cust.get_saldo.amount|default:0 }}
+                            </td>
+                            <td>
+                                {% if cust.is_valid %}
+                                Validated
+                                {% else %}
+                                Not Validate
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'collection:detail_validation' cust.id %}">
+                                    <i class="setting icon"></i> Detail
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td>Data empty</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

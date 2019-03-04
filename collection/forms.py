@@ -1,6 +1,10 @@
 from django import forms
 
-from .models import ColTarget
+from cdmsoro.validators import validate_file_extension, validate_file_size
+
+from .models import (
+    ColTarget, AvidenttargetCol
+)
 from masterdata.models import Customer
 
 
@@ -23,3 +27,11 @@ class ColTargetForm(forms.ModelForm):
 
 
 CustomerColFormet = forms.inlineformset_factory(Customer, ColTarget, form=ColTargetForm, extra=1, max_num=20)
+
+
+class AvidenttargetColForm(forms.ModelForm):
+    class Meta:
+        model = AvidenttargetCol
+        fields = [
+            'doc'
+        ]

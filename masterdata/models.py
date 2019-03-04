@@ -17,6 +17,8 @@ class Customer(CommonBase):
     bp = models.CharField(max_length=30, blank=True)
     customer_name = models.CharField(max_length=200, blank=True)
     segment = models.ForeignKey(Segment, on_delete=models.CASCADE, blank=True, null=True)
+    is_valid = models.BooleanField(default=False)
+    has_target = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-timestamp']

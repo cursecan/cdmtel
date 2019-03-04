@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}
+{{ cust_obj.customer_name }}
+{% endblock %}
+
+{% block content %}
+<div class="ui vertical basic segment">
+    <div class="ui container">
+        <div class="ui large menu">
+            <div class="item">
+                <form action=""  method="post" class="ui form">
+                    {% csrf_token %}
+                    {% if cust_obj.is_valid %}
+                    <button type="button" class="ui green button">Validated</button>
+                    {% else %}
+                    <button type="submit" class="ui orange button">Waiting Validation</button>
+                    {% endif %}
+                </form>
+
+            </div>
+            <div class="right menu">
+               <div class="item">
+                    <div class="ui tiny teal statistic">
+                        <div class="label">Saldo System</div>
+                        <div class="value">
+                            {{ cust_obj.get_saldo|default:0|intcomma }}
+                        </div>
+                    </div>
+               </div>
+            </div>
+        </div>
+        <div class="ui top attached segment">
+            <div class="ui header">
+                {{ cust_obj.customer_name|upper }} ({{ cust_obj.segment|default:"..." }})
+                <div class="sub header">
+                    {{ cust_obj.bp }} / {{ cust_obj.account_number }}
+                </div>
+            </div>
+            <table class="ui basic celled table">
+                <thead>
+                    <tr>
+                        <th class="center aligned">Parsial Ke-N</th>
+                        <th class="center aligned">Nominal</th>
+                        <th class="center aligned">Jatuh Tempo</th>
+                    </tr>
+                </thead>
+                {% for c in cust_obj.coltarget_customer.all %}
+                <tr>
+                    <td class="center aligned">{{ forloop.counter }}</td>
+                    <td class="center aligned">{{ c.amount|intcomma }}</td>
+                    <td class="center aligned">{{ c.due_date }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td>Empty</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="ui attached segment">
+            <h5 class="ui header">Attached Docs.</h5>
+            {% for a in cust_obj.avident_col.all %}
+                <a href="/media/{{ a.doc }}" target="_blank">
+                    <i class="huge file alternate icon"></i>
+                </a>
+            {% empty %}
+            -
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

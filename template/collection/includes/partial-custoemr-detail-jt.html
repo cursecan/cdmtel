@@ -1,3 +1,5 @@
+{% load humanize %}
+
 {% if messages %}
     {% for msg in messages %}
     <div class="ui info message">
@@ -7,14 +9,19 @@
     </div>
     {% endfor %}
 {% endif %}
-<div class="ui header">
-    {{ cust.customer_name|upper }}
-    <div class="sub header">
-        {{ cust.account_number }} ({{ cust.segment }})
+<div class="ui vertical basic clearing segment">
+    <div class="ui right floated header">
+        {{ cust.get_saldo.amount|default:'0'|intcomma}}
+    </div>
+    <div class="ui header">
+        {{ cust.customer_name|upper }}
+        <div class="sub header">
+            {{ cust.account_number }} ({{ cust.segment }})
+        </div>
     </div>
 </div>
 
-<form action="{% url 'collection:api_detail_customer' cust.id %}" method="post" class="ui inline form">
+<form action="{% url 'collection:api_detail_customer' cust.id %}" method="post" enctype="multipart/form-data" class="ui inline form js-formset">
     {% csrf_token %}
     {{ formset.management_form }}
     <div style="max-height:370px;overflow-y:scroll; overflow-x: hidden">
@@ -46,14 +53,33 @@
     {% endfor %}
     </div>
     <div class="field" style="padding-top:15px">
+        <button class="ui orange button js-upload-photos" type="button">Upload Documents</button>
         <button type="submit" class="ui teal button">Save Record</button>
     </div>
 </form>
+
+<input id="fileupload" type="file" name="doc" multiple
+       style="display: none;"
+       data-url="{% url 'collection:customer_upload' cust.id %}"
+       data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
 
 <script>
 $('.cust-formset').formset({
     addText : 'add link',
     deleteText: 'remove',
     prefix: '{{ formset.prefix }}'
+});
+
+$(".js-upload-photos").click(function () {
+    $("#fileupload").click();
+});
+
+$("#fileupload").fileupload({
+    dataType: 'json',
+    done: function (e, data) {  /* 3. PROCESS THE RESPONSE FROM THE SERVER */
+        if (data.result.is_valid) {
+            alert('Success uploading document.');
+        }
+    }
 });
 </script>
