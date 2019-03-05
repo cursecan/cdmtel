@@ -21,10 +21,10 @@ def index(request):
     q = request.GET.get('search', None)
     customer_objs = Customer.objects.annotate(
         s_tagih = F('cur_saldo') - Coalesce(
-            Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__lte=timezone.now().date())), V(0)
+            Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__gt=timezone.now().date())), V(0)
         ),
         b_tagih = Coalesce(
-            Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__gt=timezone.now().date())), V(0)
+            Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__lte=timezone.now().date())), V(0)
         )
     )
     if q:
