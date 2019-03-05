@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.utils import timezone
 
 from masterdata.models import Customer
+from .models import ColTarget
 
 from .forms import (
     CustomerColFormet, AvidenttargetColForm
@@ -19,8 +20,11 @@ def index(request):
     page = request.GET.get('page', None)
     q = request.GET.get('search', None)
     customer_objs = Customer.objects.annotate(
-        s_tagih = Coalesce(
+        s_tagih = F('cur_saldo') - Coalesce(
             Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__lte=timezone.now().date())), V(0)
+        ),
+        b_tagih = Coalesce(
+            Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__gt=timezone.now().date())), V(0)
         )
     )
     if q:
@@ -28,7 +32,7 @@ def index(request):
             Q(account_number__contains=q) | Q(customer_name__icontains=q)
         )
 
-    paginator = Paginator(customer_objs, 10)
+    paginator = Paginator(customer_objs, 20)
     try :
         customer_list = paginator.page(page)
     except PageNotAnInteger:
@@ -40,6 +44,27 @@ def index(request):
         'customer_list': customer_list
     }
     return render(request, 'collection/pg-index.html', content)
+
+
+def custCollectDetailView(request, id):
+    cust_obj = get_object_or_404(Customer, pk=id)
+    col_tar_obj = ColTarget.objects.filter(customer=cust_obj).aggregate(
+        t_amount = Coalesce(Sum('amount'), V(0))
+    )
+    formset = CustomerColFormet(request.POST or None, instance=cust_obj)
+    if request.method == 'POST':
+        print(formset.non_form_errors())
+        if formset.is_valid():
+            formset.save()
+            messages.success(request, 'Recording data complete.')
+            return redirect('collection:index')
+            
+    content = {
+        'cust_obj': cust_obj,
+        'formset': formset,
+        'col_target': col_tar_obj,
+    }
+    return render(request, 'collection/pg-collection-customer-detail.html', content)
 
 
 

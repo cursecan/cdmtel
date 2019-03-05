@@ -23,9 +23,9 @@
             <div class="right menu">
                <div class="item">
                     <div class="ui tiny teal statistic">
-                        <div class="label">Saldo System</div>
+                        <div class="label">Saldo</div>
                         <div class="value">
-                            {{ cust_obj.get_saldo|default:0|intcomma }}
+                            {{ cust_obj.cur_saldo|intcomma }}
                         </div>
                     </div>
                </div>
@@ -41,7 +41,7 @@
             <table class="ui basic celled table">
                 <thead>
                     <tr>
-                        <th class="center aligned">Parsial Ke-N</th>
+                        <th class="center aligned">Termin Ke-N</th>
                         <th class="center aligned">Nominal</th>
                         <th class="center aligned">Jatuh Tempo</th>
                     </tr>

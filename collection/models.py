@@ -31,3 +31,4 @@ class Saldo(CommonBase):
 class AvidenttargetCol(CommonBase):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=True, null=True, related_name='avident_col')
     doc = models.FileField(max_length=200, upload_to='collection/file/')
+    message = models.TextField(max_length=500, blank=True)

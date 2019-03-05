@@ -8,13 +8,15 @@ Collection
 {% block content %}
 <div class="ui vertical basic segment">
     <div class="ui container">
-        <div class="ui menu">
+        <div class="ui large menu">
             <div class="item">
-                <form action="" class="ui form">
+                <form action="" class="ui large form">
                     <div class="field">
                         <div class="ui action input">
                             <input type="text" name="search" placeholder="Search Customer...">
-                            <button class="ui basic button">Search</button>
+                            <button class="ui basic button">
+                                <i class="search icon"></i>
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -29,7 +31,7 @@ Collection
         <div class="ui top attached segment">
 
         </div>
-        <table class="ui celled attached striped large table">
+        <table id="cust-id" class="ui celled attached selectable large table">
             <thead>
                 <tr>
                     <th>CUSTOMER</th>
@@ -40,7 +42,7 @@ Collection
             </thead>
             <tbody>
                 {% for customer in customer_list %}
-                <tr>
+                <tr target-url="{% url 'collection:customer_detail' customer.id %}">
                     <td>
                         <h4 class="ui header">
                             <div class="sub header">{{ customer.bp }} / {{ customer.account_number }}</div>
@@ -48,18 +50,35 @@ Collection
                         </h4>
                     </td>
                     <td>{{ customer.segment|default:'-' }}</td>
-                    <td>{{ customer.get_saldo.amount|default:'0'|intcomma }}</td>
+                    <td>{{ customer.cur_saldo|intcomma }}</td>
                     <td>
-                        {% if customer.s_tagih < customer.get_saldo.amount %}
-                            {{ customer.s_tagih|intcomma }}
-                        {% else %}
-                            {{ customer.get_saldo.amount|default:'0'|intcomma }}
-                        {% endif %}
+                        {{ customer.s_tagih|intcomma }}
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <div class="ui bottom attached segment"></div>
+
+        {% if customer_list.has_other_pages %}
+        <div class="ui pagination menu">
+            {% for i in customer_list.paginator.page_range %}
+            <a href="?page={{ i }}" class="item">{{ i }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
 </div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+$(document).ready(function() {
+    $('#cust-id tbody tr').click(function() {
+        var btn = $(this);
+        window.location.href = btn.attr('target-url'); 
+    });
+});
+</script>
 {% endblock %}
