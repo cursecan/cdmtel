@@ -8,7 +8,10 @@ from django.db.models.functions import Coalesce
 from django.contrib import messages
 from django.utils import timezone
 
-from masterdata.models import Customer
+from masterdata.models import (
+    Customer, Segment
+)
+
 from .models import ColTarget
 
 from .forms import (
@@ -16,7 +19,7 @@ from .forms import (
 )
 
 
-def index(request):
+def accountCollecView(request):
     page = request.GET.get('page', None)
     q = request.GET.get('search', None)
     customer_objs = Customer.objects.annotate(
@@ -43,7 +46,48 @@ def index(request):
     content = {
         'customer_list': customer_list
     }
-    return render(request, 'collection/pg-index.html', content)
+    return render(request, 'collection/pg-account-colection.html', content)
+
+
+def segmentCollecView(request):
+    segment_objs = Segment.objects.annotate(
+        s_saldo = Coalesce(Sum('customer__cur_saldo'), V(0)),
+        t_tagih = Coalesce(Sum('customer__coltarget_customer__amount'), V(0))
+    ).values('segment', 's_saldo', 't_tagih')
+
+    content = {
+        'segment_list': segment_objs
+    }
+    return render(request, 'collection/pg-segmnet-col.html', content)
+
+def json_SegmentCollecView(request):
+    segment_objs = Segment.objects.annotate(
+        s_saldo = Coalesce(Sum('customer__cur_saldo'), V(0)),
+        t_tagih = Coalesce(Sum('customer__coltarget_customer__amount'), V(0))
+    ).values('segment', 's_saldo', 't_tagih')
+
+    seg_list = list(segment_objs)
+
+    data = {
+        'chart': {
+            'type': 'column'
+        },
+        'title': {
+            'text': 'Target Segmen & Collection'
+        },
+        'xAxis': {
+            'categories': list(map(lambda row: row['segment'], seg_list))
+        },
+        'series': [{
+            'name': 'Target Collection',
+            'data': list(map(lambda row: int(row['t_tagih']), seg_list))
+        }, {
+            'name': 'Piutang',
+            'data': list(map(lambda row: int(row['s_saldo']), seg_list))
+        }]
+    }
+
+    return JsonResponse(data)
 
 
 def custCollectDetailView(request, id):

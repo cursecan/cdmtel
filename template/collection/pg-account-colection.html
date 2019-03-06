@@ -45,14 +45,14 @@ Collection
                     </td>
                     <td>{{ customer.segment|default:'-' }}</td>
                     <td class="right aligned">
-                        <h5 class="ui header">
+                        <h4 class="ui header">
                             <div class="content">
-                                <span title="Layak tagih">IDR {{ customer.s_tagih|intcomma }}</span>
+                                <span title="Layak tagih">{{ customer.s_tagih|intcomma }}</span>
                                 <div title="Piutang" class="sub header">
                                         {{ customer.cur_saldo|intcomma }}
                                 </div>
                             </div>
-                        </h5>
+                        </h4>
                     </td>
                     <td class="right aligned"><a href="{% url 'collection:customer_detail' customer.id %}"><i class="pencil icon"></i></a></td>
                 </tr>
