@@ -10,7 +10,7 @@ Collection
     <div class="ui container">
         <div class="ui large menu">
             <div class="item">
-                <form action="" class="ui large form">
+                <form action="" class="ui form">
                     <div class="field">
                         <div class="ui action input">
                             <input type="text" name="search" placeholder="Search Customer...">
@@ -21,44 +21,44 @@ Collection
                     </div>
                 </form>
             </div>
-            <div class="right menu">
-                <a href="{% url 'collection:entry_data' %}" class="item">
-                    <i class="add icon"></i> Entry Data
-                </a>
-            </div>
         </div>
 
         <div class="ui top attached segment">
 
         </div>
-        <table id="cust-id" class="ui celled attached selectable large table">
+        <table id="cust-id" class="ui attached striped table">
             <thead>
                 <tr>
+                    <th>BP NUMBER</th>
                     <th>CUSTOMER</th>
                     <th>SEGMEN</th>
-                    <th>PIUTANG (IDR)</th>
-                    <th>LAYAK TAGIH (IDR)</th>
+                    <th class="right aligned">SALDO</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 {% for customer in customer_list %}
-                <tr target-url="{% url 'collection:customer_detail' customer.id %}">
+                <tr>
+                    <td>{{ customer.bp }}</td>
                     <td>
-                        <h4 class="ui header">
-                            <div class="sub header">{{ customer.bp }} / {{ customer.account_number }}</div>
-                            {{ customer.customer_name|upper }}
-                        </h4>
+                            {{ customer.account_number }} - {{ customer.customer_name|upper }}
                     </td>
                     <td>{{ customer.segment|default:'-' }}</td>
-                    <td>{{ customer.cur_saldo|intcomma }}</td>
-                    <td>
-                        {{ customer.s_tagih|intcomma }}
+                    <td class="right aligned">
+                        <h5 class="ui header">
+                            <div class="content">
+                                <span title="Layak tagih">IDR {{ customer.s_tagih|intcomma }}</span>
+                                <div title="Piutang" class="sub header">
+                                        {{ customer.cur_saldo|intcomma }}
+                                </div>
+                            </div>
+                        </h5>
                     </td>
+                    <td class="right aligned"><a href="{% url 'collection:customer_detail' customer.id %}"><i class="pencil icon"></i></a></td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <div class="ui bottom attached segment"></div>
 
         {% if customer_list.has_other_pages %}
         <div class="ui pagination menu">
@@ -69,16 +69,4 @@ Collection
         {% endif %}
     </div>
 </div>
-{% endblock %}
-
-
-{% block js %}
-<script>
-$(document).ready(function() {
-    $('#cust-id tbody tr').click(function() {
-        var btn = $(this);
-        window.location.href = btn.attr('target-url'); 
-    });
-});
-</script>
 {% endblock %}

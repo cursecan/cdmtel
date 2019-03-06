@@ -9,6 +9,13 @@
 {% block content %}
     <div class="ui vertical basic segment">
         <div class="ui container">
+            <div class="ui secondary large menu">
+                <div class="item" style="padding-left:0">
+                        <div class="ui labeled icon  button">
+                                <i class="left arrow icon"></i> Back
+                            </div>
+                </div>
+            </div>
             <div class="ui segment" style="min-height:200px">
                 <div class="ui header">
                     {{ cust_obj.customer_name }} ({{ cust_obj.segment|default:'...' }})
@@ -29,11 +36,11 @@
                             </h4>
                         </div>
                         <div class="ui bottom attached accordion segment">
-                            <div class="title active">
+                            <div class="title">
                                 <i class="dropdown icon"></i>
                                 Detail
                             </div>
-                            <form id="termin-form" action="" method="post" class="ui form content active">
+                            <form id="termin-form" action="" method="post" class="ui small form content">
                                 {% csrf_token %}
                                 {{ formset.management_form }}
 
@@ -91,9 +98,12 @@
 
 {% block js %}
 <script src="{% static 'accounting.min.js' %}"></script>
+<script src="{% static 'vendor/jquery.ui.widget.js' %}"></script>
+<script src="{% static 'jquery.iframe-transport.js' %}"></script>
+<script src="{% static 'jquery.fileupload.js' %}"></script>
+
 <script>
 $(document).ready(function() {
-
     $('.c_nominal').on('change', function() {
         var sum = 0;
         $('.c_nominal').each(function() {
@@ -101,24 +111,30 @@ $(document).ready(function() {
         });
         $('.t_nominal').html(accounting.formatNumber(sum));
     });
+
+    function renewDatePickers() {
+        $('.datepick').calendar('destroy');
+        $('.datepick').calendar({
+            type: 'month',
+            formatter: {
+                date: function(date, settings) {
+                    if (!date) return '';
+                    var day = date.getDate();
+                    var month = date.getMonth() + 1;
+                    var year = date.getFullYear();
+                    return year + '-' + month + '-' + day;
+                }
+            }
+        });
+    }
+
+    $(renewDatePickers);
     
     $('.cust-formset').formset({
         addText : 'add link',
         deleteText: 'remove',
-        prefix: '{{ formset.prefix }}'
-    });
-
-    $('.datepick').calendar({
-        type: 'month',
-        formatter: {
-            date: function(date, settings) {
-                if (!date) return '';
-                var day = date.getDate();
-                var month = date.getMonth() + 1;
-                var year = date.getFullYear();
-                return year + '-' + month + '-' + day;
-            }
-        }
+        prefix: '{{ formset.prefix }}',
+        added: renewDatePickers
     });
 
     $(".js-upload-photos").click(function () {
