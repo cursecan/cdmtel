@@ -52,7 +52,7 @@ def accountCollecView(request):
 def segmentCollecView(request):
     segment_objs = Segment.objects.annotate(
         s_saldo = Coalesce(Sum('customer__cur_saldo'), V(0)),
-        t_tagih = Coalesce(Sum('customer__coltarget_customer__amount'), V(0))
+        t_tagih = Coalesce(Sum('customer__cur_saldo'), V(0)) - Coalesce(Sum('customer__coltarget_customer__amount', filter=Q(customer__coltarget_customer__due_date__gt=timezone.now().date())), V(0))
     ).values('segment', 's_saldo', 't_tagih')
 
     content = {
@@ -63,7 +63,7 @@ def segmentCollecView(request):
 def json_SegmentCollecView(request):
     segment_objs = Segment.objects.annotate(
         s_saldo = Coalesce(Sum('customer__cur_saldo'), V(0)),
-        t_tagih = Coalesce(Sum('customer__coltarget_customer__amount'), V(0))
+        t_tagih = Coalesce(Sum('customer__cur_saldo'), V(0)) - Coalesce(Sum('customer__coltarget_customer__amount', filter=Q(customer__coltarget_customer__due_date__gt=timezone.now().date())), V(0))
     ).values('segment', 's_saldo', 't_tagih')
 
     seg_list = list(segment_objs)
