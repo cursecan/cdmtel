@@ -10,23 +10,56 @@ Collection
     <div class="ui container">
         <div class="ui large menu">
             <div class="item">
-                <form action="" class="ui form">
-                    <div class="field">
-                        <div class="ui action input">
-                            <input type="text" name="search" placeholder="Search Customer...">
-                            <button class="ui basic button">
-                                <i class="search icon"></i>
-                            </button>
+                <div class="ui floated labeled icon dropdown basic button">
+                    <i class="filter icon"></i>
+                    <span class="text">Filter Segmen</span>
+                    <div class="menu">
+                        <div class="header">
+                            <i class="tags icon"></i>
+                            Tag Label
+                        </div>
+                        <div class="scrolling menu">
+                            {% for segment in segment_list %}
+                            <div class="item {% if segment.segment == segmen %} active selected {% endif %}" onclick="window.location.href='?seg={{ segment.segment }}'">
+                                <div class="ui empty circular label"></div>
+                                {{ segment.segment }}
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
-                </form>
+                </div>
+            </div>
+            <div class="right menu">
+                <div class="item">
+                    <form action="" class="ui form">
+                        <div class="field">
+                            <div class="ui action input">
+                                <input value="{{ q|default:'' }}" type="text" name="search" placeholder="Search Customer...">
+                                <button class="ui basic button">
+                                    <i class="search icon"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
-        <div class="ui top attached segment">
-
+        <div class="ui top attached clearing teal segment">
+            <div class="ui mini right floated grey statistic">
+                <div class="label">Total Tagih</div>
+                <div class="value">
+                    {{ customer_resume.total_tagih|default:0|intcomma }}
+                </div>
+            </div>
+            <div class="ui mini right floated red statistic">
+                <div class="label">Piutang</div>
+                <div class="value">
+                    {{ customer_resume.piutang|default:0|intcomma }}
+                </div>
+            </div>
         </div>
-        <table id="cust-id" class="ui attached striped table">
+        <table id="cust-id" class="ui bottom attached striped table">
             <thead>
                 <tr>
                     <th>BP NUMBER</th>
@@ -56,6 +89,12 @@ Collection
                     </td>
                     <td class="right aligned"><a href="{% url 'collection:customer_detail' customer.id %}"><i class="pencil icon"></i></a></td>
                 </tr>
+                {% empty %}
+                <tr>
+                    <td>
+                        Not found.
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -70,3 +109,11 @@ Collection
     </div>
 </div>
 {% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+    $('.ui.dropdown').dropdown();
+});
+</script>
+{% endblock %} 

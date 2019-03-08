@@ -18,7 +18,7 @@ Collection Segmen
                         <table id="segment-id" class="ui table">
                             <tbody>
                                 {% for segment in segment_list %}
-                                <tr target-url="{% url 'collection:account' %}">
+                                <tr target-url="{% url 'collection:account' %}?seg={{ segment.segment }}">
                                     <td>
                                         {{ segment.segment }}
                                     </td>

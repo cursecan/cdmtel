@@ -22,7 +22,22 @@ from .forms import (
 def accountCollecView(request):
     page = request.GET.get('page', None)
     q = request.GET.get('search', None)
-    customer_objs = Customer.objects.annotate(
+    segmen = request.GET.get('seg', None)
+
+    customer_objs = Customer.objects.all()
+    segmen_objs = Segment.objects.values('segment')
+
+    if segmen:
+        customer_objs = customer_objs.filter(
+            segment__segment=segmen
+        )
+
+    if q:
+        customer_objs = customer_objs.filter(
+            Q(account_number__contains=q) | Q(customer_name__icontains=q)
+        )
+
+    customer_objs = customer_objs.annotate(
         s_tagih = F('cur_saldo') - Coalesce(
             Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__gt=timezone.now().date())), V(0)
         ),
@@ -30,10 +45,11 @@ def accountCollecView(request):
             Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__lte=timezone.now().date())), V(0)
         )
     )
-    if q:
-        customer_objs = customer_objs.filter(
-            Q(account_number__contains=q) | Q(customer_name__icontains=q)
-        )
+
+    customer_resume = customer_objs.aggregate(
+        total_tagih = Sum('s_tagih'),
+        piutang = Sum('cur_saldo'),
+    )
 
     paginator = Paginator(customer_objs, 20)
     try :
@@ -44,7 +60,11 @@ def accountCollecView(request):
         customer_list = paginator.page(paginator.num_pages)
 
     content = {
-        'customer_list': customer_list
+        'segment_list': segmen_objs,
+        'customer_list': customer_list,
+        'customer_resume': customer_resume,
+        'q': q,
+        'segmen': segmen,
     }
     return render(request, 'collection/pg-account-colection.html', content)
 
