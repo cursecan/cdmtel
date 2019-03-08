@@ -23,6 +23,7 @@ def accountCollecView(request):
     page = request.GET.get('page', None)
     q = request.GET.get('search', None)
     segmen = request.GET.get('seg', None)
+    period = request.GET.get('period', timezone.now().date())
 
     customer_objs = Customer.objects.all()
     segmen_objs = Segment.objects.values('segment')
@@ -39,10 +40,10 @@ def accountCollecView(request):
 
     customer_objs = customer_objs.annotate(
         s_tagih = F('cur_saldo') - Coalesce(
-            Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__gt=timezone.now().date())), V(0)
+            Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__gt=period)), V(0)
         ),
         b_tagih = Coalesce(
-            Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__lte=timezone.now().date())), V(0)
+            Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__lte=period)), V(0)
         )
     )
 
