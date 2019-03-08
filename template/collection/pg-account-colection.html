@@ -121,9 +121,32 @@ Collection
 
         {% if customer_list.has_other_pages %}
         <div class="ui pagination menu">
+            {% if customer_list.has_previous %}
+                <a href="?page={{ customer_list.previous_page_number }}" class="item">&lt;</a>
+            {% else %}
+                <div class="item disabled">&lt;</div>
+            {% endif %}            
+
+            {% if customer_list.number|add:'-4' > 1 %}
+            <a href="?page={{ customer_list.number|add:'-5' }}" class="item">&hellip;</a>
+            {% endif %}
+
             {% for i in customer_list.paginator.page_range %}
-            <a href="?page={{ i }}" class="item">{{ i }}</a>
+            {% if if customer_list.number == 1 %}
+                <div class="item active ">{{ i }}</div>
+            {% elif i > customer_list.number|add:'-5 and i < customer_list.number|add:'5 %}
+                <a href="?page={{ i }}" class="item">{{ i }}</a>
             {% endfor %}
+
+            {% if customer_list.paginator.num_pages > customer_list.number|add:'4' %}
+            <a href="?page={{ customer_list.number|add:'5' }}" class="item">&hellip;</a>
+            {% endif %}
+
+            {% if customer_list.has_next %}
+                <a href="?page={{ customer_list.next_page_number }}" class="item">&gt;</a>
+            {% else %}
+                <div class="item disabled">&gt;</div>
+            {% endif %}   
         </div>
         {% endif %}
     </div>
