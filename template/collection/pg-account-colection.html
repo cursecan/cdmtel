@@ -132,10 +132,11 @@ Collection
             {% endif %}
 
             {% for i in customer_list.paginator.page_range %}
-            {% if if customer_list.number == 1 %}
-                <div class="item active ">{{ i }}</div>
-            {% elif i > customer_list.number|add:'-5 and i < customer_list.number|add:'5 %}
-                <a href="?page={{ i }}" class="item">{{ i }}</a>
+                {% if customer_list.number == i %}
+                    <div class="item active ">{{ i }}</div>
+                {% elif i > customer_list.number|add:'-5' and i < customer_list.number|add:'5' %}
+                    <a href="?page={{ i }}" class="item">{{ i }}</a>
+                {% endif %}
             {% endfor %}
 
             {% if customer_list.paginator.num_pages > customer_list.number|add:'4' %}
