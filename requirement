@@ -14,10 +14,13 @@ idna==2.8
 jdcal==1.4
 odfpy==1.4.0
 openpyxl==2.5.14
+pendulum==2.0.4
 pkg-resources==0.0.0
 PyJWT==1.7.1
+python-dateutil==2.8.0
 python-decouple==3.1
 pytz==2018.9
+pytzdata==2018.9
 PyYAML==3.13
 requests==2.21.0
 six==1.12.0

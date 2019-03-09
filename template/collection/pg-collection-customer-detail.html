@@ -36,11 +36,11 @@
                             </h4>
                         </div>
                         <div class="ui bottom attached accordion segment">
-                            <div class="title">
+                            <div class="title active">
                                 <i class="dropdown icon"></i>
                                 Detail
                             </div>
-                            <form id="termin-form" action="" method="post" class="ui small form content">
+                            <form id="termin-form" action="" method="post" class="ui small form content active">
                                 {% csrf_token %}
                                 {{ formset.management_form }}
 
@@ -119,9 +119,10 @@ $(document).ready(function() {
             formatter: {
                 date: function(date, settings) {
                     if (!date) return '';
-                    var day = date.getDate();
-                    var month = date.getMonth() + 1;
-                    var year = date.getFullYear();
+                    var lastDay = new Date(date.getFullYear(), date.getMonth()+1, 0)
+                    var day = lastDay.getDate();
+                    var month = lastDay.getMonth() + 1;
+                    var year = lastDay.getFullYear();
                     return year + '-' + month + '-' + day;
                 }
             }

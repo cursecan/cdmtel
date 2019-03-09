@@ -16,19 +16,41 @@ Collection Segmen
                             <!-- Content -->
                         </div>
                         <table id="segment-id" class="ui table">
+                            <thead>
+                                <tr>
+                                    <th>SEGMEN</th>
+                                    {% for i in period %}
+                                    <th class="right aligned">{{ i|date:"M Y" }}</th>
+                                    {% endfor %}
+                                    <th class="right aligned">T.PIUTANG</th>
+                                </tr>
+                            </thead>
                             <tbody>
                                 {% for segment in segment_list %}
                                 <tr target-url="{% url 'collection:account' %}?seg={{ segment.segment }}">
                                     <td>
-                                        {{ segment.segment }}
+                                        <strong>{{ segment.segment }}</strong>
+                                    </td>
+                                    <td class="right aligned active">
+                                        {{ segment.t_1|default:0|intcomma }}
                                     </td>
                                     <td class="right aligned">
-                                        <h4 class="ui header">
-                                            {{ segment.t_tagih|intcomma }}
-                                            <div class="sub header">
-                                                {{ segment.s_saldo|intcomma }}
-                                            </div>
-                                        </h4>
+                                        {{ segment.t_2|default:0|intcomma }}
+                                    </td>
+                                    <td class="right aligned">
+                                        {{ segment.t_3|default:0|intcomma }}
+                                    </td>
+                                    <td class="right aligned">
+                                        {{ segment.t_4|default:0|intcomma }}
+                                    </td>
+                                    <td class="right aligned">
+                                        {{ segment.t_5|default:0|intcomma }}
+                                    </td>
+                                    <td class="right aligned">
+                                        {{ segment.t_6|default:0|intcomma }}
+                                    </td>
+                                    <td class="right aligned">
+                                        <strong>{{ segment.s_saldo|default:0|intcomma }}</strong>
                                     </td>
                                 </tr>
                                 {% endfor %}

@@ -3,10 +3,13 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q, F, Sum, Value as V
+from django.db.models import Q, F, Sum, Subquery, OuterRef, Value as V, DecimalField
 from django.db.models.functions import Coalesce 
 from django.contrib import messages
 from django.utils import timezone
+
+import datetime
+import pendulum
 
 from masterdata.models import (
     Customer, Segment
@@ -25,7 +28,7 @@ def accountCollecView(request):
     segmen = request.GET.get('seg', None)
     period = request.GET.get('period', timezone.now().date())
 
-    customer_objs = Customer.objects.all()
+    customer_objs = Customer.objects.filter(cur_saldo__gt=0)
     segmen_objs = Segment.objects.values('segment')
 
     if segmen:
@@ -71,20 +74,75 @@ def accountCollecView(request):
 
 
 def segmentCollecView(request):
+    period = []
+    cur_date = timezone.now().date()
+    cdate = pendulum.date(cur_date.year, cur_date.month, 1)
+    for i in range(6):
+        period.append(cdate)
+        cdate = cdate.add(months=1)
+
     segment_objs = Segment.objects.exclude(segment='TDS').annotate(
-        s_saldo = Coalesce(Sum('customer__cur_saldo'), V(0)),
-        t_tagih = Coalesce(Sum('customer__cur_saldo'), V(0)) - Coalesce(Sum('customer__coltarget_customer__amount', filter=Q(customer__coltarget_customer__due_date__gt=timezone.now().date())), V(0))
-    ).values('segment', 's_saldo', 't_tagih')
+        s_saldo = Coalesce(Sum('customer_list__cur_saldo', filter=Q(customer_list__cur_saldo__gt=0)), V(0)),
+        t_1 = F('s_saldo') - Subquery(
+                Customer.objects.filter(
+                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[0], cur_saldo__gt=0
+                ).annotate(
+                    t = Sum('coltarget_customer__amount')
+                ).values('t')[:1], output_field=DecimalField()
+            ),
+        t_2 = F('s_saldo') - Subquery(
+                Customer.objects.filter(
+                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[1], cur_saldo__gt=0
+                ).annotate(
+                    t = Sum('coltarget_customer__amount')
+                ).values('t')[:1], output_field=DecimalField()
+            ),
+        t_3 = F('s_saldo') - Subquery(
+                Customer.objects.filter(
+                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[2], cur_saldo__gt=0
+                ).annotate(
+                    t = Sum('coltarget_customer__amount')
+                ).values('t')[:1], output_field=DecimalField()
+            ),
+        t_4 = F('s_saldo') - Subquery(
+                Customer.objects.filter(
+                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[3], cur_saldo__gt=0
+                ).annotate(
+                    t = Sum('coltarget_customer__amount')
+                ).values('t')[:1], output_field=DecimalField()
+            ),
+        t_5 = F('s_saldo') - Subquery(
+                Customer.objects.filter(
+                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[4], cur_saldo__gt=0
+                ).annotate(
+                    t = Sum('coltarget_customer__amount')
+                ).values('t')[:1], output_field=DecimalField()
+            ),
+        t_6 = F('s_saldo') - Subquery(
+                Customer.objects.filter(
+                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[5], cur_saldo__gt=0
+                ).annotate(
+                    t = Sum('coltarget_customer__amount')
+                ).values('t')[:1], output_field=DecimalField()
+            ),
+        ).values('segment', 's_saldo', 't_1', 't_2', 't_3', 't_4', 't_5', 't_6')
 
     content = {
+        'period': period,
         'segment_list': segment_objs
     }
     return render(request, 'collection/pg-segmnet-col.html', content)
 
 def json_SegmentCollecView(request):
     segment_objs = Segment.objects.exclude(segment='TDS').annotate(
-        s_saldo = Coalesce(Sum('customer__cur_saldo'), V(0)),
-        t_tagih = Coalesce(Sum('customer__cur_saldo'), V(0)) - Coalesce(Sum('customer__coltarget_customer__amount', filter=Q(customer__coltarget_customer__due_date__gt=timezone.now().date())), V(0))
+        s_saldo = Coalesce(Sum('customer_list__cur_saldo', filter=Q(customer_list__cur_saldo__gt=0)), V(0)),
+        t_tagih = F('s_saldo') - Subquery(
+                    Customer.objects.filter(
+                        segment=OuterRef('pk'), coltarget_customer__due_date__gte=timezone.now().date()
+                    ).annotate(
+                        t = Coalesce(Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0)), V(0))
+                    ).values('t')[:1], output_field=DecimalField()
+                )
     ).values('segment', 's_saldo', 't_tagih')
 
     seg_list = list(segment_objs)
@@ -94,13 +152,13 @@ def json_SegmentCollecView(request):
             'type': 'column'
         },
         'title': {
-            'text': 'Target Segmen & Collection'
+            'text': 'Piutang & TGK Jatuh Tempo (Curr)'
         },
         'xAxis': {
             'categories': list(map(lambda row: row['segment'], seg_list))
         },
         'series': [{
-            'name': 'Target Collection',
+            'name': 'Jatuh Tempo',
             'data': list(map(lambda row: int(row['t_tagih']), seg_list))
         }, {
             'name': 'Piutang',
@@ -118,7 +176,6 @@ def custCollectDetailView(request, id):
     )
     formset = CustomerColFormet(request.POST or None, instance=cust_obj)
     if request.method == 'POST':
-        print(formset.non_form_errors())
         if formset.is_valid():
             formset.save()
             messages.success(request, 'Recording data complete.')
