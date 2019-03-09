@@ -81,23 +81,19 @@ def segmentCollecView(request):
         period.append(cdate)
         cdate = cdate.add(months=1)
 
+    cust = Customer.objects.filter(
+        segment = OuterRef('pk')
+    ).order_by().values('segment')
+
+    cust_sum = cust.annotate(
+        t = Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0) & Q(coltarget_customer__due_date__gte=period[0])),
+        V(0)
+    ).values('t')
+
     segment_objs = Segment.objects.exclude(segment='TDS').annotate(
         s_saldo = Coalesce(Sum('customer_list__cur_saldo', filter=Q(customer_list__cur_saldo__gt=0)), V(0)),
         t_1 = F('s_saldo') - Subquery(
-                Customer.objects.filter(
-                    segment = OuterRef('pk')
-                ).values('segment_id').annotate(
-                    t = Coalesce(
-                        Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0) & Q(coltarget_customer__due_date__gte=period[0])),
-                        V(0)
-                    )
-                ).values('t')[:1], output_field=DecimalField()
-
-                # Customer.objects.select_related('segment').filter(
-                #     segment=OuterRef('pk')
-                # ).annotate(
-                #     t = Coalesce(Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0) & Q(coltarget_customer__due_date__gte=period[0])), V(0))
-                # ).values('t')[:1], output_field=DecimalField()
+                cust_sum
             ),
         # t_2 = F('s_saldo') - Subquery(
         #         Customer.objects.select_related('coltarget_customer').filter(
