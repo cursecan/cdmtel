@@ -85,44 +85,44 @@ def segmentCollecView(request):
         s_saldo = Coalesce(Sum('customer_list__cur_saldo', filter=Q(customer_list__cur_saldo__gt=0)), V(0)),
         t_1 = F('s_saldo') - Subquery(
                 Customer.objects.filter(
-                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[0], cur_saldo__gt=0
+                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[0]
                 ).annotate(
-                    t = Sum('coltarget_customer__amount')
+                    t = Coalesce(Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0)), V(0))
                 ).values('t')[:1], output_field=DecimalField()
             ),
         t_2 = F('s_saldo') - Subquery(
                 Customer.objects.filter(
-                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[1], cur_saldo__gt=0
+                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[1]
                 ).annotate(
-                    t = Sum('coltarget_customer__amount')
+                    t = Coalesce(Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0)), V(0))
                 ).values('t')[:1], output_field=DecimalField()
             ),
         t_3 = F('s_saldo') - Subquery(
                 Customer.objects.filter(
-                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[2], cur_saldo__gt=0
+                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[2]
                 ).annotate(
-                    t = Sum('coltarget_customer__amount')
+                    t = Coalesce(Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0)), V(0))
                 ).values('t')[:1], output_field=DecimalField()
             ),
         t_4 = F('s_saldo') - Subquery(
                 Customer.objects.filter(
-                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[3], cur_saldo__gt=0
+                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[3]
                 ).annotate(
-                    t = Sum('coltarget_customer__amount')
+                    t = Coalesce(Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0)), V(0))
                 ).values('t')[:1], output_field=DecimalField()
             ),
         t_5 = F('s_saldo') - Subquery(
                 Customer.objects.filter(
-                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[4], cur_saldo__gt=0
+                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[4]
                 ).annotate(
-                    t = Sum('coltarget_customer__amount')
+                    t = Coalesce(Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0)), V(0))
                 ).values('t')[:1], output_field=DecimalField()
             ),
         t_6 = F('s_saldo') - Subquery(
                 Customer.objects.filter(
-                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[5], cur_saldo__gt=0
+                    segment=OuterRef('pk'), coltarget_customer__due_date__gte=period[5]
                 ).annotate(
-                    t = Sum('coltarget_customer__amount')
+                    t = Coalesce(Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0)), V(0))
                 ).values('t')[:1], output_field=DecimalField()
             ),
         ).values('segment', 's_saldo', 't_1', 't_2', 't_3', 't_4', 't_5', 't_6')
