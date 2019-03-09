@@ -93,7 +93,7 @@ def segmentCollecView(request):
 
     segment_objs = Segment.objects.exclude(segment='TDS').annotate(
         s_saldo = Coalesce(Sum('customer_list__cur_saldo', filter=Q(customer_list__cur_saldo__gt=0)), V(0)),
-        t_1 = F('s_saldo') - Subquery(
+        t_1 = Subquery(
                 cust_sum, output_field=DecimalField()
             ),
         # t_2 = F('s_saldo') - Subquery(
