@@ -4,6 +4,7 @@ from django.template.loader import render_to_string
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, F, Sum, Subquery, OuterRef, Value as V, DecimalField, ExpressionWrapper
+from django.db.models.expressions import RawSQL
 from django.db.models.functions import Coalesce 
 from django.contrib import messages
 from django.utils import timezone
@@ -21,6 +22,8 @@ from .forms import (
     CustomerColFormet, AvidenttargetColForm
 )
 
+def index(request):
+    return render(request, 'collection/pg-index.html')
 
 def accountCollecView(request):
     page = request.GET.get('page', None)
@@ -73,40 +76,62 @@ def accountCollecView(request):
     return render(request, 'collection/pg-account-colection.html', content)
 
 
-def segmentCollecView(request):
+def json_SegmentListView(request):
+    data  = dict()
     period = []
-    cur_date = timezone.now().date()
-    cdate = pendulum.date(cur_date.year, cur_date.month, 1)
-    for i in range(6):
-        period.append(cdate)
-        cdate = cdate.add(months=1)
 
     cust = Customer.objects.filter(
         segment = OuterRef('pk')
     ).order_by().values('segment')
 
-    cust_sum = cust.annotate(
-        t = Coalesce(
-            Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0) & Q(coltarget_customer__due_date__gte=period[0])), V(0)
-        )
-    ).values('t')
+    cur_date = timezone.now().date()
+    cdate = pendulum.date(cur_date.year, cur_date.month, 1)
+    sm = dict()
+    for i in range(6):
+        period.append(cdate)
+        sm['cust_sum_{}'.format(i)] = cust.annotate(
+            t = Coalesce(
+                Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0) & Q(coltarget_customer__due_date__gte=cdate)), V(0)
+            )
+        ).values('t')
+        
+        cdate = cdate.add(months=1) 
 
     segment_objs = Segment.objects.exclude(segment='TDS').annotate(
         s_saldo = Coalesce(Sum('customer_list__cur_saldo', filter=Q(customer_list__cur_saldo__gt=0)), V(0)),
-        s = Subquery(
-                cust_sum
-            )
-        ).values('segment', 's_saldo', 's').annotate(
+        s1 = Subquery(
+                sm['cust_sum_0']
+            ),
+        s2 = Subquery(
+                sm['cust_sum_1']
+            ),
+        s3 = Subquery(
+                sm['cust_sum_2']
+            ),
+        ).values('segment', 's_saldo', 's1', 's2', 's3').annotate(
             t_1 = ExpressionWrapper(
-                F('s_saldo') - F('s'), output_field=DecimalField()
+                F('s_saldo') - F('s1'), output_field=DecimalField()
+            ),
+            t_2 = ExpressionWrapper(
+                F('s_saldo') - F('s2'), output_field=DecimalField()
+            ),
+            t_3 = ExpressionWrapper(
+                F('s_saldo') - F('s3'), output_field=DecimalField()
             )
-        ).values('segment', 't_1')
+        ).values('segment', 's_saldo', 't_1', 't_2', 't_3')
+
 
     content = {
         'period': period,
         'segment_list': segment_objs
     }
-    return render(request, 'collection/pg-segmnet-col.html', content)
+    data['html'] = render_to_string(
+        'collection/includes/partial-segment-list.html', 
+        content,
+        request = request
+    )
+
+    return JsonResponse(data)
 
 def json_SegmentCollecView(request):
     segment_objs = Segment.objects.exclude(segment='TDS').annotate(

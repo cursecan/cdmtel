@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}
+Collection Segmen
+{% endblock %}
+
+{% block content %}
+<div class="ui basic vertical segment">
+    <div class="ui fluid container">
+        <div class="ui padded stackable grid">
+            <div class="row">
+                <div class="column">
+                    <div class="segment">
+                        <div id="chart" style="height:300px">
+                            <!-- Content -->
+                        </div>
+                        <table id="segment-id" class="ui table">
+                            <!-- Content -->
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "{% url 'collection:api_segment' %}",
+        dataType: 'json',
+        success: function(data) {
+            Highcharts.chart('chart', data);
+        }
+    });
+
+    $.ajax({
+        url: "{% url 'collection:api_segment_list' %}",
+        dataType: 'json',
+        success: function(data) {
+            $('#segment-id').html(data.html);
+        }
+    })
+
+    $('#segment-id').on('click', 'tbody tr', function() {
+       window.location.href = $(this).attr('target-url'); 
+    });
+});
+</script>
+{% endblock %}
