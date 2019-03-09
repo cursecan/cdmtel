@@ -86,14 +86,15 @@ def segmentCollecView(request):
     ).order_by().values('segment')
 
     cust_sum = cust.annotate(
-        t = Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0) & Q(coltarget_customer__due_date__gte=period[0])),
-        V(0)
+        t = Coalesce(
+            Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0) & Q(coltarget_customer__due_date__gte=period[0])), V(0)
+        )
     ).values('t')
 
     segment_objs = Segment.objects.exclude(segment='TDS').annotate(
         s_saldo = Coalesce(Sum('customer_list__cur_saldo', filter=Q(customer_list__cur_saldo__gt=0)), V(0)),
         t_1 = F('s_saldo') - Subquery(
-                cust_sum
+                cust_sum, output_field=DecimalField()
             ),
         # t_2 = F('s_saldo') - Subquery(
         #         Customer.objects.select_related('coltarget_customer').filter(
