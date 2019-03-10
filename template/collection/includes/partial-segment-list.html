@@ -11,7 +11,7 @@
 </thead>
 <tbody>
     {% for segment in segment_list %}
-    <tr target-url="{% url 'collection:account' %}?seg={{ segment.segment }}">
+    <tr target-url="{% url 'collection:account' %}">
         <td>
             <strong>{{ segment.segment }}</strong>
         </td>

@@ -18,9 +18,9 @@ Collection
                             <i class="tags icon"></i>
                             Tag Label
                         </div>
-                        <div class="scrolling menu">
+                        <div class="scrolling menu js-segment">
                             {% for segment in segment_list %}
-                            <div class="item {% if segment.segment == segmen %} active selected {% endif %}" onclick="window.location.href='?seg={{ segment.segment }}'">
+                            <div data-item="{{ segment.segment }}" class="item {% if segment.segment == segmen %} active selected {% endif %}">
                                 <div class="ui empty circular label"></div>
                                 {{ segment.segment }}
                             </div>
@@ -33,17 +33,17 @@ Collection
                 <div class="ui floated labeled icon dropdown button">
                     <i class="calendar icon"></i>
                     <span class="text">Periode</span>
-                    <div class="menu">
-                        <div class="item" onclick="window.location.href='?period=2019-3-1'">
+                    <div class="menu js-period">
+                        <div class="item" data-item="2019-3-1">
                             Maret 2019
                         </div>
-                        <div class="item" onclick="window.location.href='?period=2019-4-1'">
+                        <div class="item" data-item="2019-4-1">
                             April 2019
                         </div>
-                        <div class="item" onclick="window.location.href='?period=2019-5-1'">
+                        <div class="item" data-item="2019-5-1">
                             Mei 2019
                         </div>
-                        <div class="item" onclick="window.location.href='?period=2019-6-1'">
+                        <div class="item" data-item="2019-6-1">
                             Juni 2019
                         </div>
                     </div>
@@ -51,11 +51,11 @@ Collection
             </div>
             <div class="right menu">
                 <div class="item">
-                    <form action="" class="ui form">
+                    <form action="{% url 'collection:api_customer_list' %}" class="ui form js-search">
                         <div class="field">
                             <div class="ui action input">
-                                <input value="{{ q|default:'' }}" type="text" name="search" placeholder="Search Customer...">
-                                <button class="ui basic button">
+                                <input type="text" name="search" placeholder="Search Customer...">
+                                <button type="submit" class="ui basic button">
                                     <i class="search icon"></i>
                                 </button>
                             </div>
@@ -65,104 +65,62 @@ Collection
             </div>
         </div>
 
-        <div class="ui top attached clearing teal segment">
-            <div class="ui mini right floated grey statistic">
-                <div class="label">Total Tagih</div>
-                <div class="value">
-                    {{ customer_resume.total_tagih|default:0|intcomma }}
-                </div>
-            </div>
-            <div class="ui mini right floated red statistic">
-                <div class="label">Piutang</div>
-                <div class="value">
-                    {{ customer_resume.piutang|default:0|intcomma }}
-                </div>
-            </div>
+        <div id="i-content">
+            <!-- Content -->
         </div>
-        <table id="cust-id" class="ui bottom attached striped table">
-            <thead>
-                <tr>
-                    <th>BP NUMBER</th>
-                    <th>CUSTOMER</th>
-                    <th>SEGMEN</th>
-                    <th class="right aligned">SALDO</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for customer in customer_list %}
-                <tr>
-                    <td>{{ customer.bp }}</td>
-                    <td>
-                            {{ customer.account_number }} - {{ customer.customer_name|upper }}
-                    </td>
-                    <td>{{ customer.segment|default:'-' }}</td>
-                    <td class="right aligned">
-                        <h4 class="ui header">
-                            <div class="content">
-                                <span title="Layak tagih">{{ customer.s_tagih|intcomma }}</span>
-                                <div title="Piutang" class="sub header">
-                                        {{ customer.cur_saldo|intcomma }}
-                                </div>
-                            </div>
-                        </h4>
-                    </td>
-                    <td class="right aligned">
-                        <a href="{% url 'collection:customer_detail' customer.id %}"><i class="pencil icon"></i></a>
-                        {% if request.user.is_authenticated %}
-                        <a href="{% url 'collection:detail_validation' customer.id %}"><i class="setting icon"></i></a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td>
-                        Not found.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        {% if customer_list.has_other_pages %}
-        <div class="ui pagination menu">
-            {% if customer_list.has_previous %}
-                <a href="?page={{ customer_list.previous_page_number }}" class="item">&lt;</a>
-            {% else %}
-                <div class="item disabled">&lt;</div>
-            {% endif %}            
-
-            {% if customer_list.number|add:'-4' > 1 %}
-            <a href="?page={{ customer_list.number|add:'-5' }}" class="item">&hellip;</a>
-            {% endif %}
-
-            {% for i in customer_list.paginator.page_range %}
-                {% if customer_list.number == i %}
-                    <div class="item active ">{{ i }}</div>
-                {% elif i > customer_list.number|add:'-5' and i < customer_list.number|add:'5' %}
-                    <a href="?page={{ i }}" class="item">{{ i }}</a>
-                {% endif %}
-            {% endfor %}
-
-            {% if customer_list.paginator.num_pages > customer_list.number|add:'4' %}
-            <a href="?page={{ customer_list.number|add:'5' }}" class="item">&hellip;</a>
-            {% endif %}
-
-            {% if customer_list.has_next %}
-                <a href="?page={{ customer_list.next_page_number }}" class="item">&gt;</a>
-            {% else %}
-                <div class="item disabled">&gt;</div>
-            {% endif %}   
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}
 
 {% block js %}
 <script>
-$(document).ready(function() {
+$(document).ready(function() {    
+    var l_seg = null;
+    var l_per = (new Date()).toISOString().slice(0,10);
     $('.ui.dropdown').dropdown();
+    $.ajax({
+        url: "{% url 'collection:api_customer_list' %}",
+        dataType: 'json',
+        success: function(data) {
+            $('#i-content').html(data.html);
+        }
+    });
+    var c_choice =  function(a, e) {
+        $.ajax({
+            url: "{% url 'collection:api_customer_list' %}",
+            dataType: 'json',
+            data: {'seg': a, 'period': e},
+            success: function(data) {
+                $('#i-content').html(data.html);
+            }
+        });
+        return false;
+    }
+
+    $('.js-segment .item').on('click', function() {
+        var btn = $(this);
+        l_seg = btn.attr('data-item')
+        c_choice(l_seg, l_per);
+    });
+
+    $('.js-period .item').on('click', function() {
+        var btn = $(this);
+        l_per = btn.attr('data-item')
+        c_choice(l_seg, l_per);
+    });
+
+    $('.js-search').on('submit', function() {
+        var form = $(this);
+        $.ajax({
+            url: form.attr('action'),
+            dataType: 'json',
+            data: form.serialize(),
+            success: function(data) {
+                $('#i-content').html(data.html);
+            }
+        });
+        return false;
+    });
 });
 </script>
 {% endblock %} 

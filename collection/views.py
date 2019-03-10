@@ -25,14 +25,21 @@ from .forms import (
 def index(request):
     return render(request, 'collection/pg-index.html')
 
-def accountCollecView(request):
+def accountTemplView(request):
+    segmen_objs = Segment.objects.values('segment')
+    content = {
+        'segment_list': segmen_objs,
+    }
+    return render(request, 'collection/pg-account-colection.html', content)
+
+def json_accountCollecView(request):
+    data = dict()
     page = request.GET.get('page', None)
     q = request.GET.get('search', None)
     segmen = request.GET.get('seg', None)
     period = request.GET.get('period', timezone.now().date())
 
     customer_objs = Customer.objects.filter(cur_saldo__gt=0)
-    segmen_objs = Segment.objects.values('segment')
 
     if segmen:
         customer_objs = customer_objs.filter(
@@ -67,13 +74,17 @@ def accountCollecView(request):
         customer_list = paginator.page(paginator.num_pages)
 
     content = {
-        'segment_list': segmen_objs,
         'customer_list': customer_list,
         'customer_resume': customer_resume,
         'q': q,
         'segmen': segmen,
     }
-    return render(request, 'collection/pg-account-colection.html', content)
+    data['html'] = render_to_string(
+        'collection/includes/partial-account-collection.html',
+        content,
+        request=request
+    )
+    return JsonResponse(data)
 
 
 def json_SegmentListView(request):
@@ -133,6 +144,7 @@ def json_SegmentListView(request):
 
     return JsonResponse(data)
 
+
 def json_SegmentCollecView(request):
     segment_objs = Segment.objects.exclude(segment='TDS').annotate(
         s_saldo = Coalesce(Sum('customer_list__cur_saldo', filter=Q(customer_list__cur_saldo__gt=0)), V(0)),
@@ -187,7 +199,6 @@ def custCollectDetailView(request, id):
         'col_target': col_tar_obj,
     }
     return render(request, 'collection/pg-collection-customer-detail.html', content)
-
 
 
 def entryDataView(request):
