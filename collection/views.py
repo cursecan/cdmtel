@@ -100,36 +100,20 @@ def json_SegmentListView(request):
     sm = dict()
     for i in range(6):
         period.append(cdate)
-        sm['cust_sum_{}'.format(i)] = cust.annotate(
-            t = Coalesce(
-                Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0) & Q(coltarget_customer__due_date__gte=cdate)), V(0)
-            )
-        ).values('t')
+        sm['cust_sum_{}'.format(i)] = Coalesce(
+            Sum('customer_list__coltarget_customer__amount', filter=Q(customer_list__cur_saldo__gt=0) & Q(customer_list__coltarget_customer__due_date__gte=cdate)), V(0)
+        )
         
         cdate = cdate.add(months=1) 
 
     segment_objs = Segment.objects.exclude(segment='TDS').annotate(
-        s_saldo = Coalesce(Sum('customer_list__cur_saldo', filter=Q(customer_list__cur_saldo__gt=0)), V(0)),
-        s1 = Subquery(
-                sm['cust_sum_0']
-            ),
-        s2 = Subquery(
-                sm['cust_sum_1']
-            ),
-        s3 = Subquery(
-                sm['cust_sum_2']
-            ),
-        ).values('segment', 's_saldo', 's1', 's2', 's3').annotate(
-            t_1 = ExpressionWrapper(
-                F('s_saldo') - F('s1'), output_field=DecimalField()
-            ),
-            t_2 = ExpressionWrapper(
-                F('s_saldo') - F('s2'), output_field=DecimalField()
-            ),
-            t_3 = ExpressionWrapper(
-                F('s_saldo') - F('s3'), output_field=DecimalField()
-            )
-        ).values('segment', 's_saldo', 't_1', 't_2', 't_3')
+        t_1 = F('saldo') - sm['cust_sum_0'],
+        t_2 = F('saldo') - sm['cust_sum_1'],
+        t_3 = F('saldo') - sm['cust_sum_2'],
+        t_4 = F('saldo') - sm['cust_sum_3'],
+        t_5 = F('saldo') - sm['cust_sum_4'],
+        t_6 = F('saldo') - sm['cust_sum_5'],
+    ).values('segment', 'saldo', 't_1', 't_2', 't_3', 't_4', 't_5', 't_6')
 
 
     content = {
@@ -147,15 +131,10 @@ def json_SegmentListView(request):
 
 def json_SegmentCollecView(request):
     segment_objs = Segment.objects.exclude(segment='TDS').annotate(
-        s_saldo = Coalesce(Sum('customer_list__cur_saldo', filter=Q(customer_list__cur_saldo__gt=0)), V(0)),
-        t_tagih = F('s_saldo') - Subquery(
-                    Customer.objects.select_related('segment').filter(
-                        segment=OuterRef('pk')
-                    ).annotate(
-                        t = Coalesce(Sum('coltarget_customer__amount', filter=Q(cur_saldo__gt=0) & Q(coltarget_customer__due_date__gte=timezone.now().date())), V(0))
-                    ).values('t')[:1], output_field=DecimalField()
-                )
-    ).values('segment', 's_saldo', 't_tagih')
+        t_tagih = F('saldo') - Coalesce(
+            Sum('customer_list__coltarget_customer__amount', filter=Q(customer_list__cur_saldo__gt=0) & Q(customer_list__coltarget_customer__due_date__gte=timezone.now().date())), V(0)
+        )
+    ).values('segment', 'saldo', 't_tagih')
 
     seg_list = list(segment_objs)
 
@@ -174,7 +153,7 @@ def json_SegmentCollecView(request):
             'data': list(map(lambda row: int(row['t_tagih']), seg_list))
         }, {
             'name': 'Piutang',
-            'data': list(map(lambda row: int(row['s_saldo']), seg_list))
+            'data': list(map(lambda row: int(row['saldo']), seg_list))
         }]
     }
 

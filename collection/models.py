@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from masterdata.models import Customer
+from masterdata.models import (
+    Customer, Segment
+)
 from core.models import CommonBase
 
 class ColTarget(CommonBase):
@@ -26,6 +28,13 @@ class Saldo(CommonBase):
 
     def __str__(self):
         return str(self.customer)
+
+
+class ColSegment(CommonBase):
+    segment = models.ForeignKey(Segment, on_delete=models.CASCADE, related_name='colsegment')
+    period = models.DateField()
+    piutang = models.DecimalField(max_digits=12, decimal_places=0, default=0)
+    td_tagih = models.DecimalField(max_digits=12, decimal_places=0, default=0)
 
 
 class AvidenttargetCol(CommonBase):

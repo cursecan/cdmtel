@@ -5,6 +5,7 @@ from core.models import CommonBase
 
 class Segment(CommonBase):
     segment = models.CharField(max_length=10, unique=True)
+    saldo = models.DecimalField(max_digits=15, decimal_places=0, default=0)
 
     class Meta:
         ordering = ['segment']

@@ -1,6 +1,9 @@
 from background_task import background
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.db.models import Sum, F, Value as V
+from django.db.models.functions import Coalesce
+
 from .models import (
     Order, Customer, Circuit, Segment
 )
@@ -153,3 +156,15 @@ def get_record_account():
 
         except:
             pass
+
+    segment_objs = Segment.objects.annotate(
+        s = Coalesce(
+            Sum('customer_list__cur_saldo'), V(0)
+        )
+    ).values('segment', 's')
+
+    for i in segment_objs:
+        Segment.objects.update_or_create(
+            segment = i['segment'],
+            defaults = {'saldo': i['s']}
+        )

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (
-    ColTarget, Saldo, AvidenttargetCol
+    ColTarget, Saldo, AvidenttargetCol, ColSegment
 )
 
 @admin.register(ColTarget)
@@ -14,4 +14,8 @@ class SaldoAdmin(admin.ModelAdmin):
 
 @admin.register(AvidenttargetCol)
 class AvidenttargetColAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(ColSegment)
+class ColSegmentAdmin(admin.ModelAdmin):
     pass
