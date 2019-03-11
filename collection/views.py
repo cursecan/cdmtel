@@ -39,7 +39,7 @@ def json_accountCollecView(request):
     segmen = request.GET.get('seg', None)
     period = request.GET.get('period', timezone.now().date())
 
-    customer_objs = Customer.objects.filter(cur_saldo__gt=0)
+    customer_objs = Customer.objects.filter(cur_saldo__gt=0).order_by('-cur_saldo')
 
     if segmen:
         customer_objs = customer_objs.filter(
