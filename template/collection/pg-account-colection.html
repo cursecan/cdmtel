@@ -85,11 +85,11 @@ $(document).ready(function() {
             $('#i-content').html(data.html);
         }
     });
-    var c_choice =  function(a, e) {
+    var c_choice =  function(a, e, n=1) {
         $.ajax({
             url: "{% url 'collection:api_customer_list' %}",
             dataType: 'json',
-            data: {'seg': a, 'period': e},
+            data: {'seg': a, 'period': e, 'page': n},
             success: function(data) {
                 $('#i-content').html(data.html);
             }
@@ -100,13 +100,13 @@ $(document).ready(function() {
     $('.js-segment .item').on('click', function() {
         var btn = $(this);
         l_seg = btn.attr('data-item')
-        c_choice(l_seg, l_per);
+        c_choice(l_seg, l_per, 1);
     });
 
     $('.js-period .item').on('click', function() {
         var btn = $(this);
         l_per = btn.attr('data-item')
-        c_choice(l_seg, l_per);
+        c_choice(l_seg, l_per, 1);
     });
 
     $('.js-search').on('submit', function() {
@@ -120,6 +120,13 @@ $(document).ready(function() {
             }
         });
         return false;
+    });
+
+    $('#i-content').on('click', '.js-page .item', function() {
+        var btn = $(this);
+        page = btn.attr('data-item');
+        c_choice(l_seg, l_per, page);
+        return false
     });
 });
 </script>
