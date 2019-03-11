@@ -3,7 +3,7 @@
 
 <div class="ui top attached clearing teal segment">
     <div class="ui mini right floated grey statistic">
-        <div class="label">Total Tagih</div>
+        <div class="label">Layak Tagih</div>
         <div class="value">
             {{ customer_resume.total_tagih|default:0|intcomma }}
         </div>
@@ -38,7 +38,7 @@
                     <div class="content">
                         <span title="Layak tagih">{{ customer.s_tagih|intcomma }}</span>
                         <div title="Piutang" class="sub header">
-                                {{ customer.cur_saldo|intcomma }}
+                            {{ customer.cur_saldo|intcomma }}
                         </div>
                     </div>
                 </h4>

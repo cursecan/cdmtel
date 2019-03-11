@@ -148,6 +148,14 @@ def json_SegmentCollecView(request):
         'xAxis': {
             'categories': list(map(lambda row: row['segment'], seg_list))
         },
+        'plotOptions': {
+            'column': {
+                'dataLabels': {
+                    'enabled': True
+                },
+                'enableMouseTracking': False
+            }
+        },
         'series': [{
             'name': 'Jatuh Tempo',
             'data': list(map(lambda row: int(row['t_tagih']), seg_list))
@@ -169,8 +177,9 @@ def custCollectDetailView(request, id):
     if request.method == 'POST':
         if formset.is_valid():
             formset.save()
-            messages.success(request, 'Recording data complete.')
-            return redirect('collection:index')
+            messages.success(request, 'Perubahan data telah disimpan.')
+
+            return redirect('collection:account')
             
     content = {
         'cust_obj': cust_obj,

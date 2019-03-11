@@ -9,10 +9,14 @@ Collection
 <div class="ui vertical basic segment">
     <div class="ui container">
         <div class="ui large menu">
+            <a href="{% url 'collection:index' %}" class="item">
+                <i class="chart bar large icon"></i>
+                CHART
+            </a>
             <div class="item">
                 <div class="ui floated labeled icon dropdown basic button">
                     <i class="filter icon"></i>
-                    <span class="text">Filter Segmen</span>
+                    <span class="text">Segmen</span>
                     <div class="menu">
                         <div class="header">
                             <i class="tags icon"></i>
@@ -21,7 +25,7 @@ Collection
                         <div class="scrolling menu js-segment">
                             {% for segment in segment_list %}
                             <div data-item="{{ segment.segment }}" class="item {% if segment.segment == segmen %} active selected {% endif %}">
-                                <div class="ui empty circular label"></div>
+                                <div class="ui empty red circular label"></div>
                                 {{ segment.segment }}
                             </div>
                             {% endfor %}
@@ -64,6 +68,17 @@ Collection
                 </div>
             </div>
         </div>
+        {% if messages %}
+        {% for msg in messages %}
+            <div class="ui info message">
+                <i class="close icon"></i>
+                <div class="content">
+                    <div class="ui header">Success!</div>
+                    <p>{{ msg }}</p>
+                </div>
+            </div>
+        {% endfor %}
+        {% endif %}
 
         <div id="i-content">
             <!-- Content -->

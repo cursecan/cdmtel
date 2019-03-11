@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.db.models import Sum, F, Value as V
 from django.db.models.functions import Coalesce
+from django.utils import timezone
 
 from .models import (
     Order, Customer, Circuit, Segment
@@ -109,6 +110,8 @@ def record_data():
 
 @background(schedule=1)
 def get_record_account():
+    now = timezone.now()
+
     con = cx_Oracle.connect(settings.BILCOS_USER, settings.BILCOS_PASS, settings.BILCOS_SERVICE)
     cur = con.cursor()
     query = """
@@ -148,10 +151,14 @@ def get_record_account():
             cust_obj.customer_name = name
             cust_obj.segment = seg_obj
             cust_obj.save()
-
-            Saldo.objects.get_or_create(
+            
+            Saldo.objects.update_or_create(
                 customer = cust_obj,
-                amount = saldo
+                timestamp__date = now.date(),
+                dafaults = {
+                    'customer': cust_obj,
+                    'amount': saldo
+                } 
             )
 
         except:

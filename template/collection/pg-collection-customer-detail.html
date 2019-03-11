@@ -10,18 +10,27 @@
     <div class="ui vertical basic segment">
         <div class="ui container">
             <div class="ui secondary large menu">
-                <div class="item" style="padding-left:0">
-                        <div class="ui labeled icon  button">
-                                <i class="left arrow icon"></i> Back
-                            </div>
+                <div class="right menu">
+                    <div class="item" style="padding-right:0">
+                        <div class="ui labeled icon basic brown button" onclick="window.history.back(); return false;">
+                            <i class="left arrow icon"></i> Back
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="ui segment" style="min-height:200px">
-                <div class="ui header">
-                    {{ cust_obj.customer_name }} ({{ cust_obj.segment|default:'...' }})
-                    - <span style="color:cornflowerblue">IDR {{ cust_obj.cur_saldo|intcomma }}</span>
-                    <div class="sub header">
-                        {{ cust_obj.bp }} / {{ cust_obj.account_number }}
+                <div class="ui vertical clearing segment">
+                    <div class="ui left floated header">
+                        {{ cust_obj.customer_name }} ({{ cust_obj.segment|default:'...' }})
+                        <div class="sub header">
+                            {{ cust_obj.bp }} / {{ cust_obj.account_number }}
+                        </div>
+                    </div>
+                    <div class="ui right floated header">
+                        <span style="color:cornflowerblue">IDR {{ cust_obj.cur_saldo|intcomma }}</span>
+                        <div class="sub header">
+                            Piutang
+                        </div>
                     </div>
                 </div>
                 
