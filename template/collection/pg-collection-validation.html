@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block title %}
 Validation
@@ -8,49 +9,42 @@ Validation
 <div class="ui vertical basic segment">
     <div class="ui fluid container">
         <div class="ui stackable padded grid">
-            <!-- <div class="three wide column">
-
-            </div> -->
             <div class="column">
-                <div class="ui menu">
-                    <div class="item">
-                        <form action="" class="ui form">
-                            <div class="field">
-                                <div class="ui action input">
-                                    <input type="text" name="q" placeholder="Search...">
-                                    <button class="ui basic button">Search</button>
+                <div class="ui top attached menu">
+                    <div class="right menu">
+                        <form action="" class="ui form item">
+                                <div class="ui icon input search">
+                                    <input type="text" name="q" class="prompt" placeholder="Search..." style="border-radius:20px">
+                                    <i class="search link icon"></i>
                                 </div>
-                            </div>
                         </form>
                     </div>
                 </div>
-                <div class="ui top attached segment">
-                    
-                </div>
-                <table class="ui attached hovering table">
+                <table class="ui attached small table">
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>CUSTOMER</th>
+                            <th>FBCC</th>
+                            <th>SEGMEN</th>
                             <th>SALDO</th>
                             <th>STATUS</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for cust in customer_list %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
+                        <tr onclick="window.location.href='{% url 'collection:detail_validation' cust.id %}'">
+                            <td>{{ customer_list.start_index|add:forloop.counter0 }}</td>
                             <td>
-                                <h4 class="ui header">
-                                    <div class="sub header">
-                                        {{ cust.bp }} / {{ cust.account_number }}
-                                    </div>
+                                <a>{{ cust.bp }} / {{ cust.account_number }}</a>
+                                <p>
                                     {{ cust.customer_name|upper }}
-                                </h4>
+                                </p>
                             </td>
+                            <td>{{ cust.fbcc.segment |default:'-' }}</td>
+                            <td>{{ cust.segment.segment|default:'-' }}</td>
                             <td>
-                                {{ cust.get_saldo.amount|default:0 }}
+                                {{ cust.get_saldo.amount|default:0|intcomma }}
                             </td>
                             <td>
                                 {% if cust.is_valid %}
@@ -58,11 +52,6 @@ Validation
                                 {% else %}
                                 Not Validate
                                 {% endif %}
-                            </td>
-                            <td>
-                                <a href="{% url 'collection:detail_validation' cust.id %}">
-                                    <i class="setting icon"></i> Detail
-                                </a>
                             </td>
                         </tr>
                         {% empty %}
@@ -72,6 +61,40 @@ Validation
                         {% endfor %}
                     </tbody>
                 </table>
+
+                {% if customer_list.has_other_pages %}
+                    <div class="ui pagination menu js-page">
+                        {% if customer_list.has_previous %}
+                            <a href="" data-item="{{ customer_list.previous_page_number }}" class="item">&lt;</a>
+                        {% else %}
+                            <div class="item disabled">&lt;</div>
+                        {% endif %}            
+
+                        {% if customer_list.number|add:'-4' > 1 %}
+                        <a href="#" data-item="{{ customer_list.number|add:'-5' }}" class="item">&hellip;</a>
+                        {% endif %}
+
+                        {% for i in customer_list.paginator.page_range %}
+                            {% if customer_list.number == i %}
+                                <div class="item active ">{{ i }}</div>
+                            {% elif i > customer_list.number|add:'-5' and i < customer_list.number|add:'5' %}
+                                <a href="#" data-item="{{ i }}" class="item">{{ i }}</a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if customer_list.paginator.num_pages > customer_list.number|add:'4' %}
+                        <a href="#" data-item="{{ customer_list.number|add:'5' }}" class="item">&hellip;</a>
+                        {% endif %}
+
+                        {% if customer_list.has_next %}
+                            <a href="#" data-item="{{ customer_list.next_page_number }}" class="item">&gt;</a>
+                        {% else %}
+                            <div class="item disabled">&gt;</div>
+                        {% endif %}   
+                    </div>
+                {% endif %}
+
+
             </div>
         </div>
     </div>

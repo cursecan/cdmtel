@@ -21,6 +21,7 @@ class Customer(CommonBase):
     fbcc = models.ForeignKey('FbccSegment', on_delete=models.CASCADE, blank=True, null=True)
     cur_saldo = models.DecimalField(max_digits=12, decimal_places=0, default=0)
     is_valid = models.BooleanField(default=False)
+    no_valid = models.BooleanField(default=False)
     has_target = models.BooleanField(default=False)
 
     class Meta:

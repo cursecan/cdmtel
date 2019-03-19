@@ -9,97 +9,86 @@
 {% block content %}
     <div class="ui vertical basic segment">
         <div class="ui container">
-            <div class="ui secondary large menu">
-                <div class="right menu">
-                    <div class="item" style="padding-right:0">
-                        <div class="ui labeled icon basic brown button" onclick="window.history.back(); return false;">
-                            <i class="left arrow icon"></i> Back
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="ui segment" style="min-height:200px">
-                <div class="ui vertical clearing segment">
-                    <div class="ui left floated header">
-                        {{ cust_obj.customer_name }} ({{ cust_obj.segment|default:'...' }})
-                        <div class="sub header">
-                            {{ cust_obj.bp }} / {{ cust_obj.account_number }}
-                        </div>
+                <button onclick="window.history.back(); return false;"  class="ui icon labeled basic button">
+                    <i class="angle left icon"></i>
+                    BACK
+                </button>
+
+                <div class="ui top attached grey inverted menu">
+                    <div class="item header">{{ cust_obj.bp }}</div>
+                    <div class="item header">
+                        {{ cust_obj.account_number }} - {{ cust_obj.customer_name }} ({{ cust_obj.segment|default:'...' }})
                     </div>
-                    <div class="ui right floated header">
-                        <span style="color:cornflowerblue">IDR {{ cust_obj.cur_saldo|intcomma }}</span>
-                        <div class="sub header">
-                            Piutang
+                    <div class="right menu">
+                        <div class="item header">
+                                PIUTANG (IDR) {{ cust_obj.cur_saldo|intcomma }}
+                        </div>
+                        <div class="item header">
+                            <span class="t_nominal">{{ col_target.t_amount|intcomma }}</span>
                         </div>
                     </div>
                 </div>
-                
-                <div class="ui stackable grid">
-                    <div class="column">
-                        <div class="ui top attached clearing segment">
-                            <h4 class="ui right floated header">
-                                IDR <span class="t_nominal">{{ col_target.t_amount|intcomma }}</span>
-                            </h4>
-                            <h4 class="ui left floated header">
-                                Termin Pembayaran
-                            </h4>
-                        </div>
-                        <div class="ui bottom attached accordion segment">
-                            <div class="title active">
-                                <i class="dropdown icon"></i>
-                                Detail
-                            </div>
-                            <form id="termin-form" action="" method="post" class="ui small form content active">
-                                {% csrf_token %}
-                                {{ formset.management_form }}
+                <div class="ui bottom attached accordion segment">
+                    <div class="title active">
+                        <i class="dropdown icon"></i>
+                        Detail
+                    </div>
+                    <form id="termin-form" action="" method="post" class="ui form content active">
+                        {% csrf_token %}
+                        {{ formset.management_form }}
 
-                                {% for error in formset.non_form_errors %}
-                                <div class="ui red message">{{ error }}</div>
-                                {% endfor %}
-                                
-                                {% for form in formset %}
-                                <div class="fields cust-formset">
-                                    {{ form.id }}
-                                    <div class="seven wide field">
-                                        <label for="{{ form.amount.id_for_label }}">Termin ke-{{ forloop.counter }}</label>
-                                        <div class="ui left labeled input">
-                                            <div class="ui label">IDR</div>
-                                            {{ form.amount }}
-                                        </div>
-                                        {% if form.amount.errors %}
-                                            {% for error in form.amount.errors %}
-                                            <small style="color:brown">{{ error }}</small>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </div>
-                                    <div class="five wide field datepick">
-                                        <label for="{{ form.due_date.id_for_label }}">Tanggal Jatuh Tempo</label>
-                                            <div class="ui left icon input">
-                                                <i class="time icon"></i>
-                                                {{ form.due_date }}
-                                        </div>
-                                    </div>
+                        {% for error in formset.non_form_errors %}
+                        <div class="ui red message">{{ error }}</div>
+                        {% endfor %}
+                        
+                        {% for form in formset %}
+                        <div class="fields cust-formset">
+                            {{ form.id }}
+                            <div class="seven wide field">
+                                <label for="{{ form.amount.id_for_label }}">Termin ke-{{ forloop.counter }}</label>
+                                <div class="ui left labeled input">
+                                    <div class="ui label">IDR</div>
+                                    {{ form.amount }}
                                 </div>
-                                {% endfor %}
-                            </form>
+                                {% if form.amount.errors %}
+                                    {% for error in form.amount.errors %}
+                                    <small style="color:brown">{{ error }}</small>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div class="five wide field datepick">
+                                <label for="{{ form.due_date.id_for_label }}">Tanggal Jatuh Tempo</label>
+                                    <div class="ui left icon input">
+                                        <i class="time icon"></i>
+                                        {{ form.due_date }}
+                                </div>
+                            </div>
+                            {% if formset.can_delete %}
+                            <div class="field">
+                                {{ form.DELETE }}
+                            </div>
+                            {% endif %}
                         </div>
-                        <div class="ui segment">
-                            {% for av in cust_obj.avident_col.all %}
-                            <a href="/media/{{ av.doc }}" target="_blank">
-                                <i class="file alternate outline huge icon"></i>
-                            </a>
-                            {% endfor %}
-                        </div>
-
-                        <input id="fileupload" type="file" name="doc" multiple
-                            style="display: none;"
-                            data-url="{% url 'collection:customer_upload' cust_obj.id %}"
-                            data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
-
-                        <button class="ui blue button js-upload-photos" type="button">Upload Docs</button>
-                        <button class="ui orange button" type="submit" form="termin-form">Save</button>
-                    </div>
+                        {% endfor %}
+                        
+                    </form>
                 </div>
+                <div class="ui segment">
+                    {% for av in cust_obj.avident_col.all %}
+                    <a href="/media/{{ av.doc }}" target="_blank">
+                        <i class="file alternate outline huge icon"></i>
+                    </a>
+                    {% endfor %}
+                </div>
+
+                <input id="fileupload" type="file" name="doc" multiple
+                    style="display: none;"
+                    data-url="{% url 'collection:customer_upload' cust_obj.id %}"
+                    data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
+
+                <button class="ui blue button js-upload-photos" type="button">Upload Docs</button>
+                <button class="ui orange button" type="submit" form="termin-form">Save</button>
             </div>
         </div>
     </div>

@@ -2,7 +2,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from .models import (
-    ColTarget, Saldo
+    ColTarget, Saldo, Validation
 )
 from masterdata.models import Customer
 
@@ -11,7 +11,7 @@ from masterdata.models import Customer
 def is_target_collect(sender, instance, created, **kwargs):
     if created:
         Customer.objects.filter(coltarget_customer=instance).update(
-            is_valid=False, has_target=True
+            is_valid=False, has_target=True, no_valid=False
         )
 
 
@@ -21,3 +21,20 @@ def update_current_saldo(sender, instance, created, **kwargs):
         Customer.objects.filter(
             customer_saldo = instance
         ).update(cur_saldo=instance.amount)
+
+
+@receiver(post_save, sender=Validation)
+def validation_triger(sender, instance, created, **kwargs):
+    if created:
+        valid = False
+        if instance.validate == 'AP':
+            valid = True
+        
+        if valid:
+            Customer.objects.filter(bjt_cust_validate=instance).update(
+                is_valid=valid
+            )
+        else :
+            Customer.objects.filter(bjt_cust_validate=instance).update(
+                no_valid=valid
+            )

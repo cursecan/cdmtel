@@ -16,10 +16,12 @@ from masterdata.models import (
     Customer, Segment
 )
 
-from .models import ColTarget
+from .models import (
+    ColTarget, Validation
+)
 
 from .forms import (
-    CustomerColFormet, AvidenttargetColForm
+    CustomerColFormet, AvidenttargetColForm, ValidationForm
 )
 
 def index(request):
@@ -173,7 +175,7 @@ def json_SegmentCollecView(request):
 
 
 def custCollectDetailView(request, id):
-    cust_obj = get_object_or_404(Customer, pk=id)
+    cust_obj = get_object_or_404(Customer, pk=id, is_valid=False)
     col_tar_obj = ColTarget.objects.filter(customer=cust_obj).aggregate(
         t_amount = Coalesce(Sum('amount'), V(0))
     )
@@ -289,11 +291,18 @@ def collectionValidationView(request):
 @login_required
 def detailColValidationView(request, id):
     cust_obj = get_object_or_404(Customer, pk=id, has_target=True)
+    form = ValidationForm(request.POST or None)
     if request.method == 'POST':
-        cust_obj.is_valid = True
-        cust_obj.save()
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.customer = cust_obj
+            instance.save()
+            return redirect('collection:validation')
+        # cust_obj.is_valid = True
+        # cust_obj.save()
 
     content = {
-        'cust_obj': cust_obj
+        'cust_obj': cust_obj,
+        'form': form
     }
     return render(request, 'collection/pg-detail-validation.html', content)

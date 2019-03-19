@@ -8,7 +8,7 @@
 {% block content %}
 <div class="ui vertical basic segment">
     <div class="ui container">
-        <div class="ui large menu">
+        <!-- <div class="ui large menu">
             <div class="item">
                 <form action=""  method="post" class="ui form">
                     {% csrf_token %}
@@ -30,7 +30,7 @@
                     </div>
                </div>
             </div>
-        </div>
+        </div> -->
         <div class="ui top attached segment">
             <div class="ui header">
                 {{ cust_obj.customer_name|upper }} ({{ cust_obj.segment|default:"..." }})
@@ -68,6 +68,20 @@
             {% empty %}
             -
             {% endfor %}
+        </div>
+        <div class="ui bottom attached segment">
+            <form action="" method="post" class="ui form">
+                {% csrf_token %}
+                <div class="three wide field">
+                    <label for="">Validation</label>
+                    {{ form.validate }}
+                </div>
+                <div class="field">
+                    <label for="">Message</label>
+                    {{ form.msg }}
+                </div>
+                <button class="ui primary button">Save Validation</button>
+            </form>
         </div>
     </div>
 </div>

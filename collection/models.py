@@ -41,3 +41,15 @@ class AvidenttargetCol(CommonBase):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=True, null=True, related_name='avident_col')
     doc = models.FileField(max_length=200, upload_to='collection/file/')
     message = models.TextField(max_length=500, blank=True)
+
+
+class Validation(CommonBase):
+    REJECT = 'RE'
+    APPROVE = 'AP'
+    LIST_VALIDATE = (
+        (REJECT, 'REJECT'),
+        (APPROVE, 'APPROVE')
+    )
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='bjt_cust_validate', blank=True, null=True)
+    validate = models.CharField(max_length=2, choices=LIST_VALIDATE)
+    msg = models.TextField(max_length=500)

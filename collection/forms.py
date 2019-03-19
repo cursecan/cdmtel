@@ -6,7 +6,7 @@ from django.forms import BaseInlineFormSet
 from cdmsoro.validators import validate_file_extension, validate_file_size
 
 from .models import (
-    ColTarget, AvidenttargetCol
+    ColTarget, AvidenttargetCol, Validation
 )
 from masterdata.models import Customer
 
@@ -39,7 +39,7 @@ class CustomColFormset(BaseInlineFormSet):
         if t > self.instance.cur_saldo:
             raise forms.ValidationError('Total saldo termin tidak melebihi saldo sistem.')
 
-CustomerColFormet = forms.inlineformset_factory(Customer, ColTarget, form=ColTargetForm, formset=CustomColFormset, extra=1)
+CustomerColFormet = forms.inlineformset_factory(Customer, ColTarget, form=ColTargetForm, formset=CustomColFormset, extra=1, can_delete=True)
 
 
 class AvidenttargetColForm(forms.ModelForm):
@@ -48,3 +48,13 @@ class AvidenttargetColForm(forms.ModelForm):
         fields = [
             'doc',
         ]
+
+class ValidationForm(forms.ModelForm):
+    class Meta:
+        model = Validation
+        fields = [
+            'validate',
+            'msg',
+        ]
+
+        
