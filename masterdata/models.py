@@ -18,6 +18,7 @@ class Customer(CommonBase):
     bp = models.CharField(max_length=30, blank=True)
     customer_name = models.CharField(max_length=200, blank=True)
     segment = models.ForeignKey(Segment, on_delete=models.CASCADE, blank=True, null=True, related_name='customer_list')
+    fbcc = models.ForeignKey('FbccSegment', on_delete=models.CASCADE, blank=True, null=True)
     cur_saldo = models.DecimalField(max_digits=12, decimal_places=0, default=0)
     is_valid = models.BooleanField(default=False)
     has_target = models.BooleanField(default=False)
@@ -31,6 +32,12 @@ class Customer(CommonBase):
     def get_saldo(self):
         return self.customer_saldo.latest('timestamp')
 
+
+class FbccSegment(CommonBase):
+    segment = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.segment
 
 
 class Circuit(CommonBase):

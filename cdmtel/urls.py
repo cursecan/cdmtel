@@ -30,7 +30,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('admingo/', admin.site.urls),
     path('cdm/', include('cdmsoro.urls')),
-    path('collection/', include('collection.urls')),
+    path('bjt/', include('collection.urls')),
 
 
     path('bulk-update/', master_views.order_bulk_update_view, name='bulk_update'),

@@ -5,7 +5,8 @@ from . import views
 app_name = 'collection'
 urlpatterns = [
     path('', views.index, name='index'),
-    path('account/', views.accountTemplView, name='account'),
+    path('segmen/', views.segmentTempView, name='segmen'),
+    path('customer/', views.accountTemplView, name='account'),
     path('customer-detail/<int:id>/', views.custCollectDetailView, name='customer_detail'),
     path('entry-data/', views.entryDataView, name='entry_data'),
     path('validation/', views.collectionValidationView, name='validation'),

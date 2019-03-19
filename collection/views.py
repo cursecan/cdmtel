@@ -23,7 +23,10 @@ from .forms import (
 )
 
 def index(request):
-    return render(request, 'collection/pg-index.html')
+    return redirect('collection:account')
+
+def segmentTempView(request):
+    return render(request, 'collection/pg-segment.html')
 
 def accountTemplView(request):
     segmen_objs = Segment.objects.values('segment')
@@ -31,6 +34,7 @@ def accountTemplView(request):
         'segment_list': segmen_objs,
     }
     return render(request, 'collection/pg-account-colection.html', content)
+
 
 def json_accountCollecView(request):
     data = dict()

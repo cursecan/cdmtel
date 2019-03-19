@@ -1,9 +1,11 @@
 <div class="ui vertical inverted segment">
     <div class="ui secondary inverted menu container">
-        <a href="{% url 'home' %}" class="item active">CDMROSO</a>
-        <a href="{% url 'collection:index' %}" class="item">COLLECTION</a>
-        <a href="{% url 'cdmsoro:index' %}" class="item">MCRS</a>
-        <a href="{% url 'collection:validation' %}" class="item">CCRS</a>
+        <a href="{% url 'home' %}" title="Permintaan Bukis Datin" class="item">ROSDCM</a>
+        <a href="{% url 'collection:index' %}" title="Billing Jatuh Tempo" class="item">BJT</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'cdmsoro:index' %}" class="item">MCRS</a>
+            <a href="{% url 'collection:validation' %}" class="item">CCRS</a>
+        {% endif %}
         <div class="right menu">
             {% if user.is_authenticated %}
                 <a class="item"><i class="ui user icon"></i> {{ request.user|upper }}</a>

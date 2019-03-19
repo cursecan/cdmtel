@@ -9,7 +9,7 @@ Collection
 <div class="ui vertical basic segment">
     <div class="ui container">
         <div class="ui large menu">
-            <a href="{% url 'collection:index' %}" class="item">
+            <a href="{% url 'collection:segmen' %}" class="item">
                 <i class="chart bar large icon"></i>
                 CHART
             </a>
@@ -54,18 +54,14 @@ Collection
                 </div>
             </div>
             <div class="right menu">
-                <div class="item">
-                    <form action="{% url 'collection:api_customer_list' %}" class="ui form js-search">
-                        <div class="field">
-                            <div class="ui action input">
-                                <input type="text" name="search" placeholder="Search Customer...">
-                                <button type="submit" class="ui basic button">
-                                    <i class="search icon"></i>
-                                </button>
-                            </div>
+                <form action="{% url 'collection:api_customer_list' %}" class="ui form item js-search">
+                    <div class="field">
+                        <div class="ui icon search input">
+                            <input type="text" name="search" style="border-radius:20px" placeholder="Search Customer...">
+                            <i class="search link icon"></i>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
         {% if messages %}

@@ -36,8 +36,8 @@ class CustomColFormset(BaseInlineFormSet):
         t = 0
         for form in self.forms:
             t += form.cleaned_data.get('amount', 0)
-        if t != self.instance.cur_saldo:
-            raise forms.ValidationError('Total termin tidak sama dengan saldo sistem.')
+        if t > self.instance.cur_saldo:
+            raise forms.ValidationError('Total saldo termin tidak melebihi saldo sistem.')
 
 CustomerColFormet = forms.inlineformset_factory(Customer, ColTarget, form=ColTargetForm, formset=CustomColFormset, extra=1)
 

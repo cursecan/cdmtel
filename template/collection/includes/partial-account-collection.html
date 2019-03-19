@@ -15,11 +15,13 @@
         </div>
     </div>
 </div>
+
 <table id="cust-id" class="ui bottom attached striped table">
     <thead>
         <tr>
             <th>BP NUMBER</th>
             <th>CUSTOMER</th>
+            <th>FBCC</th>
             <th>SEGMEN</th>
             <th class="right aligned">SALDO</th>
             <th></th>
@@ -32,6 +34,7 @@
             <td>
                     {{ customer.account_number }} - {{ customer.customer_name|upper }}
             </td>
+            <td>{{ customer.fbcc|default:'-' }}</td>
             <td>{{ customer.segment|default:'-' }}</td>
             <td class="right aligned">
                 <h4 class="ui header">

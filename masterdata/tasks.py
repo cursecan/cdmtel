@@ -6,7 +6,7 @@ from django.db.models.functions import Coalesce
 from django.utils import timezone
 
 from .models import (
-    Order, Customer, Circuit, Segment
+    Order, Customer, Circuit, Segment, FbccSegment
 )
 from collection.models import Saldo
 
@@ -120,7 +120,8 @@ def get_record_account():
             a.akun, \
             b.bpname, \
             a.CBASE_2016, \
-            SUM(b.CURRENT_BALANCE) saldo \
+            SUM(b.CURRENT_BALANCE) saldo, \
+            a.FBCC_SEGMENT \
         FROM \
             z_des_openitem a \
         LEFT JOIN mybrains.trems_np_cyc b ON \
@@ -129,7 +130,8 @@ def get_record_account():
             a.bp_num, \
             a.akun, \
             b.bpname,\
-            a.CBASE_2016
+            a.CBASE_2016, \
+            a.FBCC_SEGMENT
     """
     
     cur.execute(query)
@@ -138,18 +140,20 @@ def get_record_account():
     con.close()
 
     for i in datas:
-        bpnum, acc, name, segmen, saldo = i
+        bpnum, acc, name, segmen, saldo, fbcc = i
         try :
             if int(acc) < 4000000:
                 acc = '0'+ acc
 
             seg_obj, create = Segment.objects.get_or_create(segment=segmen)
+            fbcc_obj, create = FbccSegment.objects.get_or_create(segment=fbcc)
             cust_obj, create = Customer.objects.get_or_create(
                 account_number = acc
             )
             cust_obj.bp = bpnum
             cust_obj.customer_name = name
             cust_obj.segment = seg_obj
+            cust_obj.fbcc = fbcc_obj
             cust_obj.save()
             
             Saldo.objects.update_or_create(
