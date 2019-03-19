@@ -175,7 +175,7 @@ def json_SegmentCollecView(request):
 
 
 def custCollectDetailView(request, id):
-    cust_obj = get_object_or_404(Customer, pk=id, is_valid=False)
+    cust_obj = get_object_or_404(Customer, pk=id)
     col_tar_obj = ColTarget.objects.filter(customer=cust_obj).aggregate(
         t_amount = Coalesce(Sum('amount'), V(0))
     )
