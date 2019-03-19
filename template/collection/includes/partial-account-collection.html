@@ -23,7 +23,7 @@
             <th>CUSTOMER</th>
             <th>FBCC</th>
             <th>SEGMEN</th>
-            <th>VALID</th>
+            <th>LAST VALIDATED</th>
             <th class="right aligned">SALDO</th>
             <th></th>
         </tr>
@@ -37,13 +37,7 @@
             </td>
             <td>{{ customer.fbcc|default:'-' }}</td>
             <td>{{ customer.segment|default:'-' }}</td>
-            <td>
-                {% if customer.is_valid != customer.no_valid %}
-                    {{ customer.is_valid }}
-                {% else %}
-                -
-                {% endif %}
-            </td>
+            <td><strong>{{ customer.get_validation.get_validate_display|default:''|title }}</strong> {{ customer.get_validation.timestamp|naturaltime }}</td>
             <td class="right aligned">
                 <h4 class="ui header">
                     <div class="content">

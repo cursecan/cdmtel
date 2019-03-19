@@ -30,11 +30,6 @@ def validation_triger(sender, instance, created, **kwargs):
         if instance.validate == 'AP':
             valid = True
         
-        if valid:
-            Customer.objects.filter(bjt_cust_validate=instance).update(
-                is_valid=valid
-            )
-        else :
-            Customer.objects.filter(bjt_cust_validate=instance).update(
-                no_valid=valid
-            )
+        Customer.objects.filter(bjt_cust_validate=instance).update(
+            is_valid=valid
+        )

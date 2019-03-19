@@ -11,12 +11,16 @@ Validation
         <div class="ui stackable padded grid">
             <div class="column">
                 <div class="ui top attached menu">
+                    <a href="?fb=" class="item">ALL</a>
+                    <a href="?fb=A" class="item">A</a>
+                    <a href="?fb=B" class="item">B</a>
+                    <a href="?fb=C" class="item">C</a>
                     <div class="right menu">
                         <form action="" class="ui form item">
-                                <div class="ui icon input search">
-                                    <input type="text" name="q" class="prompt" placeholder="Search..." style="border-radius:20px">
-                                    <i class="search link icon"></i>
-                                </div>
+                            <div class="ui icon input search">
+                                <input type="text" name="q" class="prompt" placeholder="Search..." style="border-radius:20px">
+                                <i class="search link icon"></i>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -27,7 +31,7 @@ Validation
                             <th>CUSTOMER</th>
                             <th>FBCC</th>
                             <th>SEGMEN</th>
-                            <th>SALDO</th>
+                            <th>PIUTANG</th>
                             <th>STATUS</th>
                         </tr>
                     </thead>
@@ -47,11 +51,7 @@ Validation
                                 {{ cust.get_saldo.amount|default:0|intcomma }}
                             </td>
                             <td>
-                                {% if cust.is_valid %}
-                                Validated
-                                {% else %}
-                                Not Validate
-                                {% endif %}
+                                {{ cust.get_validation.get_validate_display|default:'-'}}
                             </td>
                         </tr>
                         {% empty %}

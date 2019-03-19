@@ -33,6 +33,9 @@ class Customer(CommonBase):
     def get_saldo(self):
         return self.customer_saldo.latest('timestamp')
 
+    def get_validation(self):
+        return self.bjt_cust_validate.latest('timestamp')
+
 
 class FbccSegment(CommonBase):
     segment = models.CharField(max_length=20)

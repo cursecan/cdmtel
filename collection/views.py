@@ -265,10 +265,15 @@ def jsonUploadDocView(request, id):
 
 @login_required
 def collectionValidationView(request):
-    cust_obj = Customer.objects.filter(has_target=True)
+    cust_obj = Customer.objects.filter(has_target=True, is_valid=False)
     page = request.GET.get('page', None)
     q = request.GET.get('q', None)
+    fb = request.GET.get('fb', None)
 
+    if fb:
+        cust_obj = cust_obj.filter(
+            fbcc__segment = fb
+        )
     if q:
         cust_obj = cust_obj.filter(
             Q(account_number__contains=q) | Q(customer_name__icontains=q)
