@@ -141,32 +141,32 @@ def get_record_account():
 
     for i in datas:
         bpnum, acc, name, segmen, saldo, fbcc = i
-        try :
-            if int(acc) < 4000000:
-                acc = '0'+ acc
+        # try :
+        if int(acc) < 4000000:
+            acc = '0'+ acc
 
-            seg_obj, create = Segment.objects.get_or_create(segment=segmen)
-            fbcc_obj, create = FbccSegment.objects.get_or_create(segment=fbcc)
-            cust_obj, create = Customer.objects.get_or_create(
-                account_number = acc
-            )
-            cust_obj.bp = bpnum
-            cust_obj.customer_name = name
-            cust_obj.segment = seg_obj
-            cust_obj.fbcc = fbcc_obj
-            cust_obj.save()
-            
-            Saldo.objects.update_or_create(
-                customer = cust_obj,
-                timestamp__date = now.date(),
-                dafaults = {
-                    'customer': cust_obj,
-                    'amount': saldo
-                } 
-            )
+        seg_obj, create = Segment.objects.get_or_create(segment=segmen)
+        fbcc_obj, create = FbccSegment.objects.get_or_create(segment=fbcc)
+        cust_obj, create = Customer.objects.get_or_create(
+            account_number = acc
+        )
+        cust_obj.bp = bpnum
+        cust_obj.customer_name = name
+        cust_obj.segment = seg_obj
+        cust_obj.fbcc = fbcc_obj
+        cust_obj.save()
+        
+        Saldo.objects.update_or_create(
+            customer = cust_obj,
+            timestamp__date = now.date(),
+            dafaults = {
+                'customer': cust_obj,
+                'amount': saldo
+            } 
+        )
 
-        except:
-            pass
+        # except:
+        #     pass
 
     segment_objs = Segment.objects.annotate(
         s = Coalesce(
