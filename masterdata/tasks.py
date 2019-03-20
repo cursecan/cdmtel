@@ -159,7 +159,7 @@ def get_record_account():
         Saldo.objects.update_or_create(
             customer = cust_obj,
             timestamp__date = now.date(),
-            dafaults = {
+            defaults = {
                 'customer': cust_obj,
                 'amount': saldo
             } 
