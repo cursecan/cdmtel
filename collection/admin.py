@@ -15,10 +15,10 @@ class ColTargetAdmin(admin.ModelAdmin):
 @admin.register(Saldo)
 class SaldoAdmin(admin.ModelAdmin):
     search_fields = [
-        'customer__account_number', 'timestamp'
+        'customer__account_number'
     ]
     list_display = [
-        'customer', 'amount'
+        'customer', 'amount', 'timestamp'
     ]
 
 @admin.register(AvidenttargetCol)
