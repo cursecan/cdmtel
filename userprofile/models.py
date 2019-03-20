@@ -22,4 +22,4 @@ class Profile(CommonBase):
     counter = models.PositiveIntegerField(default=0)
 
     def get_fullname(self):
-        return '{} {}',format(self.user.first_name, self.user.last_name)
+        return '{} {}'.format(self.user.first_name, self.user.last_name)
