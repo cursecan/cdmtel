@@ -16,6 +16,10 @@ class SegmentAdmin(admin.ModelAdmin):
 
 @admin.register(Customer)
 class CustomerAdmin(ImportExportModelAdmin):
+    list_display = [
+        'account_number', 'bp', 'customer_name','segment','fbcc',
+        'cur_saldo'
+    ]
     resource_class = CustomerResource
     search_fields = [
         'account_number'
