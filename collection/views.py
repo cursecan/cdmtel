@@ -48,7 +48,12 @@ def json_accountCollecView(request):
     segmen = request.GET.get('seg', None)
     period = request.GET.get('period', timezone.now().date())
 
-    customer_objs = Customer.objects.exclude(segment__segment='TDS').filter(cur_saldo__gt=0, segment__isnull=False).order_by('-cur_saldo')
+    # INITIAL CUSTOMER QUERY
+    customer_objs = Customer.objects.exclude(
+        segment__segment='TDS'
+    ).filter(
+        cur_saldo__gt=0, segment__isnull=False
+    ).order_by('-cur_saldo')
 
     if segmen:
         customer_objs = customer_objs.filter(
@@ -110,12 +115,13 @@ def json_SegmentListView(request):
     for i in range(6):
         period.append(cdate)
         sm['cust_sum_{}'.format(i)] = Coalesce(
-            Sum('customer_list__coltarget_customer__amount', filter=Q(customer_list__cur_saldo__gt=0) & Q(customer_list__coltarget_customer__due_date__gte=cdate)), V(0)
+            Sum('customer_list__coltarget_customer__amount', 
+            filter=Q(customer_list__cur_saldo__gt=0) & Q(customer_list__coltarget_customer__due_date__gte=cdate)), V(0)
         )
         
         cdate = cdate.add(months=1) 
 
-    segment_objs = Segment.objects.exclude(segment='TDS').filter(segment__isnull=False).annotate(
+    segment_objs = Segment.objects.exclude(segment='TDS').annotate(
         t_1 = F('saldo') - sm['cust_sum_0'],
         t_2 = F('saldo') - sm['cust_sum_1'],
         t_3 = F('saldo') - sm['cust_sum_2'],
@@ -139,9 +145,10 @@ def json_SegmentListView(request):
 
 
 def json_SegmentCollecView(request):
-    segment_objs = Segment.objects.exclude(segment='TDS').filter(segment__isnull=False).annotate(
+    segment_objs = Segment.objects.exclude(segment='TDS').annotate(
         t_tagih = F('saldo') - Coalesce(
-            Sum('customer_list__coltarget_customer__amount', filter=Q(customer_list__cur_saldo__gt=0) & Q(customer_list__coltarget_customer__due_date__gte=timezone.now().date())), V(0)
+            Sum('customer_list__coltarget_customer__amount', 
+            filter=Q(customer_list__cur_saldo__gt=0) & Q(customer_list__coltarget_customer__due_date__gte=timezone.now().date())), V(0)
         )
     ).values('segment', 'saldo', 't_tagih')
 
@@ -152,7 +159,7 @@ def json_SegmentCollecView(request):
             'type': 'column'
         },
         'title': {
-            'text': 'Piutang & TGK Jatuh Tempo (Curr)'
+            'text': 'Piutang & Bill Jatuh Tempo'
         },
         'xAxis': {
             'categories': list(map(lambda row: row['segment'], seg_list))
