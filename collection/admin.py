@@ -15,7 +15,7 @@ class ColTargetAdmin(admin.ModelAdmin):
 @admin.register(Saldo)
 class SaldoAdmin(admin.ModelAdmin):
     search_fields = [
-        'customer__account_number'
+        'customer__account_number', 'timestamp'
     ]
     list_display = [
         'customer', 'amount'
