@@ -307,7 +307,7 @@ def detailColValidationView(request, id):
             instance = form.save(commit=False)
             instance.customer = cust_obj
             instance.save()
-            messages.success('Customer berhasil divalidasi.')
+            messages.success(request, 'Customer berhasil divalidasi.')
             return redirect('collection:validation')
 
     content = {
