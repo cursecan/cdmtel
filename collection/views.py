@@ -48,7 +48,7 @@ def json_accountCollecView(request):
     segmen = request.GET.get('seg', None)
     period = request.GET.get('period', timezone.now().date())
 
-    customer_objs = Customer.objects.filter(cur_saldo__gt=0).order_by('-cur_saldo')
+    customer_objs = Customer.objects.exclude(segment__segment='TDS').filter(cur_saldo__gt=0, segment__isnull=False).order_by('-cur_saldo')
 
     if segmen:
         customer_objs = customer_objs.filter(
@@ -100,9 +100,9 @@ def json_SegmentListView(request):
     data  = dict()
     period = []
 
-    cust = Customer.objects.filter(
-        segment = OuterRef('pk')
-    ).order_by().values('segment')
+    # cust = Customer.objects.filter(
+    #     segment = OuterRef('pk')
+    # ).order_by().values('segment')
 
     cur_date = timezone.now().date()
     cdate = pendulum.date(cur_date.year, cur_date.month, 1)
@@ -115,7 +115,7 @@ def json_SegmentListView(request):
         
         cdate = cdate.add(months=1) 
 
-    segment_objs = Segment.objects.exclude(segment='TDS').annotate(
+    segment_objs = Segment.objects.exclude(segment='TDS').filter(segment__isnull=False).annotate(
         t_1 = F('saldo') - sm['cust_sum_0'],
         t_2 = F('saldo') - sm['cust_sum_1'],
         t_3 = F('saldo') - sm['cust_sum_2'],
@@ -139,7 +139,7 @@ def json_SegmentListView(request):
 
 
 def json_SegmentCollecView(request):
-    segment_objs = Segment.objects.exclude(segment='TDS').annotate(
+    segment_objs = Segment.objects.exclude(segment='TDS').filter(segment__isnull=False).annotate(
         t_tagih = F('saldo') - Coalesce(
             Sum('customer_list__coltarget_customer__amount', filter=Q(customer_list__cur_saldo__gt=0) & Q(customer_list__coltarget_customer__due_date__gte=timezone.now().date())), V(0)
         )
