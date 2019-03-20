@@ -55,7 +55,11 @@ BJT Validation
                                 {{ cust.get_saldo.amount|default:0|intcomma }}
                             </td>
                             <td>
+                                {% if not cust.is_valid %}
+                                -
+                                {% else %}
                                 {{ cust.get_validation.get_validate_display|default:'-'}}
+                                {% endif %}
                             </td>
                         </tr>
                         {% empty %}

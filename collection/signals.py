@@ -9,10 +9,10 @@ from masterdata.models import Customer
 
 @receiver(post_save, sender=ColTarget)
 def is_target_collect(sender, instance, created, **kwargs):
-    if created:
-        Customer.objects.filter(coltarget_customer=instance).update(
-            is_valid=False, has_target=True, no_valid=False
-        )
+    # if created:
+    Customer.objects.filter(coltarget_customer=instance).update(
+        is_valid=False, has_target=True, no_valid=False
+    )
 
 
 @receiver(post_save, sender=Saldo)
@@ -25,11 +25,7 @@ def update_current_saldo(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Validation)
 def validation_triger(sender, instance, created, **kwargs):
-    if created:
-        valid = False
-        if instance.validate == 'AP':
-            valid = True
-        
+    if created:        
         Customer.objects.filter(bjt_cust_validate=instance).update(
-            is_valid=valid
+            is_valid=True
         )
