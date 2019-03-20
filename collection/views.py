@@ -270,7 +270,7 @@ def jsonUploadDocView(request, id):
 @user_validator
 def collectionValidationView(request):
     cust_obj = Customer.objects.filter(has_target=True, is_valid=False)
-    if request.user.is_superuser:
+    if not request.user.is_superuser:
         cust_obj = cust_obj.filter(
             fbcc=request.user.profile.fbcc
         )

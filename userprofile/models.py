@@ -20,3 +20,6 @@ class Profile(CommonBase):
     fbcc = models.ForeignKey(FbccSegment, on_delete=models.CASCADE, blank=True, null=True)
     telegram_user = models.CharField(max_length=200, blank=True)
     counter = models.PositiveIntegerField(default=0)
+
+    def get_fullname(self):
+        return '{} {}',format(self.user.first_name, self.user.profile.last_name)
