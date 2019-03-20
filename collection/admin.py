@@ -14,7 +14,12 @@ class ColTargetAdmin(admin.ModelAdmin):
 
 @admin.register(Saldo)
 class SaldoAdmin(admin.ModelAdmin):
-    pass
+    search_fields = [
+        'customer__account_number'
+    ]
+    list_display = [
+        'customer', 'amount'
+    ]
 
 @admin.register(AvidenttargetCol)
 class AvidenttargetColAdmin(admin.ModelAdmin):
