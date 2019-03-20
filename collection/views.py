@@ -15,6 +15,9 @@ import pendulum
 from masterdata.models import (
     Customer, Segment
 )
+from core.decorators import (
+    user_executor, user_validator
+)
 
 from .models import (
     ColTarget, Validation
@@ -264,16 +267,17 @@ def jsonUploadDocView(request, id):
 
 
 @login_required
+@user_validator
 def collectionValidationView(request):
     cust_obj = Customer.objects.filter(has_target=True, is_valid=False)
+    if request.user.is_superuser:
+        cust_obj = cust_obj.filter(
+            fbcc=request.user.profile.fbcc
+        )
+
     page = request.GET.get('page', None)
     q = request.GET.get('q', None)
-    fb = request.GET.get('fb', None)
-
-    if fb:
-        cust_obj = cust_obj.filter(
-            fbcc__segment = fb
-        )
+    
     if q:
         cust_obj = cust_obj.filter(
             Q(account_number__contains=q) | Q(customer_name__icontains=q)
@@ -294,6 +298,7 @@ def collectionValidationView(request):
 
 
 @login_required
+@user_validator
 def detailColValidationView(request, id):
     cust_obj = get_object_or_404(Customer, pk=id, has_target=True)
     form = ValidationForm(request.POST or None)
@@ -302,6 +307,7 @@ def detailColValidationView(request, id):
             instance = form.save(commit=False)
             instance.customer = cust_obj
             instance.save()
+            messages.success(request, "Customer berhasil divalidasi.")
             return redirect('collection:validation')
         # cust_obj.is_valid = True
         # cust_obj.save()

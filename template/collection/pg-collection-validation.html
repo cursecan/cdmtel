@@ -10,11 +10,15 @@ Validation
     <div class="ui fluid container">
         <div class="ui stackable padded grid">
             <div class="column">
+                {% if messages %}
+                {% for msg in massages %}
+                    <div class="ui info message">
+                        <div class="header">Success!</div>
+                        <p>{{ msg }}</p>
+                    </div>
+                {% endfor %}
+                {% endif %}
                 <div class="ui top attached menu">
-                    <a href="?fb=" class="item">ALL</a>
-                    <a href="?fb=A" class="item">A</a>
-                    <a href="?fb=B" class="item">B</a>
-                    <a href="?fb=C" class="item">C</a>
                     <div class="right menu">
                         <form action="" class="ui form item">
                             <div class="ui icon input search">
