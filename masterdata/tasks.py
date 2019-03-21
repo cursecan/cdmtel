@@ -152,7 +152,7 @@ def get_record_account():
             account_number = acc,
             defaults = {
                 'account_number': acc,
-                'pb': bpnum,
+                'bp': bpnum,
                 'customer_name': name,
                 'segment': seg_obj,
                 'fbcc': fbcc_obj,
