@@ -147,14 +147,28 @@ def get_record_account():
 
         seg_obj, create = Segment.objects.get_or_create(segment=segmen)
         fbcc_obj, create = FbccSegment.objects.get_or_create(segment=fbcc)
-        cust_obj, create = Customer.objects.get_or_create(
-            account_number = acc
+
+        cust_obj, create = Customer.objects.update_or_create(
+            account_number = acc,
+            defaults = {
+                'acc_number': acc,
+                'pb': bpnum,
+                'customer_name': name,
+                'segment': seg_obj,
+                'fbcc': fbcc_obj,
+                'last_update': now
+            }
         )
-        cust_obj.bp = bpnum
-        cust_obj.customer_name = name
-        cust_obj.segment = seg_obj
-        cust_obj.fbcc = fbcc_obj
-        cust_obj.save()
+
+        # cust_obj, create = Customer.objects.get_or_create(
+        #     account_number = acc
+        # )
+        # cust_obj.bp = bpnum
+        # cust_obj.customer_name = name
+        # cust_obj.segment = seg_obj
+        # cust_obj.fbcc = fbcc_obj
+        # cust_obj.last_update = now
+        # cust_obj.save()
         
         Saldo.objects.update_or_create(
             customer = cust_obj,
@@ -167,6 +181,11 @@ def get_record_account():
 
         # except:
         #     pass
+
+    # Update For Account Segment
+    Customer.objects.exclude(last_update=now).update(
+        segment = None
+    )
 
     segment_objs = Segment.objects.annotate(
         s = Coalesce(

@@ -105,10 +105,6 @@ def json_SegmentListView(request):
     data  = dict()
     period = []
 
-    # cust = Customer.objects.filter(
-    #     segment = OuterRef('pk')
-    # ).order_by().values('segment')
-
     cur_date = timezone.now().date()
     cdate = pendulum.date(cur_date.year, cur_date.month, 1)
     sm = dict()

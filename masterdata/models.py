@@ -23,6 +23,7 @@ class Customer(CommonBase):
     is_valid = models.BooleanField(default=False)
     no_valid = models.BooleanField(default=False)
     has_target = models.BooleanField(default=False)
+    last_update = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         ordering = ['-timestamp']
