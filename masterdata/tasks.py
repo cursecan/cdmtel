@@ -151,7 +151,7 @@ def get_record_account():
         cust_obj, create = Customer.objects.update_or_create(
             account_number = acc,
             defaults = {
-                'acc_number': acc,
+                'account_number': acc,
                 'pb': bpnum,
                 'customer_name': name,
                 'segment': seg_obj,
