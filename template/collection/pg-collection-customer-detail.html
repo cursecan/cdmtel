@@ -59,10 +59,15 @@
                             </div>
                             <div class="five wide field datepick">
                                 <label for="{{ form.due_date.id_for_label }}">Tanggal Jatuh Tempo</label>
-                                    <div class="ui left icon input">
-                                        <i class="time icon"></i>
-                                        {{ form.due_date }}
+                                <div class="ui left icon input">
+                                    <i class="time icon"></i>
+                                    {{ form.due_date }}
                                 </div>
+                                {% if form.due_date.errors %}
+                                    {% for error in form.due_date.errors %}
+                                    <small style="color:brown">{{ error }}</small>
+                                    {% endfor %}
+                                {% endif %}
                             </div>
                             {% if formset.can_delete %}
                             <div class="field">
@@ -74,7 +79,7 @@
                         
                     </form>
                 </div>
-                <div class="ui segment">
+                <div id="upload-id" class="ui segment">
                     {% for av in cust_obj.avident_col.all %}
                     <a href="/media/{{ av.doc }}" target="_blank">
                         <i class="file alternate outline huge icon"></i>
@@ -114,6 +119,7 @@ $(document).ready(function() {
         $('.datepick').calendar('destroy');
         $('.datepick').calendar({
             type: 'month',
+            minDate: new Date(),
             formatter: {
                 date: function(date, settings) {
                     if (!date) return '';
@@ -144,7 +150,9 @@ $(document).ready(function() {
         dataType: 'json',
         done: function (e, data) {  /* 3. PROCESS THE RESPONSE FROM THE SERVER */
             if (data.result.is_valid) {
-                alert('Success uploading document.');
+                $('#upload-id').html(data.result.html);
+            } else {
+                alert('Failed to upload document. Max size 1Mb and only .pdf or image file.');
             }
         }
     });

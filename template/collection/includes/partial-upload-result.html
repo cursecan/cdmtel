@@ -1,0 +1,5 @@
+{% for av in cust_obj.avident_col.all %}
+    <a href="/media/{{ av.doc }}" target="_blank">
+        <i class="file alternate outline huge icon"></i>
+    </a>
+{% endfor %}

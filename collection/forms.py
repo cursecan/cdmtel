@@ -2,6 +2,7 @@ from django import forms
 from django.db.models import F, Q, Sum, Value as V
 from django.db.models.functions import Coalesce
 from django.forms import BaseInlineFormSet
+from django.utils import timezone
 
 from cdmsoro.validators import validate_file_extension, validate_file_size
 
@@ -30,6 +31,15 @@ class ColTargetForm(forms.ModelForm):
             raise forms.ValidationError('Value must greater than 0.')
         return amount
 
+    def clean_due_date(self):
+        d_date = self.cleaned_data['due_date']
+        if d_date < timezone.now().date():
+            raise forms.ValidationError(
+                'Field canot be set back date.'
+            )
+        return d_date
+
+
 class CustomColFormset(BaseInlineFormSet):
     def clean(self):
         super().clean()
@@ -42,12 +52,15 @@ class CustomColFormset(BaseInlineFormSet):
 CustomerColFormet = forms.inlineformset_factory(Customer, ColTarget, form=ColTargetForm, formset=CustomColFormset, extra=1, can_delete=True)
 
 
-class AvidenttargetColForm(forms.ModelForm):
-    class Meta:
-        model = AvidenttargetCol
-        fields = [
-            'doc',
-        ]
+class AvidenttargetColForm(forms.Form):
+    doc = forms.FileField(required=True, validators=[validate_file_extension, validate_file_size])
+
+# class AvidenttargetColForm(forms.ModelForm):
+#     class Meta:
+#         model = AvidenttargetCol
+#         fields = [
+#             'doc',
+#         ]
 
 class ValidationForm(forms.ModelForm):
     class Meta:

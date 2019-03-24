@@ -20,7 +20,7 @@ from core.decorators import (
 )
 
 from .models import (
-    ColTarget, Validation
+    ColTarget, Validation, AvidenttargetCol,
 )
 
 from .forms import (
@@ -275,9 +275,17 @@ def jsonUploadDocView(request, id):
     if request.method == 'POST':
         form = AvidenttargetColForm(request.POST, request.FILES)
         if form.is_valid():
-            instance = form.save(commit=False)
-            instance.customer = customer_obj
-            instance.save()
+            AvidenttargetCol.objects.create(
+                doc = form.cleaned_data.get('doc'), customer = customer_obj
+            )
+            # instance = form.save(commit=False)
+            # instance.customer = customer_obj
+            # instance.save()
+            customer_obj.refresh_from_db()
+            data['html'] = render_to_string(
+                'collection/includes/partial-upload-result.html',
+                {'cust_obj': customer_obj}, request=request
+            )
             data['is_valid'] = True
         else :
             data['is_valid'] = False
