@@ -52,7 +52,7 @@ def json_accountCollecView(request):
     customer_objs = Customer.objects.exclude(
         segment__segment='TDS'
     ).filter(
-        cur_saldo__gt=0, segment__isnull=False
+        segment__isnull=False
     ).order_by('-cur_saldo')
 
     if segmen:
@@ -112,12 +112,14 @@ def json_SegmentListView(request):
         period.append(cdate)
         sm['cust_sum_{}'.format(i)] = Coalesce(
             Sum('customer_list__coltarget_customer__amount', 
-            filter=Q(customer_list__cur_saldo__gt=0) & Q(customer_list__coltarget_customer__due_date__gte=cdate)), V(0)
+            filter=Q(customer_list__coltarget_customer__due_date__gte=cdate)), V(0)
         )
         
         cdate = cdate.add(months=1) 
 
-    segment_objs = Segment.objects.exclude(segment='TDS').annotate(
+    segment_objs = Segment.objects.exclude(segment='TDS')
+
+    segment_bjt = segment_objs.annotate(
         t_1 = F('saldo') - sm['cust_sum_0'],
         t_2 = F('saldo') - sm['cust_sum_1'],
         t_3 = F('saldo') - sm['cust_sum_2'],
@@ -125,11 +127,25 @@ def json_SegmentListView(request):
         t_5 = F('saldo') - sm['cust_sum_4'],
         t_6 = F('saldo') - sm['cust_sum_5'],
     ).values('segment', 'saldo', 't_1', 't_2', 't_3', 't_4', 't_5', 't_6')
+    segment_total = segment_objs.aggregate(
+        s = Sum('saldo')
+    )
+    segment_bjt_total = segment_objs.aggregate(
+        t_1 = -sm['cust_sum_0'],
+        t_2 = -sm['cust_sum_1'],
+        t_3 = -sm['cust_sum_2'],
+        t_4 = -sm['cust_sum_3'],
+        t_5 = -sm['cust_sum_4'],
+        t_6 = -sm['cust_sum_5'],
+    )
 
 
     content = {
         'period': period,
-        'segment_list': segment_objs
+        'segment_list': segment_bjt,
+        'total_saldo': segment_total,
+        'bjt_total': segment_bjt_total
+
     }
     data['html'] = render_to_string(
         'collection/includes/partial-segment-list.html', 
@@ -144,7 +160,7 @@ def json_SegmentCollecView(request):
     segment_objs = Segment.objects.exclude(segment='TDS').annotate(
         t_tagih = F('saldo') - Coalesce(
             Sum('customer_list__coltarget_customer__amount', 
-            filter=Q(customer_list__cur_saldo__gt=0) & Q(customer_list__coltarget_customer__due_date__gte=timezone.now().date())), V(0)
+            filter=Q(customer_list__coltarget_customer__due_date__gte=timezone.now().date())), V(0)
         )
     ).values('segment', 'saldo', 't_tagih')
 

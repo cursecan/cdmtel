@@ -15,7 +15,7 @@
         <td>
             <strong>{{ segment.segment }}</strong>
         </td>
-        <td class="right aligned active">
+        <td class="right aligned">
             {{ segment.t_1|default:0|intcomma }}
         </td>
         <td class="right aligned">
@@ -38,4 +38,14 @@
         </td>
     </tr>
     {% endfor %}
+    <tr target-url="{% url 'collection:account' %}" class="active">
+        <td>TOTAL</td>
+        <td class="right aligned">{{ total_saldo.s|add:bjt_total.t_1|intcomma }}</td>
+        <td class="right aligned">{{ total_saldo.s|add:bjt_total.t_2|intcomma }}</td>
+        <td class="right aligned">{{ total_saldo.s|add:bjt_total.t_3|intcomma }}</td>
+        <td class="right aligned">{{ total_saldo.s|add:bjt_total.t_4|intcomma }}</td>
+        <td class="right aligned">{{ total_saldo.s|add:bjt_total.t_5|intcomma }}</td>
+        <td class="right aligned">{{ total_saldo.s|add:bjt_total.t_6|intcomma }}</td>
+        <td></td>
+    </tr>
 </tbody>

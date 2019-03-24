@@ -12,9 +12,8 @@ Collection Segmen
             <div class="row">
                 <div class="column">
                     <div class="segment">
-                        <div id="chart" style="height:300px">
-                            <!-- Content -->
-                        </div>
+                        <!-- <div id="chart" style="height:300px">
+                        </div> -->
                         <table id="segment-id" class="ui table">
                             <!-- Content -->
                         </table>
@@ -32,13 +31,13 @@ Collection Segmen
 
 <script>
 $(document).ready(function() {
-    $.ajax({
-        url: "{% url 'collection:api_segment' %}",
-        dataType: 'json',
-        success: function(data) {
-            Highcharts.chart('chart', data);
-        }
-    });
+    // $.ajax({
+    //     url: "{% url 'collection:api_segment' %}",
+    //     dataType: 'json',
+    //     success: function(data) {
+    //         Highcharts.chart('chart', data);
+    //     }
+    // });
 
     $.ajax({
         url: "{% url 'collection:api_segment_list' %}",
