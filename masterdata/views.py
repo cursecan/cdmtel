@@ -13,7 +13,7 @@ from .tasks import (
 import datetime
 
 today = timezone.now()
-expired_date = today + datetime.timedelta(years=1)
+expired_date = today + datetime.timedelta(weeks=60)
 
 def order_bulk_update_view(request):
     order_obj = Order.objects.filter(closed=False)
