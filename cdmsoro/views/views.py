@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Max, Min, F, Q
+from django.db.models import Max, Min, F, Q, ExpressionWrapper, PositiveIntegerField
 from django.contrib import messages
 
 from core.decorators import user_executor, user_validator
@@ -166,8 +166,21 @@ class BukisFormView(FormView):
         msg = form.cleaned_data['message']
         doc = form.cleaned_data['avident']
 
-        profile_max_count = Profile.objects.filter(group='EX').aggregate(Min('counter'))
-        p_obj = list(Profile.objects.filter(group='EX', counter=profile_max_count['counter__min']))
+        # MIN COUNTER XXX
+        min_counter = Profile.objects.filter(group='EX').aggregate(
+            r_min = Min(F('counter') * F('multiple'), output_field=PositiveIntegerField())
+        )
+        prfile_objs = Profile.objects.filter(group='EX').annotate(
+            counting = ExpressionWrapper(
+                F('counter') * F('multiple'), output_field=PositiveIntegerField()
+            )
+        ).filter(
+            counting = min_counter['r_min']
+        )
+        
+        p_obj = list(prfile_objs)
+        # PROFILE CHOICES
+        
         choices_profile = random.choice(p_obj)
 
         circuit_obj = Circuit.objects.get(sid=sid)
