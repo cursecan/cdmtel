@@ -94,7 +94,12 @@ Buka Isolir
                                         <div class="item">
                                             <div class="content">
                                                 <h6 class="ui right floated {% if bukis.is_approved %} green {% else %} red {% endif %} header">
+                                                    {% if bukis.validate %}
                                                     {{ bukis.get_validation.get_action_display|default:"WAITING VALIDATION" }}
+                                                    {% else %}
+                                                    WAITING VALIDATION
+                                                    % endif %}
+                                                
                                                 </h6>
                                                 <div class="ui header">
                                                     {{ bukis.sid }}
