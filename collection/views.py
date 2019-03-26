@@ -342,3 +342,19 @@ def detailColValidationView(request, id):
         'form': form
     }
     return render(request, 'collection/pg-detail-validation.html', content)
+
+
+def json_validation_record_list(request, id):
+    data = dict()
+    cust_obj = get_object_or_404(Customer, pk=id)
+    validation_obj = cust_obj.bjt_cust_validate.all()
+
+    content = {
+        'customer': cust_obj,
+        'validation': validation_obj,
+    }
+    data['html'] = render_to_string(
+        'collection/includes/partial-validation-record-list.html',
+        content,
+    )
+    return JsonResponse(data)

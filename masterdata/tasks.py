@@ -45,6 +45,8 @@ def bulk_order_update():
 
     dict_data = dict()
     for data in datas:
+        # data from table
+        # ['milestone', 'sid', 'order_num', 'rev']
         if data[2] not in dict_data:
             dict_data[data[2]] = (data[0], data[3]) # status dan seq
         else :
@@ -55,16 +57,17 @@ def bulk_order_update():
                     pass
 
     for order in cdmorder_objs:
+        # unclose order list
         get_order = dict_data.get(order[0], None)
         if get_order:
             if get_order[0] is not None and get_order[0] != '':
                 order_obj = Order.objects.filter(order_number=order[0])
                 if get_order[0] == 'FULFILL BILLING COMPLETE':
-                    Order.objects.filter(order_number=order[0]).update(
+                    Order.objects.filter(order_number=order[0], closed=False).update(
                         status = get_order[0], closed=True
                     )
                 else:
-                    Order.objects.filter(order_number=order[0]).update(
+                    Order.objects.filter(order_number=order[0], closed=False).update(
                         status = get_order[0]
                     )
 

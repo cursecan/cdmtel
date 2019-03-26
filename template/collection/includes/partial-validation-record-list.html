@@ -1,0 +1,33 @@
+<i class="close icon"></i>
+<div class="content">    
+    <div class="ui comments">
+        <h3 class="ui dividing header">{{ customer }} - {{ customer.customer_name|upper }}</h3>
+        {% for i in validation %}
+        <div class="comment">
+            <a class="avatar">
+                <img src="https://semantic-ui.com/images/avatar/small/joe.jpg" alt="">
+            </a>
+            <div class="content">
+                <a class="author">John Smith</a>
+                <div class="metadata">
+                    <span class="date">{{ i.timestamp }}</span>
+                </div>
+                <div class="text">
+                    {{ i.msg }}
+                </div>
+                <div class="actions">
+                    <a class="like">
+                        <i class="like"></i> Like
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="comment">
+            <div class="content">
+                No comment.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>

@@ -18,6 +18,7 @@ urlpatterns = [
     path('api/customer/', views.jsonCustomerView, name='api_customer'),
     path('api/customer/dettail/<int:id>/', views.jsonCustomerDetailJtempo, name='api_detail_customer'),
     path('api/customer/upload-doc/<int:id>/', views.jsonUploadDocView, name='customer_upload'),
+    path('api/validation-list/<int:id>/', views.json_validation_record_list, name='validation_list_record'),
 
 
 ]

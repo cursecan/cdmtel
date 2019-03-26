@@ -11,7 +11,7 @@ BJT Customer
         <div class="ui large menu">
             <a href="{% url 'collection:segmen' %}" class="item">
                 <i class="chart bar large icon"></i>
-                CHART
+                SEGMEN
             </a>
             <div class="item">
                 <div class="ui floated labeled icon dropdown basic button">
@@ -138,6 +138,21 @@ $(document).ready(function() {
         page = btn.attr('data-item');
         c_choice(l_seg, l_per, page);
         return false
+    });
+
+    $('#i-content').on('click', 'table .js-val', function() {
+        var btn = $(this);
+        $.ajax({
+            url: btn.attr('target-url'),
+            dataType: 'json',
+            beforeSend: function() {
+                $('.ui.modal').modal('show');
+            },
+            success: function(data) {
+                $('.ui.modal').html(data.html);
+            }
+        });
+        return false;
     });
 });
 </script>
