@@ -6,7 +6,9 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from cdmsoro.models import PermintaanResume
+from cdmsoro.models import (
+    PermintaanResume, UpdatePermintaan
+)
 from cdmsoro.forms import (
     BukisValidationForm, ManualOrderForm
 )
@@ -160,24 +162,6 @@ def detail_manual_bukis_view(request, id):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @login_required()
 def permin_bukis_detail_view(request, id):
     data = dict()
@@ -246,4 +230,22 @@ def lapor_soro(requests, id):
         {'order': order_obj}
     )
     sending_telegram(order_obj.id, settings.TELEGRAM_KEY, -245044203)
+    return JsonResponse(data)
+
+
+@login_required
+def json_comment(request, id):
+    data = dict()
+    permin_resume = get_object_or_404(PermintaanResume, pk=id)
+    update_permin = UpdatePermintaan.objects.filter(
+        permintaan_resume = permin_resume
+    )
+    content = {
+        'permin_resume': permin_resume,
+        'update_permin': update_permin
+    }
+    data['html'] = render_to_string(
+        'cdmsoro/v2/includes/partial-comment.html',
+        content, request=request
+    )
     return JsonResponse(data)

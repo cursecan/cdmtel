@@ -24,4 +24,5 @@ urlpatterns = [
     path('v2/uncomplete/', v2.uncomplete_order_list_view, name='uncomplete'),
     path('v2/manual-record/', v2.manual_bukis_list, name='manual_record'),
     path('v2/manual-record/<int:id>/', v2.detail_manual_bukis_view, name='detail_manual'),
+    path('v2/comments/<int:id>/', v2.json_comment, name='comment_list'),
 ]

@@ -1,132 +1,161 @@
 {% extends 'cdmsoro/v2/base.html' %}
 
 {% block cdmsoro_content %}
-<div class="ui top attached segment">
-    <h4 class="ui header">
-        Permintaan Buka Isolir Data Internet
-    </h4>
-</div>
-<div class="ui attached segment">
-    <table class="ui table">
-        <tr>
-            <td>
-                <h5 class="ui header">
-                    <div class="sub header">
-                        Account
-                    </div>
-                    {{ per_bukis.sid.account }}
-                </h5>
-            </td>
-            <td>
-                <h5 class="ui header">
-                    <div class="sub header">Circuit</div>
-                    {{ per_bukis.sid }} <br>
-                    {{ per_bukis.suspend.status }}
-                </h5>
-            </td>
-            <td>
-                <h5 class="ui header">
-                    <div class="sub header">No. Suspend</div>
-                    {{ per_bukis.suspend }}
-                </h5>
-            </td>
-        </tr>
-    </table>
-    <p>
-        {{ per_bukis.message }}
-    </p>
-</div>
-<div class="ui bottom attached segment">
-    {% for av in per_bukis.avident_set.all %}
-        <a href="/media/{{ av.document }}" class="link" target="_blank">
-            <i class="file alternate icon huge"></i>
-        </a>
-    {% endfor %}
+<div class="ui grid">
+    <div class="ten wide column">
+            <div class="ui top attached segment">
+                    <h4 class="ui header">
+                        Permintaan Buka Isolir Data Internet
+                    </h4>
+                </div>
+                <div class="ui attached segment">
+                    <table class="ui table">
+                        <tr>
+                            <td>
+                                <h5 class="ui header">
+                                    <div class="sub header">
+                                        Account
+                                    </div>
+                                    {{ per_bukis.sid.account }}
+                                </h5>
+                            </td>
+                            <td>
+                                <h5 class="ui header">
+                                    <div class="sub header">Circuit</div>
+                                    {{ per_bukis.sid }} 
+                                </h5>
+                            </td>
+                            <td>
+                                <h5 class="ui header">
+                                    <div class="sub header">No. Suspend</div>
+                                    {{ per_bukis.suspend }}<br>
+                                    {{ per_bukis.suspend.status }}
+                                </h5>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="ui bottom attached segment">
+                    {% for av in per_bukis.avident_set.all %}
+                        <a href="/media/{{ av.document }}" class="link" target="_blank">
+                            <i class="file alternate icon huge"></i>
+                        </a>
+                    {% endfor %}
+                </div>
+                <div id="comment-id" class="ui segment" target-url="{% url 'cdmsoro:comment_list' per_bukis.id %}">
+                    <!--  -->
+                </div>
+    </div>
+    <div class="six wide column">
+                    <div class="ui styled fluid accordion">
+                            <div class="title {% if not per_bukis.validate %} active {% endif %}">
+                                <i class="dropdown icon"></i>
+                                Validation
+                            </div>
+                            <div class="content {% if not per_bukis.validate %} active {% endif %}">
+                                {% if per_bukis.validate %}
+                                <div class="ui info message">
+                                    <strong>{{ per_bukis.get_validation.get_action_display|title }}</strong> <br>
+                                    {{ per_bukis.get_validation.message }}
+                                </div>
+                                {% else %}
+                                <form action="" method="post" class="ui small form">
+                                    {% csrf_token %}
+                                    <div class="field">
+                                        <label for="">Action</label>
+                                        {{ form.action }}
+                                    </div>
+                                    <div class="field">
+                                        <label for="">Post Message</label>
+                                        {{ form.message }}
+                                    </div>
+                                    <button type="submit" class="ui orange button">Save Validation</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                            <div class="title {% if per_bukis.is_approved %} active {% endif %}">
+                                <i class="dropdown icon"></i>
+                                Create Resume Order
+                            </div>
+                            <div class="content {% if per_bukis.is_approved %} active {% endif %}">
+                                {% if per_bukis.is_approved %}
+                                <form action="" method="post" class="ui small form">
+                                    {% csrf_token %}
+                                    <div class="field disabled">
+                                        <label for="">Circuit ID</label>
+                                        {{ bukis_form.circuit }}
+                                    </div>
+                                    <div class="field">
+                                        <label for="">Resume Order</label>
+                                        {{ bukis_form.order_number }}
+                                        {% if bukis_form.order_number.errors %}
+                                            {% for error in bukis_form.order_number.errors %}
+                                            <small style="color:brown">{{ error }}</small>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    <button type="submit" class="ui primary button">Create Order</button>
+                                </form>
+                                {% else %}
+                                <div class="ui red message">
+                                    <strong>No Approval.</strong> <br>
+                                    Request need get approval before creating order.
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="title">
+                                <i class="dropdown icon"></i> Create Manual Resume</div>
+                            <div class="content">
+                                {% if per_bukis.is_approved %}
+                                <div class="ui info message">
+                                    <strong>Penting!</strong>
+                                    Pastikan sudah create atau segera request percepatan FFM / OCS agar tidak kelupaan.
+                                </div>
+                                <form action="" method="post" class="ui small form">
+                                    {% csrf_token %}
+                                    <div class="field disabled">
+                                        {{ manual_form.permintaan_resume }}
+                                    </div>
+                                    <div class="field">
+                                        <label for="">Keterangan Error</label>
+                                        {{ manual_form.message }}
+                                    </div>
+                                    <button type="submit" class="ui teal button">Submit Resume</button>
+                                </form>
+                                {% else %}
+                                <div class="ui red message">
+                                    <strong>No Approval.</strong> <br>
+                                    Request need get approval before creating order.
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+    </div>
 </div>
 
-<div class="ui segment">
-    <div class="ui styled fluid accordion">
-            <div class="title {% if not per_bukis.validate %} active {% endif %}">
-                <i class="dropdown icon"></i>
-                Validation
-            </div>
-            <div class="content {% if not per_bukis.validate %} active {% endif %}">
-                {% if per_bukis.validate %}
-                <div class="ui info message">
-                    <strong>{{ per_bukis.get_validation.get_action_display|title }}</strong> <br>
-                    {{ per_bukis.get_validation.message }}
-                </div>
-                {% else %}
-                <form action="" method="post" class="ui small form">
-                    {% csrf_token %}
-                    <div class="field">
-                        <label for="">Action</label>
-                        {{ form.action }}
-                    </div>
-                    <div class="field">
-                        <label for="">Post Message</label>
-                        {{ form.message }}
-                    </div>
-                    <button type="submit" class="ui orange button">Save Validation</button>
-                </form>
-                {% endif %}
-            </div>
-            <div class="title {% if per_bukis.is_approved %} active {% endif %}">
-                <i class="dropdown icon"></i>
-                Create Resume Order
-            </div>
-            <div class="content {% if per_bukis.is_approved %} active {% endif %}">
-                {% if per_bukis.is_approved %}
-                <form action="" method="post" class="ui small form">
-                    {% csrf_token %}
-                    <div class="field disabled">
-                        <label for="">Circuit ID</label>
-                        {{ bukis_form.circuit }}
-                    </div>
-                    <div class="field">
-                        <label for="">Resume Order</label>
-                        {{ bukis_form.order_number }}
-                        {% if bukis_form.order_number.errors %}
-                            {% for error in bukis_form.order_number.errors %}
-                            <small style="color:brown">{{ error }}</small>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <button type="submit" class="ui primary button">Create Order</button>
-                </form>
-                {% else %}
-                <div class="ui red message">
-                    <strong>No Approval.</strong> <br>
-                    Request need get approval before creating order.
-                </div>
-                {% endif %}
-            </div>
-            <div class="title">
-                <i class="dropdown icon"></i> Create Manual Resume</div>
-            <div class="content">
-                {% if per_bukis.is_approved %}
-                <div class="ui info message">
-                    <strong>Penting!</strong>
-                    Pastikan sudah create atau segera request percepatan FFM / OCS agar tidak kelupaan.
-                </div>
-                <form action="" method="post" class="ui small form">
-                    {% csrf_token %}
-                    <div class="field disabled">
-                        {{ manual_form.permintaan_resume }}
-                    </div>
-                    <div class="field">
-                        <label for="">Keterangan Error</label>
-                        {{ manual_form.message }}
-                    </div>
-                    <button type="submit" class="ui teal button">Submit Resume</button>
-                </form>
-                {% else %}
-                <div class="ui red message">
-                    <strong>No Approval.</strong> <br>
-                    Request need get approval before creating order.
-                </div>
-                {% endif %}
-            </div>
-        </div>
-</div>
+
+
+
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        var init_c = function() {
+            var obj_c = $('#comment-id');
+            $.ajax({
+                url: obj_c.attr('target-url'),
+                dataType: 'json',
+                success: function(data) {
+                    obj_c.html(data.html);
+                }
+            })
+            return false;
+        }
+
+        init_c();
+    });
+</script>
 {% endblock %}

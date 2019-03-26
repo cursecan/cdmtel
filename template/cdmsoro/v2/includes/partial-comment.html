@@ -1,0 +1,39 @@
+<div class="ui comments">
+    <div class="header">Comments</div>
+    <div class="comment">
+        <a class="avatar">
+            <img src="https://semantic-ui.com/images/avatar/small/christian.jpg" alt="">
+        </a>
+        <div class="content">
+            <a class="author">Charles</a>
+            <div class="metadata">
+                <span class="date">{{ permin_resume.timestamp }}</span>
+            </div>
+            <div class="text">
+                {{ permin_resume.message }}
+            </div>
+            <div class="actions">
+                <a class="reply"><i class="like icon"></i> Like</a>
+            </div>
+        </div>
+    </div>
+    {% for i in update_permin %}
+    <div class="comment">
+        <a class="avatar">
+            <img src="https://semantic-ui.com/images/avatar/small/christian.jpg" alt="">
+        </a>
+        <div class="content">
+            <a class="author">Charles</a>
+            <div class="metadata">
+                <span class="date">{{ i.timestamp }}</span>
+            </div>
+            <div class="text">
+                {{ i.message }}
+            </div>
+            <div class="actions">
+                <a class="reply"><i class="like icon"></i> Like</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
