@@ -42,6 +42,10 @@
                 <a class="js-val" href="#" target-url="{% url 'collection:validation_list_record' customer.id %}">
                     <i class="comment alternate outline comments icon"></i>
                 </a> <strong>{{ customer.get_validation.get_validate_display|default:''|title }}</strong> {{ customer.get_validation.timestamp|naturaltime }}
+                {% else %}
+                    {% if customer.has_target %}
+                    Waiting validation
+                    {% endif %}
                 {% endif %}
             </td>
             <td class="right aligned">
