@@ -27,7 +27,7 @@
                             {{ cust_obj.bp }} / {{ cust_obj.account_number }}
                         </div>
                     </h4>
-                    <div class="ui top attached text menu">
+                    <div class="ui top attached text menu bjt-menu">
                         <div class="right menu">
                             <a href="#" target-url="{% url 'collection:coltarget_add' cust_obj.id %}" class="item">
                                 <i class="add icon"></i> Tambah
@@ -153,7 +153,7 @@
             return false;
         }
 
-        $('.ui.menu .item').click(load_modal_form);
+        $('.bjt-menu .item').click(load_modal_form);
 
         $('#target-id').on('click', '.js-btn', load_modal_form);
         $('.ui.modal').on('submit', '.js-form-update', post_form);
