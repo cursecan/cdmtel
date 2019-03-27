@@ -84,7 +84,9 @@
             <div class="six wide column">
                 <div class="ui segment">
                     <h5 class="ui header">Attached Docs.</h5>
+                    {% if cust_obj.avident_col.exists %}
                     <a href="#" class="js-doc" target-url="{% url 'collection:evident_list' cust_obj.id %}"><i class="huge file alternate icon"></i></a>
+                    {% endif %}
                     <a href="#" class="js-upload-photos"><i class="add icon"></i> New Upload</a>
 
                     <input id="fileupload" type="file" name="doc" multiple
