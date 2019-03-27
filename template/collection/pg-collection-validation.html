@@ -28,7 +28,7 @@ BJT Validation
                         </form>
                     </div>
                 </div>
-                <table class="ui attached small table">
+                <table class="ui bottom attached small table">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -73,36 +73,34 @@ BJT Validation
                 {% if customer_list.has_other_pages %}
                     <div class="ui pagination menu js-page">
                         {% if customer_list.has_previous %}
-                            <a href="" data-item="{{ customer_list.previous_page_number }}" class="item">&lt;</a>
+                            <a href="?page={{ customer_list.previous_page_number }}" data-item="{{ customer_list.previous_page_number }}" class="item">&lt;</a>
                         {% else %}
                             <div class="item disabled">&lt;</div>
                         {% endif %}            
 
                         {% if customer_list.number|add:'-4' > 1 %}
-                        <a href="#" data-item="{{ customer_list.number|add:'-5' }}" class="item">&hellip;</a>
+                        <a href="?page={{ customer_list.number|add:'-5' }}" data-item="{{ customer_list.number|add:'-5' }}" class="item">&hellip;</a>
                         {% endif %}
 
                         {% for i in customer_list.paginator.page_range %}
                             {% if customer_list.number == i %}
                                 <div class="item active ">{{ i }}</div>
                             {% elif i > customer_list.number|add:'-5' and i < customer_list.number|add:'5' %}
-                                <a href="#" data-item="{{ i }}" class="item">{{ i }}</a>
+                                <a href="?page={{ i }}" data-item="{{ i }}" class="item">{{ i }}</a>
                             {% endif %}
                         {% endfor %}
 
                         {% if customer_list.paginator.num_pages > customer_list.number|add:'4' %}
-                        <a href="#" data-item="{{ customer_list.number|add:'5' }}" class="item">&hellip;</a>
+                        <a href="?page={{ customer_list.number|add:'5' }}" data-item="{{ customer_list.number|add:'5' }}" class="item">&hellip;</a>
                         {% endif %}
 
                         {% if customer_list.has_next %}
-                            <a href="#" data-item="{{ customer_list.next_page_number }}" class="item">&gt;</a>
+                            <a href="?page={{ customer_list.next_page_number }}" data-item="{{ customer_list.next_page_number }}" class="item">&gt;</a>
                         {% else %}
                             <div class="item disabled">&gt;</div>
                         {% endif %}   
                     </div>
                 {% endif %}
-
-
             </div>
         </div>
     </div>
