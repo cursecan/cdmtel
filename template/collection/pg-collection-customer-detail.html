@@ -89,6 +89,14 @@
                         <i class="file alternate outline huge icon"></i>
                     </a>
                     {% endfor %}
+                    {% if messages %}
+                        {% for msg in messages %}
+                        <div class="ui waring message">
+                            <div class="header">Warning!</div>
+                            <p>{{ msg }}</p>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
 
                 <input id="fileupload" type="file" name="doc" multiple

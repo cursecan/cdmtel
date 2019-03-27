@@ -203,16 +203,19 @@ def custCollectDetailView(request, id):
     )
     formset = CustomerColFormet(request.POST or None, instance=cust_obj)
     if request.method == 'POST':
-        if formset.is_valid():
-            message = request.POST.get('msg', None)
-            if message:
-                Comment.objects.create(message=message, customer=cust_obj)
+        if AvidenttargetCol.objects.filter(customer=cust_obj).exists():
+            if formset.is_valid():
+                message = request.POST.get('msg', None)
+                if message:
+                    Comment.objects.create(message=message, customer=cust_obj)
 
-            formset.save()
-            messages.success(request, 'Perubahan data telah disimpan.')
+                formset.save()
+                messages.success(request, 'Perubahan data telah disimpan.')
 
-            return redirect('collection:account')
-            
+                return redirect('collection:account')
+        else :
+            messages.success(request, 'Masukan document sebagai evident biling jatuh tempo.')
+             
     content = {
         'cust_obj': cust_obj,
         'formset': formset,
