@@ -48,7 +48,7 @@
                             <div class="seven wide field">
                                 <label for="{{ form.amount.id_for_label }}">Termin ke-{{ forloop.counter }}</label>
                                 <div class="ui left labeled input">
-                                    <div class="ui label">IDR</div>
+                                    <div class="ui orange label">IDR</div>
                                     {{ form.amount }}
                                 </div>
                                 {% if form.amount.errors %}
@@ -77,6 +77,10 @@
                         </div>
                         {% endfor %}
                         
+                        <div class="field" style="padding-top: 15px">
+                            <label for="">Ket. Tambahan</label>
+                            <textarea name="msg" id="" cols="30" rows="5" placeholder="Boleh dikosongkan..."></textarea>
+                        </div>
                     </form>
                 </div>
                 <div id="upload-id" class="ui segment">

@@ -1,0 +1,11 @@
+<i class="close icon"></i>
+<div class="header">Document Uploads</div>
+<div class="content">
+    <div class="ui list">
+        {% for i in eviden_list %}
+        <div class="item">
+            <a href="/media/{{ i.doc }}" class="header" target="_blank">Document {{ forloop.counter }}</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>

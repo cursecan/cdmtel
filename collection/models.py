@@ -53,3 +53,8 @@ class Validation(CommonBase):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='bjt_cust_validate', blank=True, null=True)
     validate = models.CharField(max_length=2, choices=LIST_VALIDATE)
     msg = models.TextField(max_length=500)
+
+
+class Comment(CommonBase):
+    message = models.TextField(max_length=500)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='cust_messages')

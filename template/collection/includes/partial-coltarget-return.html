@@ -1,0 +1,14 @@
+{% load humanize %}
+
+{% for c in cust_obj.coltarget_customer.all %}
+<tr class="target-{{ c.id }}">
+    <td class="center aligned">{{ forloop.counter }}</td>
+    <td class="center aligned">{{ c.amount|intcomma }}</td>
+    <td class="center aligned">{{ c.due_date }}</td>
+    <td class="right aligned"><a class="js-btn" title="Edit" href="#" target-url="{% url 'collection:coltarget_update' c.id %}"><i class="edit icon"></i></a></td>
+</tr>
+{% empty %}
+<tr>
+    <td>Empty</td>
+</tr>
+{% endfor %}

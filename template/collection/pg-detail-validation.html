@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load humanize %}
+{% load static %}
 
 {% block title %}
 {{ cust_obj.customer_name }}
@@ -8,66 +9,185 @@
 {% block content %}
 <div class="ui vertical basic segment">
     <div class="ui container">
-        <div class="ui breadcrumb" style="">
-            <a href="{% url 'collection:validation' %}" class="section">Validation</a>
-            <div class="divider">/</div>
-            <div class="section active">{{ cust_obj.customer_name|title }}</div>
-        </div>
-        <div class="ui top attached segment">
-            <h4 class="ui header">
-                {{ cust_obj.customer_name|upper }} ({{ cust_obj.segment|default:"..." }})
-                <div class="sub header">
-                    {{ cust_obj.bp }} / {{ cust_obj.account_number }}
+        <div class="ui stackable grid">
+            <div class="row">
+                <div class="column">
+                    <div class="ui breadcrumb" style="">
+                        <a href="{% url 'collection:validation' %}" class="section">Validation</a>
+                        <div class="divider">/</div>
+                        <div class="section active">{{ cust_obj.customer_name|title }}</div>
+                    </div>
                 </div>
-            </h4>
-            <table class="ui celled teal striped table">
-                <thead>
-                    <tr>
-                        <th class="center aligned">Termin Ke-N</th>
-                        <th class="center aligned">Nominal</th>
-                        <th class="center aligned">Jatuh Tempo</th>
-                    </tr>
-                </thead>
-               <tbody>
-                    {% for c in cust_obj.coltarget_customer.all %}
-                    <tr>
-                        <td class="center aligned">{{ forloop.counter }}</td>
-                        <td class="center aligned">{{ c.amount|intcomma }}</td>
-                        <td class="center aligned">{{ c.due_date }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td>Empty</td>
-                    </tr>
-                    {% endfor %}
-               </tbody>
-            </table>
-        </div>
-        <div class="ui attached segment">
-            <h5 class="ui header">Attached Docs.</h5>
-            {% for a in cust_obj.avident_col.all %}
-                <a href="/media/{{ a.doc }}" target="_blank">
-                    <i class="huge file alternate icon"></i>
-                </a>
-            {% empty %}
-            -
-            {% endfor %}
-        </div>
-        <div class="ui bottom attached segment">
-            <form action="" method="post" class="ui form">
-                {% csrf_token %}
-                <div class="three wide field">
-                    <label for="">Validate</label>
-                    {{ form.validate }}
+            </div>
+            <div class="ten wide column">
+                <div class="ui segment" style="min-height:400px">
+                    <h4 class="ui header">
+                        {{ cust_obj.customer_name|upper }} ({{ cust_obj.segment|default:"..." }})
+                        <div class="sub header">
+                            {{ cust_obj.bp }} / {{ cust_obj.account_number }}
+                        </div>
+                    </h4>
+                    <div class="ui top attached text menu">
+                        <div class="right menu">
+                            <a href="#" target-url="{% url 'collection:coltarget_add' cust_obj.id %}" class="item">
+                                <i class="add icon"></i> Tambah
+                            </a>
+                        </div>
+                    </div>
+                    <table id="target-id" class="ui celled teal striped bottom attached table">
+                        <thead>
+                            <tr>
+                                <th class="center aligned">Termin Ke-N</th>
+                                <th class="center aligned">Nominal</th>
+                                <th class="center aligned">Jatuh Tempo</th>
+                                <th class="right aligned">#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for c in cust_obj.coltarget_customer.all %}
+                            <tr class="target-{{ c.id }}">
+                                <td class="center aligned">{{ forloop.counter }}</td>
+                                <td class="center aligned">{{ c.amount|intcomma }}</td>
+                                <td class="center aligned">{{ c.due_date }}</td>
+                                <td class="right aligned">
+                                    <a class="js-btn" title="Edit" href="#" target-url="{% url 'collection:coltarget_update' c.id %}"><i class="edit icon"></i></a>
+                                    <a href=""><i class="close red icon"></i></a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td>Empty</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="ui comments">
+                        {% for i in cust_obj.cust_messages.all %}
+                        <div class="comment">
+                            <a class="avatar">
+                                <img src="https://semantic-ui.com/images/avatar/small/jenny.jpg" alt="">
+                            </a>
+                            <div class="content">
+                                <a class="author">Max Marc</a>
+                                <div class="metadata">
+                                    <span class="date">{{ i.timestamp }}</span>
+                                </div>
+                                <div class="text">
+                                    {{ i.message }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
-                <div class="field">
-                    <label for="">Message</label>
-                    {{ form.msg }}
+            </div>
+            <div class="six wide column">
+                <div class="ui segment">
+                    <h5 class="ui header">Attached Docs.</h5>
+                    <a href="#" class="js-doc" target-url="{% url 'collection:evident_list' cust_obj.id %}"><i class="huge file alternate icon"></i></a>
+                    <a href="#" class="js-upload-photos"><i class="add icon"></i> New Upload</a>
+
+                    <input id="fileupload" type="file" name="doc" multiple
+                        style="display: none;"
+                        data-url="{% url 'collection:customer_upload' cust_obj.id %}"
+                        data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
                 </div>
-                <button onclick="window.history.back(); return false;" class="ui button">Cancel</button>
-                <button type="submit" class="ui primary button">Save Validation</button>
-            </form>
+                <div class="ui segment">
+                    <form action="" method="post" class="ui form">
+                        {% csrf_token %}
+                        <div class="field">
+                            <label for="">Validate</label>
+                            {{ form.validate }}
+                        </div>
+                        <div class="field">
+                            <label for="">Message</label>
+                            {{ form.msg }}
+                        </div>
+                        <button onclick="window.history.back(); return false;" class="ui button">Cancel</button>
+                        <button type="submit" class="ui primary button">Save Validation</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'vendor/jquery.ui.widget.js' %}"></script>
+<script src="{% static 'jquery.iframe-transport.js' %}"></script>
+<script src="{% static 'jquery.fileupload.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+        var load_modal_form = function() {
+            var btn = $(this);
+            $.ajax({
+                url: btn.attr('target-url'),
+                dataType: 'json',
+                beforeSend: function() {
+                    $('.ui.modal').addClass('small').modal('show');
+                },
+                success: function(data)  {
+                    $('.ui.modal').html(data.html);
+                }
+            })
+            return false;
+        }
+
+        var post_form = function() {
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                dataType: 'json',
+                data: form.serialize(),
+                success: function(data) {
+                    if (data.form_is_valid) {
+                        $('#target-id tbody').html(data.data_html);
+                        $('.ui.modal').modal('hide');
+                        // alert('Update data berhasil!');
+                    }
+                }
+            })
+            return false;
+        }
+
+        $('.ui.menu .item').click(load_modal_form);
+
+        $('#target-id').on('click', '.js-btn', load_modal_form);
+        $('.ui.modal').on('submit', '.js-form-update', post_form);
+
+        $('.js-doc').click(function() {
+            var btn = $(this);
+            var dal = $('.ui.modal');
+            $.ajax({
+                url: btn.attr('target-url'),
+                dataType: 'json',
+                beforeSend: function() {
+                    dal.addClass('tiny').modal('show');
+                },
+                success: function(data) {
+                    dal.html(data.html);
+                }
+            });
+            return false;
+        });
+
+        $(".js-upload-photos").click(function () {
+            $("#fileupload").click();
+        });
+
+        $("#fileupload").fileupload({
+            dataType: 'json',
+            done: function (e, data) {  /* 3. PROCESS THE RESPONSE FROM THE SERVER */
+                if (data.result.is_valid) {
+                    alert('Upload berhasil!');
+                } else {
+                    alert('Failed to upload document. Max size 1Mb and only .pdf or image file.');
+                }
+            }
+        });
+    });
+</script>
 {% endblock %}

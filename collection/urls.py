@@ -19,6 +19,7 @@ urlpatterns = [
     path('api/customer/dettail/<int:id>/', views.jsonCustomerDetailJtempo, name='api_detail_customer'),
     path('api/customer/upload-doc/<int:id>/', views.jsonUploadDocView, name='customer_upload'),
     path('api/validation-list/<int:id>/', views.json_validation_record_list, name='validation_list_record'),
-
-
+    path('api/evident-list/<int:id>/', views.json_eviden_bjt, name='evident_list'),
+    path('api/collect-target-<int:id>/update/', views.json_update_coltarget, name='coltarget_update'),
+    path('api/collect-target-<int:id>/add/', views.json_add_coltarget, name='coltarget_add'),
 ]

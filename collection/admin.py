@@ -1,11 +1,15 @@
 from django.contrib import admin
 
 from .models import (
-    ColTarget, Saldo, AvidenttargetCol, ColSegment, Validation
+    ColTarget, Saldo, AvidenttargetCol, ColSegment, Validation, Comment
 )
 
 @admin.register(Validation)
 class ValidationAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
     pass
 
 @admin.register(ColTarget)

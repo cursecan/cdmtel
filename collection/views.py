@@ -20,11 +20,11 @@ from core.decorators import (
 )
 
 from .models import (
-    ColTarget, Validation, AvidenttargetCol,
+    ColTarget, Validation, AvidenttargetCol, Comment
 )
 
 from .forms import (
-    CustomerColFormet, AvidenttargetColForm, ValidationForm
+    CustomerColFormet, AvidenttargetColForm, ValidationForm, ColTargetForm
 )
 
 def index(request):
@@ -204,6 +204,10 @@ def custCollectDetailView(request, id):
     formset = CustomerColFormet(request.POST or None, instance=cust_obj)
     if request.method == 'POST':
         if formset.is_valid():
+            message = request.POST.get('msg', None)
+            if message:
+                Comment.objects.create(message=message, customer=cust_obj)
+
             formset.save()
             messages.success(request, 'Perubahan data telah disimpan.')
 
@@ -356,5 +360,76 @@ def json_validation_record_list(request, id):
     data['html'] = render_to_string(
         'collection/includes/partial-validation-record-list.html',
         content,
+    )
+    return JsonResponse(data)
+
+
+def json_eviden_bjt(request, id):
+    data = dict()
+    evident_objs = AvidenttargetCol.objects.filter(
+        customer__id=id
+    )
+    content = {
+        'eviden_list': evident_objs
+    }
+    data['html'] = render_to_string(
+        'collection/includes/partial-eviden-list.html',
+        content, request=request
+    )
+    return JsonResponse(data)
+
+
+def json_update_coltarget(request, id):
+    col_obj = get_object_or_404(ColTarget, pk=id)
+    data = dict()
+    form = ColTargetForm(request.POST or None, instance=col_obj)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            data['form_is_valid'] = True
+            cust_obj = Customer.objects.get(coltarget_customer__id=id)
+            data['data_html'] = render_to_string(
+                'collection/includes/partial-coltarget-return.html',
+                {'cust_obj': cust_obj}, request=request
+            )
+        else :
+            data['form_is_valid'] = False
+
+    content = {
+        'form': form
+    }
+    data['html'] = render_to_string(
+        'collection/includes/partial-coltarget-form.html',
+        content, request=request
+    )
+    return JsonResponse(data)
+
+
+def json_add_coltarget(request, id):
+    cust_obj = get_object_or_404(Customer, pk=id)
+    data = dict()
+    form = ColTargetForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.customer = cust_obj
+            instance.save()
+            
+            data['form_is_valid'] = True
+            cust_obj.refresh_from_db()
+            data['data_html'] = render_to_string(
+                'collection/includes/partial-coltarget-return.html',
+                {'cust_obj': cust_obj}, request=request
+            )
+        else :
+            data['form_is_valid'] = False
+
+    content = {
+        'form': form,
+        'cust_obj': cust_obj
+    }
+    data['html'] = render_to_string(
+        'collection/includes/partial-coltarget-add-form.html',
+        content, request=request
     )
     return JsonResponse(data)
