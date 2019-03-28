@@ -1,0 +1,17 @@
+<i class="close icon"></i>
+<div class="content">
+    <form action="{% url 'collection:json_approval_post' validate_obj.id %}" method="post" class="ui form js-post-form">
+        {% csrf_token %}    
+        <div class="field right aligned">
+            <div class="ui toggle checkbox">
+                {{ form.approve }}
+                <label for="{{ form.approve.id_for_label }}">Approve</label>
+            </div>
+        </div>
+        <div class="field">
+            <label for="">Message</label>
+            {{ form.message }}
+        </div>
+        <button class="ui primary button" type="submit">Commit</button>
+    </form>
+</div>

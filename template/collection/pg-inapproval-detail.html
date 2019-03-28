@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+APPROVAL - {{ validate_obj.customer.customer_name }}
+{% endblock %}
+
+{% block content %}
+<div class="ui basic vertical segment">
+    <div class="ui text container">
+        <div class="ui stackable grid">
+            <div class="row">
+                <div class="column">
+                    <div class="ui breadcrumb">
+                        <a href="#" onclick="window.history.back(); return false;" class="section">
+                            Approval List
+                        </a>
+                        <div class="divider">
+                            /
+                        </div>
+                        <div class="section active">{{ validate_obj.customer.account_number }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <div class="ui clearing segment">
+                        <h4 class="ui left floated header">
+                            {{ validate_obj.customer.customer_name|upper }}
+                            <div class="sub header">
+                                {{ validate_obj.customer.bp }} / {{ validate_obj.customer.account_number }}
+                            </div>
+                        </h4>
+                        <div target-url="{% url 'collection:json_approval_post' validate_obj.id %}" class="ui orange right floated button js-approval-btn">Waiting Approval</div>
+                        <div class="ui top attached text menu">
+                            <div class="right menu">
+                                <!-- <div class="item active">{{ validate_obj.customer.get_response_cdm }}</div> -->
+                            </div>
+                        </div>
+                        <table class="ui small bottom attached celled table">
+                            <thead>
+                                <tr>
+                                    <th class="center aligned">Termin Ke-N</th>
+                                    <th class="center aligned">Nominal</th>
+                                    <th class="center aligned">Jatuh Tempo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in validate_obj.customer.coltarget_customer.all %}
+                                <tr>
+                                    <td class="center aligned">{{ forloop.counter }}</td>
+                                    <td class="center aligned">{{ i.amount|intcomma }}</td>
+                                    <td class="center aligned">{{ i.due_date }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <thead>
+                                <tr>
+                                    <th class="center aligned">Total bjt</th>
+                                    <th class="right aligned" colspan="2">10.000</th>
+                                </tr>
+                            </thead>
+                        </table>
+
+                        <div class="ui comments">
+                            <!-- <div class="header">Officer</div> -->
+                            <div class="comment">
+                                <div class="avatar">
+                                    <img src="https://semantic-ui.com/images/avatar/small/matt.jpg" alt="">
+                                </div>
+                                <div class="content">
+                                    <a class="author">Officer {{ validate_obj.create_by.username|title }}</a>
+                                    <div class="metadata">
+                                        <span class="date">{{ validate_obj.timestamp|naturaltime }}</span>
+                                    </div>
+                                    <div class="text">
+                                        <p>{{ validate_obj.msg }}</p>
+                                    </div>
+                                    <div class="actions">
+                                        <span class="like"><i class="like icon"></i> Like</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="ui comments">
+                            <div class="header">Comments</div>
+                            {% for i in validate_obj.customer.cust_messages.all %}
+                            <div class="comment">
+                                <div class="avatar">
+                                    <img src="https://semantic-ui.com/images/avatar/small/matt.jpg" alt="">
+                                </div>
+                                <div class="content">
+                                    <a class="author">Robert</a>
+                                    <div class="metadata">
+                                        <span class="date">{{ i.timestamp }}</span>
+                                    </div>
+                                    <div class="text">
+                                        {{ i.message }}
+                                    </div>
+                                    <div class="actions">
+                                        <span class="like"><i class="like icon"></i> Like</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}(
+<script>
+    $(document).ready(function() {
+        var load_form = function() {
+            var btn = $(this);
+            $.ajax({
+                url: btn.attr('target-url'),
+                dataType: 'json',
+                beforeSend: function() {
+                    $('.ui.modal').addClass('tiny').modal('show');
+                },
+                success: function(data) {
+                    $('.ui.modal').html(data.html);
+                }
+            });
+            return false;
+        }
+
+        var post_form = function() {
+            var form = $(this);
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                dataType: 'json',
+                data: form.serialize(),
+                success: function(data) {
+                    $('.ui.modal').modal('hide');
+                }
+            })
+            return false;
+        }
+
+        $('.js-approval-btn').click(load_form);
+        $('.ui.modal').on('submit', '.js-post-form', post_form);
+    });
+</script>
+{% endblock %}

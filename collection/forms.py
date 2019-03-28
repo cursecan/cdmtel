@@ -7,10 +7,20 @@ from django.utils import timezone
 from cdmsoro.validators import validate_file_extension, validate_file_size
 
 from .models import (
-    ColTarget, AvidenttargetCol, Validation
+    ColTarget, AvidenttargetCol, Validation, Approval
 )
 from masterdata.models import Customer
 
+class ApprovalForm(forms.ModelForm):
+    class Meta:
+        model = Approval
+        fields = [
+            'approve',
+            'message',
+        ]
+        widgets = {
+            'message': forms.Textarea(attrs={'placeholder': 'Approved..'})
+        }
 
 class ColTargetForm(forms.ModelForm):
     class Meta:

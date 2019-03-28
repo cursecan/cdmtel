@@ -18,17 +18,17 @@ expired_date = today + datetime.timedelta(weeks=60)
 def order_bulk_update_view(request):
     order_obj = Order.objects.filter(closed=False)
     if order_obj.exists():
-        bulk_order_update(repeat=50000, repeat_until=expired_date)
+        bulk_order_update(repeat=10000, repeat_until=expired_date)
         
     return JsonResponse({'process_order': order_obj.count()})
 
 
 def daily_record_view(request):
-    record_data(repeat=30000, repeat_until=expired_date)
+    record_data(repeat=10000, repeat_until=expired_date)
     return JsonResponse({'daily_record': '1'})
 
 
 def record_account_view(request):
-    get_record_account(repeat=50000, repeat_until=expired_date)
+    get_record_account(repeat=10000, repeat_until=expired_date)
     return JsonResponse({'daily_record': '1'})
 

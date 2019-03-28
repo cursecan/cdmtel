@@ -7,8 +7,8 @@ BJT Validation
 
 {% block content %}
 <div class="ui vertical basic segment">
-    <div class="ui fluid container">
-        <div class="ui stackable padded grid">
+    <div class="ui container">
+        <div class="ui stackable grid">
             <div class="column">
                 {% if messages %}
                 {% for msg in messages %}
@@ -55,11 +55,12 @@ BJT Validation
                                 {{ cust.get_saldo.amount|default:0|intcomma }}
                             </td>
                             <td>
-                                {% if not cust.is_valid %}
+                                <!-- {% if not cust.is_valid %}
                                 -
                                 {% else %}
                                 {{ cust.get_validation.get_validate_display|default:'-'}}
-                                {% endif %}
+                                {% endif %} -->
+                                {{ cust.get_response_cdm }}
                             </td>
                         </tr>
                         {% empty %}

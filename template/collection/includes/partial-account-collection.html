@@ -23,7 +23,7 @@
             <th>CUSTOMER</th>
             <th>FBCC</th>
             <th>SEGMEN</th>
-            <th>LAST VALIDATED</th>
+            <th>STATUS</th>
             <th class="right aligned">SALDO</th>
             <th></th>
         </tr>
@@ -38,7 +38,7 @@
             <td>{{ customer.fbcc|default:'-' }}</td>
             <td>{{ customer.segment|default:'-' }}</td>
             <td>
-                {% if customer.is_valid %}
+                <!-- {% if customer.is_valid %}
                 <a class="js-val" href="#" target-url="{% url 'collection:validation_list_record' customer.id %}">
                     <i class="comment alternate outline comments icon"></i>
                 </a> <strong>{{ customer.get_validation.get_validate_display|default:''|title }}</strong> {{ customer.get_validation.timestamp|naturaltime }}
@@ -46,7 +46,8 @@
                     {% if customer.has_target %}
                     Waiting validation
                     {% endif %}
-                {% endif %}
+                {% endif %} -->
+                {{ customer.get_response_cdm|default:'' }}
             </td>
             <td class="right aligned">
                 <h4 class="ui header">

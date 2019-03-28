@@ -23,6 +23,8 @@ class Customer(CommonBase):
     is_valid = models.BooleanField(default=False)
     no_valid = models.BooleanField(default=False)
     has_target = models.BooleanField(default=False)
+    has_validate = models.BooleanField(default=False)
+    has_approve = models.BooleanField(default=False)
     last_update = models.DateTimeField(blank=True, null=True)
 
     class Meta:
@@ -36,6 +38,23 @@ class Customer(CommonBase):
 
     def get_validation(self):
         return self.bjt_cust_validate.latest('timestamp')
+
+    def get_response_cdm(self):
+        if self.has_approve:
+            last_valid = self.bjt_cust_validate.latest('timestamp')
+            last_approve = last_valid.approval_set.latest('timestamp')
+            if last_approve.approve:
+                return 'Approved'
+
+        if self.has_validate:
+            return 'Waiting Approval'
+
+        if self.has_target:
+            return 'Waiting Validate'
+        
+        last_valid = self.bjt_cust_validate.latest('timestamp')
+        if last_valid.validate == 'RE':
+            return 'Rejected'
 
 
 class FbccSegment(CommonBase):
@@ -88,3 +107,16 @@ class Order(CommonBase):
 
     def get_account(self):
         return self.circuit.account.account_number
+
+
+class BackgTaskUpdate(CommonBase):
+    BJT = 'BJT'
+    REQSO = 'RSO'
+    ORSTATUS = 'STA'
+
+    LISTBG = (
+        (BJT, 'BJT UPDATE'),
+        (REQSO, 'RECORD ORDER'),
+        (ORSTATUS, 'STATUS ORDER')
+    )
+    typetask = models.CharField(max_length=3, choices=LISTBG)

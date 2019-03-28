@@ -8,4 +8,6 @@ from .models import Profile
 @receiver(post_save, sender=User)
 def generate_initial_profile(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(user=instance)
+        profile_obj = Profile.objects.create(user=instance)
+        profile_obj.superior = profile_obj
+        profile_obj.save()

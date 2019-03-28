@@ -11,7 +11,8 @@ class ColTarget(CommonBase):
     amount = models.DecimalField(max_digits=12, decimal_places=0)
     due_date = models.DateField()
     create_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='coltarget_creator')
-
+    is_valid = models.BooleanField(default=False)
+    
     class Meta:
         ordering = ['due_date']
         
@@ -40,7 +41,7 @@ class ColSegment(CommonBase):
 class AvidenttargetCol(CommonBase):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=True, null=True, related_name='avident_col')
     doc = models.FileField(max_length=200, upload_to='collection/file/')
-    message = models.TextField(max_length=500, blank=True)
+    message = models.TextField(max_length=2000, blank=True)
 
 
 class Validation(CommonBase):
@@ -52,9 +53,17 @@ class Validation(CommonBase):
     )
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='bjt_cust_validate', blank=True, null=True)
     validate = models.CharField(max_length=2, choices=LIST_VALIDATE)
-    msg = models.TextField(max_length=500)
-
+    msg = models.TextField(max_length=2000)
+    create_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='validate_creator')
+    closed = models.BooleanField(default=False)
 
 class Comment(CommonBase):
-    message = models.TextField(max_length=500)
+    message = models.TextField(max_length=2000)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='cust_messages')
+
+
+class Approval(CommonBase):
+    validation = models.ForeignKey(Validation, on_delete=models.CASCADE, blank=True, null=True)
+    message = models.TextField(max_length=2000)
+    approve = models.BooleanField(default=False)
+    create_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='approval_creator')

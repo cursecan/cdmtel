@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}
+Approval
+{% endblock %}
+
+{% block content %}
+<div class="ui vertical basic segment">
+    <div class="ui container">
+        <div class="ui stackable grid">
+            <div class="row">
+                <div class="column">
+                    <table class="ui small table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>CUSTOMER</th>
+                                <th>PIUTANG</th>
+                                <th>STATUS</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for v in validation_list %}
+                            <tr onclick="window.location.href='{% url 'collection:detail_approval' v.id %}'">
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <a href="#">{{ v.customer.bp }} / {{ v.customer.account_number }}</a><br>
+                                    {{ v.customer.customer_name }}
+                                </td>
+                                <td>{{ v.customer.cur_saldo|intcomma }}</td>
+                                <td>{{ v.customer.get_response_cdm }}</td>
+                                <td>{{ v.timestamp }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td>Empty</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

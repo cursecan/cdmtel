@@ -20,11 +20,11 @@ from core.decorators import (
 )
 
 from .models import (
-    ColTarget, Validation, AvidenttargetCol, Comment
+    ColTarget, Validation, AvidenttargetCol, Comment, Approval
 )
 
 from .forms import (
-    CustomerColFormet, AvidenttargetColForm, ValidationForm, ColTargetForm
+    CustomerColFormet, AvidenttargetColForm, ValidationForm, ColTargetForm, ApprovalForm
 )
 
 def index(request):
@@ -67,10 +67,10 @@ def json_accountCollecView(request):
 
     customer_objs = customer_objs.annotate(
         s_tagih = F('cur_saldo') - Coalesce(
-            Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__gt=period)), V(0)
+            Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__gt=period) & Q(coltarget_customer__is_valid=True)), V(0)
         ),
         b_tagih = Coalesce(
-            Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__lte=period)), V(0)
+            Sum('coltarget_customer__amount', filter=Q(coltarget_customer__due_date__lte=period) & Q(coltarget_customer__is_valid=True)), V(0)
         )
     )
 
@@ -112,7 +112,7 @@ def json_SegmentListView(request):
         period.append(cdate)
         sm['cust_sum_{}'.format(i)] = Coalesce(
             Sum('customer_list__coltarget_customer__amount', 
-            filter=Q(customer_list__coltarget_customer__due_date__gte=cdate)), V(0)
+            filter=Q(customer_list__coltarget_customer__due_date__gte=cdate) & Q(customer_list__coltarget_customer__is_valid=True)), V(0)
         )
         
         cdate = cdate.add(months=1) 
@@ -300,10 +300,13 @@ def jsonUploadDocView(request, id):
     return JsonResponse(data)
 
 
+# -- LEVEL OFFICER --
 @login_required
 @user_validator
 def collectionValidationView(request):
-    cust_obj = Customer.objects.filter(has_target=True, is_valid=False)
+    cust_obj = Customer.objects.filter(has_target=True).order_by(
+        'has_validate', 'has_approve', '-timestamp'
+    )
     if not request.user.is_superuser:
         cust_obj = cust_obj.filter(
             fbcc=request.user.profile.fbcc
@@ -331,10 +334,11 @@ def collectionValidationView(request):
     return render(request, 'collection/pg-collection-validation.html', content)
 
 
+# -- LEVEL OFFICER --
 @login_required
 @user_validator
 def detailColValidationView(request, id):
-    cust_obj = get_object_or_404(Customer, pk=id, has_target=True)
+    cust_obj = get_object_or_404(Customer, pk=id, has_target=True, has_validate=False)
     form = ValidationForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
@@ -349,6 +353,63 @@ def detailColValidationView(request, id):
         'form': form
     }
     return render(request, 'collection/pg-detail-validation.html', content)
+
+
+
+@login_required
+@user_validator
+def approvalListView(request):
+    validate_objs = Validation.objects.filter(
+        customer__has_validate=True, customer__has_approve=False, closed=False
+    ).select_related('customer').order_by(
+        'customer__is_approve', '-timestamp'
+    )
+    if not request.user.is_superuser:
+        validate_objs = validate_objs.filter(
+            customer__fbcc = request.user.profile.fbcc
+        )
+
+
+
+    content = {
+        'validation_list': validate_objs 
+    }
+    return render(request, 'collection/pg-inapproval-list.html', content)
+
+
+@login_required
+@user_validator
+def approvalDetailView(request, id):
+    validate_obj = get_object_or_404(Validation, pk=id)
+    content = {
+        'validate_obj': validate_obj
+    }
+    return render(request, 'collection/pg-inapproval-detail.html', content)
+
+
+@login_required
+@user_validator
+def json_postApprovalView(request, id):
+    validate_obj = get_object_or_404(Validation, pk=id)
+    data = dict()
+    form = ApprovalForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.validation = validate_obj
+            instance.create_by = request.user
+            instance.save()
+
+    content = {
+        'form': form,
+        'validate_obj': validate_obj,
+    }
+    data['html'] = render_to_string(
+        'collection/includes/partial-post-approval.html',
+        content, request=request
+    )
+    return JsonResponse(data)
+
 
 
 def json_validation_record_list(request, id):

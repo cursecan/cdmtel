@@ -11,6 +11,8 @@ urlpatterns = [
     path('entry-data/', views.entryDataView, name='entry_data'),
     path('validation/', views.collectionValidationView, name='validation'),
     path('validation/<int:id>/', views.detailColValidationView, name='detail_validation'),
+    path('approval/', views.approvalListView, name='approval'),
+    path('approval/<int:id>/', views.approvalDetailView, name='detail_approval'),
 
     path('api/segment-list', views.json_SegmentListView, name='api_segment_list'),
     path('api/segment/', views.json_SegmentCollecView, name='api_segment'),
@@ -22,4 +24,5 @@ urlpatterns = [
     path('api/evident-list/<int:id>/', views.json_eviden_bjt, name='evident_list'),
     path('api/collect-target-<int:id>/update/', views.json_update_coltarget, name='coltarget_update'),
     path('api/collect-target-<int:id>/add/', views.json_add_coltarget, name='coltarget_add'),
+    path('api/approval-<int:id>/post/', views.json_postApprovalView, name='json_approval_post'),
 ]
