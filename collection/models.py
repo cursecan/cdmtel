@@ -57,6 +57,11 @@ class Validation(CommonBase):
     create_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='validate_creator')
     closed = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = [
+            '-timestamp'
+        ]
+
 class Comment(CommonBase):
     message = models.TextField(max_length=2000)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='cust_messages')

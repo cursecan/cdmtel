@@ -16,7 +16,7 @@
     </div>
 </div>
 
-<table id="cust-id" class="ui bottom attached striped table">
+<table id="cust-id" class="ui bottom attached stripeds table">
     <thead>
         <tr>
             <th>BP NUMBER</th>
@@ -38,16 +38,8 @@
             <td>{{ customer.fbcc|default:'-' }}</td>
             <td>{{ customer.segment|default:'-' }}</td>
             <td>
-                <!-- {% if customer.is_valid %}
-                <a class="js-val" href="#" target-url="{% url 'collection:validation_list_record' customer.id %}">
-                    <i class="comment alternate outline comments icon"></i>
-                </a> <strong>{{ customer.get_validation.get_validate_display|default:''|title }}</strong> {{ customer.get_validation.timestamp|naturaltime }}
-                {% else %}
-                    {% if customer.has_target %}
-                    Waiting validation
-                    {% endif %}
-                {% endif %} -->
                 {{ customer.get_response_cdm|default:'' }}
+                <a data-item="{{ customer.id }}" class="js-comment" title="View comments"><i class="question circle outline icon"></i></a>
             </td>
             <td class="right aligned">
                 <h4 class="ui header">
@@ -63,6 +55,30 @@
                 {% if request.user.is_authenticated %}
                 <a href="{% url 'collection:detail_validation' customer.id %}"><i class="setting icon"></i></a>
                 {% endif %}
+            </td>
+        </tr>
+        <tr id="comment-{{ customer.id }}" class="transition hidden">
+            <td colspan="7">
+                <div class="ui comments">
+                    <div class="header">Comments</div>
+                    {% for i in customer.bjt_cust_validate.all %}
+                    <div class="comment">
+                        <a class="avatar">
+                            <img src="https://semantic-ui.com/images/avatar/small/stevie.jpg" alt="">
+                        </a>
+                        <div class="content">
+                            <a class="author">Miechel</a> has {{ i.get_validate_display|lower }}
+                            <div class="metadata">{{ i.timestamp|naturaltime }}</div>
+                            <div class="text">{{ i.msg }}</div>
+                            <div class="actions">
+                                <span class="like"><i class="like icon"></i> Like</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    No comment
+                    {% endfor %}
+                </div>
             </td>
         </tr>
         {% empty %}

@@ -154,6 +154,12 @@ $(document).ready(function() {
         });
         return false;
     });
+    
+    $('#i-content').on('click', '#cust-id .js-comment', function() {
+        var btn = $(this);
+        $('#i-content #comment-'+btn.attr('data-item')).transition('slide down');
+        return false;
+    });
 });
 </script>
 {% endblock %} 
