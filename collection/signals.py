@@ -39,7 +39,7 @@ def validation_triger(sender, instance, created, **kwargs):
             )
         else :
             Customer.objects.filter(bjt_cust_validate=instance).update(
-                has_target=False
+                has_target=False, has_validate=False, has_approve=False
             )
             instance.closed = True
             instance.save()
