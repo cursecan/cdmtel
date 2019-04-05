@@ -131,7 +131,7 @@ $(document).ready(function() {
         $('.datepick').calendar('destroy');
         $('.datepick').calendar({
             type: 'month',
-            minDate: new Date(),
+            // minDate: new Date(),
             formatter: {
                 date: function(date, settings) {
                     if (!date) return '';

@@ -16,6 +16,7 @@ from masterdata.forms import (
     ResumeOrderForm, ResumeOrderForm_v2
 )
 from masterdata.models import Order
+from core.decorators import user_executor
 from cdmsoro.tasks import sending_telegram
 from cdmsoro.tasks import sending_to_pic
 
@@ -60,6 +61,7 @@ def permintaan_bukis_list_view(request):
     return render(request, 'cdmsoro/v2/pg-index2.html', content)
 
 @login_required()
+@user_executor
 def per_bukis_detail_view(request, id):
     per_bukis = get_object_or_404(PermintaanResume, pk=id, resume__isnull=True)
     form = BukisValidationForm(request.POST or None)
@@ -99,6 +101,7 @@ def per_bukis_detail_view(request, id):
     return render(request, 'cdmsoro/v2/pg-detail-per-bukis.html', content)
 
 @login_required()
+@user_executor
 def uncomplete_order_list_view(request):
     page = request.GET.get('page', 1)
     order_objs = Order.objects.filter(closed=False)
@@ -118,6 +121,7 @@ def uncomplete_order_list_view(request):
 
 
 @login_required()
+@user_executor
 def manual_bukis_list(request):
     page = request.GET.get('page', 1)
     search = request.GET.get('search', None)
@@ -139,6 +143,7 @@ def manual_bukis_list(request):
     return render(request, 'cdmsoro/v2/pg-manual-bukis-list.html', content)
 
 @login_required()
+@user_executor
 def detail_manual_bukis_view(request, id):
     per_bukis = get_object_or_404(PermintaanResume, pk=id, manual_bukis=True)
     resume_form = ResumeOrderForm(per_bukis.sid.sid, request.POST or None, initial={'circuit': per_bukis.sid})
@@ -163,6 +168,7 @@ def detail_manual_bukis_view(request, id):
 
 
 @login_required()
+@user_executor
 def permin_bukis_detail_view(request, id):
     data = dict()
     per_bukis = get_object_or_404(PermintaanResume, pk=id)
@@ -198,6 +204,7 @@ def permin_bukis_detail_view(request, id):
 
 
 @login_required()
+@user_executor
 def uncomplete_order_view(request):
     data = dict()
     page = request.GET.get('page', 1)
@@ -234,6 +241,7 @@ def lapor_soro(requests, id):
 
 
 @login_required
+@user_executor
 def json_comment(request, id):
     data = dict()
     permin_resume = get_object_or_404(PermintaanResume, pk=id)
