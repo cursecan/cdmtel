@@ -8,10 +8,12 @@ from masterdata.models import FbccSegment
 class Profile(CommonBase):
     VALIDATOR = 'VD'
     EXECUTOR = 'EX'
+    EXECUTOR_CT = 'EC'
     CUSTOMER = 'CU'
 
     GROUP_LIST = (
         (VALIDATOR, 'Validator'),
+        (EXECUTOR_CT, 'Contract Executor'),
         (EXECUTOR, 'Executor'),
         (CUSTOMER, 'Customer')
     )

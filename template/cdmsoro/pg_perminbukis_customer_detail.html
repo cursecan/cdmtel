@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="ui vertical basic segment">
+    <div class="ui container">
+        <div class="ui stackable grid">
+            <div class="row" style="padding-top:50px">
+                <div class="column">
+                <div class="ui breadcrumb">
+                    <a href="{% url 'cdmsoro:v3_circuit_list' %}" class="section">Circuit Bukis Order</a>
+                    <div class="divider">/</div>
+                    <div class="section">{{ permin_bukis.sid }}</div>
+                </div>
+
+                {% if messages %}
+                    {% for msg in messages %}
+                    <div class="ui info message">
+                        {{ msg }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="five wide column">
+                    <div class="ui top attached inverted header">
+                        DETAIL CUSTOMER
+                    </div>
+                    <div class="ui bottom attached segment">
+                        <div class="ui very list">
+                            <div class="item">
+                                <div class="header">ACCOUNT</div>
+                                <div class="description">
+                                    {{ permin_bukis.sid.account.bp }} / {{ permin_bukis.sid.account.account_number }}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="header">NAME</div>
+                                <div class="description">{{ permin_bukis.sid.account.customer_name }}</div>
+                            </div>
+                            <div class="item">
+                                <div class="content">
+                                    <div class="header">SID</div>
+                                    <div class="description">{{ permin_bukis.sid }}</div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="content">
+                                    <div class="header">SUSPEND</div>
+                                    <div class="description">{{ permin_bukis.suspend }}</div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="content">
+                                    <div class="header">STATUS</div>
+                                    <div class="description">{{ permin_bukis.suspend.status }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="eleven wide column">
+                    <div class="ui top attached inverted header">INFO PERMINTAAN BUKIS</div>
+                    <div class="ui attached clearing segment">
+                        <div class="ui right ribbon large green label">{{ permin_bukis.get_status_display }}</div>
+                        <div class="ui feed">
+                            <div class="event">
+                                <div class="label">
+                                    <i class="pencil icon"></i>
+                                </div>
+                                <div class="content">
+                                    <div class="summary">
+                                        Submited post on
+                                        <div class="date">{{ permin_bukis.timestamp|date:"M d, Y H:i"}}</div>
+                                    </div>
+                                    <div class="extra text">
+                                        {{ permin_bukis.message }}
+                                    </div>
+                                    <div class="meta">
+                                        <div class="like">
+                                            <i class="like icon"></i> Like
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% for i in permin_bukis.update_permin_bukis.all %}
+                                <div class="event">
+                                    <div class="label">
+                                        <i class="pencil icon"></i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="summary">
+                                            Update post
+                                            <div class="date">{{ i.timestamp|naturaltime }}</div>
+                                        </div>
+                                        <div class="extra text">
+                                            {{ i.message }}
+                                        </div>
+                                        <div class="meta">
+                                            <div class="like">
+                                                <i class="like icon"></i> Like
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="ui attached segment">
+                        <a href="#" target-url="{% url 'som:doc_list' permin_bukis.id %}" class="js-doc-btn">
+                            <i class="paperclip icon"></i> Attachment
+                        </a>
+                    </div>
+                    <div class="ui bottom attached clearing segment">
+                        <form action="" method="post" class="ui form">
+                            {% csrf_token %}
+                            <div class="field">
+                                <label for="">Update Message</label>
+                                {{ form.message }}
+                            </div>
+                            <input id="fileupload" type="file" name="doc" multiple
+                            style="display: none;"
+                            data-url="{% url 'cdmsoro:json_upload_doc' permin_bukis.id %}"
+                            data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
+
+                            <button class="ui primary right floated button" type="submit"><i class="save icon"></i> Update Post</button>
+                            <button class="ui teal right floated button js-upload-doc" type="button"><i class="cloud icon"></i> Upload Doks</button>
+                        </form>
+                    </div>
+
+                    <div class="ui top attached header">
+                        VALIDASI
+                    </div>
+                    <div class="ui bottom attached segment">
+                        <div class="ui feed">
+                            {% for i in permin_bukis.validation_set.all %}
+                            <div class="event">
+                                <div class="label">
+                                    <img src="https://semantic-ui.com/images/avatar/small/helen.jpg" alt="">
+                                </div>
+                                <div class="content">
+                                    <div class="metadata">
+                                        <div class="date">{{ i.timestamp|naturaltime }}</div>
+                                    </div>
+                                    <div class="summary">
+                                        <a>Jesica</a> just <a>{{ i.get_action_display|title }}</a> your post
+                                    </div>
+                                    <div class="extra text">
+                                        {{ i.message }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'vendor/jquery.ui.widget.js' %}"></script>
+<script src="{% static 'jquery.iframe-transport.js' %}"></script>
+<script src="{% static 'jquery.fileupload.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+        $(".js-upload-doc").click(function () {
+            $("#fileupload").click();
+        });
+
+        $("#fileupload").fileupload({
+            dataType: 'json',
+            done: function (e, data) {  /* 3. PROCESS THE RESPONSE FROM THE SERVER */
+                if (data.result.is_valid) {
+                    // $('#upload-id').html(data.result.html);
+                    alert('Upload success.');
+                } else {
+                    alert('Failed to upload document. Max size 1Mb and only .pdf or image file.');
+                }
+            }
+        });
+
+        $('.js-doc-btn').click(function() {
+            var btn = $(this);
+            $.ajax({
+                url: btn.attr('target-url'),
+                dataType: 'json',
+                beforeSend: function() {
+                $('.ui.modal').addClass('mini').modal('show');
+                },
+                success: function(data) {
+                $('.ui.modal').html(data.html);
+                }
+            })
+        });
+    });
+</script>
+{% endblock %}

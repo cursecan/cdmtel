@@ -3,18 +3,23 @@ from django.views.generic import (
     ListView, DetailView, CreateView
 )
 from django.views import View
+from django.http import JsonResponse
 from django.views.generic import FormView
 from django.views.generic.edit import SingleObjectMixin, FormMixin
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Max, Min, F, Q, ExpressionWrapper, PositiveIntegerField
+from django.db.models import Max, Min, F, Q, ExpressionWrapper, PositiveIntegerField, OuterRef, Subquery
 from django.contrib import messages
+from django.template.loader import render_to_string
+from django.contrib.postgres.search import SearchVector
 
 from core.decorators import user_executor, user_validator
 
-from cdmsoro.forms import BukisForm, BukisValidationForm, UpdateBukisForm
+from cdmsoro.forms import (
+    BukisForm, BukisValidationForm, UpdateBukisForm, UploadDocForm
+)
 from cdmsoro.models import (
     PermintaanResume, Avident, UpdatePermintaan
 )
@@ -25,6 +30,20 @@ from masterdata.models import (
 from  masterdata.forms import ResumeOrderForm
 
 import random
+
+
+def set_obj_pagination(obj_v, rownum, page):
+    paginator = Paginator(obj_v, rownum)
+
+    try :
+        obj_list = paginator.page(page)
+    except PageNotAnInteger:
+        obj_list = paginator.page(1)
+    except EmptyPage:
+        obj_list = paginator.page(paginator.num_pages)
+
+    return obj_list
+
 
 @login_required
 def index(request):
@@ -299,3 +318,138 @@ class UpdatePermintaanView(View):
     def post(self, request, *args, **kwargs):
         view = PostUpdatePermintaaView.as_view()
         return view(request, *args, **kwargs)
+
+
+
+
+# ===================================================
+
+def jsPostPerminUploadDoc(request, id):
+    permin_obj = get_object_or_404(PermintaanResume, pk=id, validate=False)
+    data = dict()
+    data['is_valid'] = False
+
+    form = UploadDocForm(request.POST, request.FILES)
+    if form.is_valid():
+        doc = form.cleaned_data['doc']
+
+        Avident.objects.create(
+            document = doc,
+            leader = permin_obj
+        )
+
+        data['is_valid'] = True
+    
+    content = {
+        'permin_resume': permin_obj
+    }
+
+    data['html'] = render_to_string(
+        'cdmsoro/includes/partial-upload-document.html',
+        content, request=request
+    )
+
+    return JsonResponse(data)
+
+
+def circuitListView(request):
+    page = request.GET.get('page', 1)
+    q = request.GET.get('q', None)
+
+    circuit_objs = Circuit.objects.all()
+    if q:
+       circuit_objs = circuit_objs.annotate(
+           search = SearchVector(
+               'sid__sid', 'account__account_number',
+               'account__bp', 'account__customer_name'
+           )
+       ).filter(search=q)
+
+    paginate_circuit = set_obj_pagination(circuit_objs, 10, page)
+
+    content = {
+        'circuit_list': paginate_circuit,
+    }
+    return render(request, 'cdmsoro/pg_circuit_list.html', content)
+
+
+def circuitDetailView(request, id):
+    circuit_obj = get_object_or_404(Circuit, pk=id, is_active=False)
+    unclosed_permin_bukis = circuit_obj.permin_bukis.filter(closed=False)
+    if unclosed_permin_bukis.exists():
+        return redirect('cdmsoro:v3_permin_bukis_detail', unclosed_permin_bukis.latest('timestamp').id)
+
+    form = BukisForm(request.POST or None, request.FILES or None, initial={'circuit': circuit_obj.sid})
+    if request.method == 'POST':
+        if form.is_valid():
+            circuit = form.cleaned_data['circuit']
+            pic = form.cleaned_data['pic']
+            msg = form.cleaned_data['message']
+            e_fl = form.cleaned_data['avident']
+
+
+            v_group = 'EX'
+            if circuit_obj.get_suspend_order().order_label == 2:
+                # JIKA SUSPEND KONTRAK
+                v_group = 'EC'
+
+            # MIN COUNTER XXX
+            min_counter = Profile.objects.filter(group=v_group).aggregate(
+                r_min = Min(F('counter') * F('multiple'), output_field=PositiveIntegerField())
+            )
+            prfile_objs = Profile.objects.filter(group=v_group).annotate(
+                counting = ExpressionWrapper(
+                    F('counter') * F('multiple'), output_field=PositiveIntegerField()
+                )
+            ).filter(
+                counting = min_counter['r_min']
+            )
+            
+            p_obj = list(prfile_objs)
+            # PROFILE CHOICES
+            
+            choices_profile = random.choice(p_obj)
+
+            permit_obj = PermintaanResume.objects.create(
+                pic = pic,
+                message = msg,
+                sid = circuit_obj,
+                suspend = circuit_obj.get_suspend_order(),
+                executor = choices_profile.user
+            )
+
+            Avident.objects.create(
+                document = e_fl,
+                leader = permit_obj
+            )
+
+            return redirect('cdmsoro:v3_permin_bukis_detail', permit_obj.id)
+
+    content = {
+        'circuit': circuit_obj,
+        'form': form,
+    }
+    return render(request, 'cdmsoro/pg_circuit_detail.html', content)
+
+
+def perminBukisDetailview(request, id):
+    perbukis_obj = get_object_or_404(PermintaanResume, pk=id, closed=False)
+    form = UpdateBukisForm(request.POST or None)
+    if request.method == 'POST':
+        if not perbukis_obj.validate:
+            if form.is_valid():
+                UpdatePermintaan.objects.create(
+                    permintaan_resume = perbukis_obj,
+                    message = form.cleaned_data['message']
+                )
+                messages.success(request, 'Update permintaan bukis sudah disimpan.')
+                return redirect('cdmsoro:v3_permin_bukis_detail', id)
+
+        messages.success(request, 'Permintaan sudah approved menunggu process buka isolir.')
+
+    content = {
+        'permin_bukis': perbukis_obj,
+        'validation_list': perbukis_obj.validation_set.all(),
+        'form': form
+    }
+    return render(request, 'cdmsoro/pg_perminbukis_customer_detail.html', content)

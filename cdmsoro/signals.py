@@ -28,15 +28,26 @@ def permintaa_resume_trigerting(sender, instance, created, **kwargs):
             counter = F('counter') + 1
         )
 
-        notify_new_request(instance.id, verbose_name='New resume request', creator=instance)
+        channel = '@cdm_cool'
+        if instance.suspend.order_label == 1:
+            # CDM
+            channel = '@cdm_cool'
+
+        notify_new_request(instance.id, channel, verbose_name='New resume request', creator=instance)
 
         
 @receiver(post_save, sender=Validation)
 def validation_triger(sender, instance, created, **kwargs):
     if created:
-        PermintaanResume.objects.filter(id=instance.permintaan_resume.id).update(
-            validate=True
-        )
+        if instance.action == 'APP':
+            PermintaanResume.objects.filter(id=instance.permintaan_resume.id).update(
+                validate=True, status=2
+            )
+        else :
+            PermintaanResume.objects.filter(id=instance.permintaan_resume.id).update(
+                validate=False, status=1
+            )
+
         # if instance.action == 'APP':
         #     notifi_validation_req(instance.permintaan_resume.id, verbose_name="New Validation", creator=instance.permintaan_resume)
 
@@ -45,10 +56,18 @@ def validation_triger(sender, instance, created, **kwargs):
 def update_validation_triger(sender, instance, created, **kwargs):
     if created:
         PermintaanResume.objects.filter(id=instance.permintaan_resume.id).update(
-            validate=False
+            validate=False, status=3
+        )
+        Validation.objects.filter(permintaan_resume = instance.permintaan_resume).update(
+            closed = True
         )
 
-        notify_new_request(instance.permintaan_resume.id, verbose_name='Update resume request', creator=instance.permintaan_resume)
+        channel = '@cdm_cool_none'
+        if instance.permintaan_resume.suspend.order_label == 1:
+            # CDM
+            channel = '@cdm_cool'
+
+        notify_new_request(instance.permintaan_resume.id, channel, verbose_name='Update resume request', creator=instance.permintaan_resume)
 
 
 @receiver(post_save, sender=ManualOrder)

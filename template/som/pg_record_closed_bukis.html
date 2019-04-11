@@ -1,0 +1,98 @@
+{% extends 'som/base.html' %}
+
+{% block title %}
+Record Buka Isolir
+{% endblock %}
+
+{% block sub_content %}
+<div class="ui basic vertical segment">
+    <div class="ui fluid container">
+        <div class="ui orizontally padded grid">
+            <div class="row">
+                <div class="column">
+                    <h3 class="ui header">
+                        Record Buka Isolir
+                    </h3>
+                    <div class="ui top attached menu">
+
+                    </div>
+                    <table class="ui bottom attached striped small table">
+                        {% for i in permin_list %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <a href="#">{{ i.sid.account.account_number }} - {{ i.sid.account.customer_name }}</a> <br>
+                                {{ i.sid }}
+                            </td>
+                            <td>
+                                <a>SO</a> {{ i.suspend }} <br>
+                                {{ i.suspend.status|default:'-' }}
+                            </td>
+                            <td>
+                                <a>RO</a> {{ i.resume }} <br>
+                                {{ i.resume.status|default:'-' }}
+                            </td>
+                            <td class="right aligned">
+                                <a href="#" class="js-doc-btn" target-url="{% url 'som:doc_list' i.id %}"><i class="paperclip icon"></i> {{ i.doc_c }}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+
+                    {% if permin_list.has_other_pages %}
+                        <div class="ui pagination menu js-page">
+                            {% if permin_list.has_previous %}
+                                <a href="?page={{ permin_list.previous_page_number }}" data-item="" class="item">&lt;</a>
+                            {% else %}
+                                <div class="item disabled">&lt;</div>
+                            {% endif %}            
+
+                            {% if permin_list.number|add:'-4' > 1 %}
+                            <a href="?page={{ permin_list.number|add:'-5' }}" data-item="" class="item">&hellip;</a>
+                            {% endif %}
+
+                            {% for i in permin_list.paginator.page_range %}
+                                {% if permin_list.number == i %}
+                                    <div class="item active ">{{ i }}</div>
+                                {% elif i > permin_list.number|add:'-5' and i < permin_list.number|add:'5' %}
+                                    <a href="?page={{ i }}" data-item="{{ i }}" class="item">{{ i }}</a>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if permin_list.paginator.num_pages > permin_list.number|add:'4' %}
+                            <a href="?page={{ permin_list.number|add:'5' }}" data-item="" class="item">&hellip;</a>
+                            {% endif %}
+
+                            {% if permin_list.has_next %}
+                                <a href="?page={{ permin_list.next_page_number }}" data-item="" class="item">&gt;</a>
+                            {% else %}
+                                <div class="item disabled">&gt;</div>
+                            {% endif %}   
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+    $('.js-doc-btn').click(function() {
+        var btn = $(this);
+        $.ajax({
+            url: btn.attr('target-url'),
+            dataType: 'json',
+            beforeSend: function() {
+            $('.ui.modal').addClass('mini').modal('show');
+            },
+            success: function(data) {
+            $('.ui.modal').html(data.html);
+            }
+        })
+    });
+});
+</script>
+{% endblock %}

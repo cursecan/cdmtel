@@ -8,9 +8,23 @@ from .models import (
 from masterdata.models import Circuit
 
 class BukisForm(forms.Form):
-    pic = forms.CharField(max_length=100, required=True)
+    pic = forms.CharField(
+        max_length=100, required=True, 
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': '@telegram_username'
+            }
+        )
+    )
     circuit = forms.CharField(max_length=30, required=True)
-    message = forms.CharField(widget=forms.Textarea)
+    message = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'placeholder': 'Alasan buka isolir...',
+                'rows': 4
+            }
+        )
+    )
     avident = forms.FileField(max_length=200, required=True, validators=[validate_file_extension, validate_file_size])
 
 
@@ -21,7 +35,7 @@ class BukisForm(forms.Form):
         )
 
         if not circuit_objs.exists():
-            raise forms.ValidationError('Tidak ditemukan record isolir pada link tersebut.')
+            raise forms.ValidationError('Link masih aktif tidak ada isolir.')
 
 
         circuit_obj = circuit_objs.get()
@@ -29,7 +43,7 @@ class BukisForm(forms.Form):
             sid = circuit_obj, suspend = circuit_obj.get_last_order()
         )
         if permintaan_obj.exists():
-            raise forms.ValidationError('Request buka isolir telah dibuat sebelumnya.')
+            raise forms.ValidationError('Duplikat request permintaan buka isolir.')
         
         return circuit
 
@@ -48,14 +62,23 @@ class BukisValidationForm(forms.ModelForm):
             'message'
         ]
         widgets = {
-            'message': forms.Textarea(attrs={'rows': 4})
+            'message': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Approved!'})
         }
+
+        def clean_message(self):
+            msg =  self.cleaned_data['message']
+            if msg is None or msg == '':
+                msg = 'Approved!'
+            return msg
 
 
 class UpdateBukisForm(forms.Form):
-    message = forms.CharField(widget=forms.Textarea(), required=True)
-    doc = forms.FileField(required=True, validators=[validate_file_extension, validate_file_size])
+    message = forms.CharField(widget=forms.Textarea(attrs={'rows':4, 'placeholder': 'Message...'}), required=True)
+    # doc = forms.FileField(required=True, validators=[validate_file_extension, validate_file_size])
 
+
+class UploadDocForm(forms.Form):
+    doc = forms.FileField(required=True, validators=[validate_file_extension, validate_file_size])
 
 class ManualOrderForm(forms.ModelForm):
     class Meta:
@@ -64,6 +87,11 @@ class ManualOrderForm(forms.ModelForm):
             'permintaan_resume',
             'message'
         ]
+        widgets = {
+            'message': forms.Textarea(attrs={
+                'rows': 4, 'placeholder': 'Ket. error penyebab manual...'
+            })
+        }
 
     def __init__(self, per_resume, *args, **kwargs):
         super(ManualOrderForm, self).__init__(*args, **kwargs)

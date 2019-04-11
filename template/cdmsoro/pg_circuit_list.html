@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Circuit Suspend Order
+{% endblock %}
+
+{% block content %}
+<div class="ui basic vertical segment">
+    <div class="ui fluid container">
+        <div class="ui horizontally padded stackable grid">
+            <div class="row">
+                <div class="column">
+                    <div class="ui secondary menu">
+                        <div class="right menu">
+                            <form action="" class="ui form">
+                                <div class="field">
+                                    <div class="ui right icon input">
+                                        <i class="search icon"></i>
+                                        <input style="border-radius:20px" type="text" name="q" placeholder="Search...">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <div class="ui top attached menu">
+                        
+                    </div>
+                    <table class="ui bottom attached small table">
+                        <tbody>
+                            {% for i in circuit_list %}
+                            <tr ondblclick="window.location.href='{% url 'cdmsoro:v3_circuit_detail' i.id %}'">
+                                <td>
+                                    <div class="ui placeholder">
+                                        <div class="square image"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a>{{ i.account.bp }} / {{ i.account.account_number }}</a> <br>
+                                    {{ i.account.customer_name }}
+                                </td>
+                                <td>
+                                    {{ i.sid }} <br>
+                                    -
+                                </td>
+                                <td>
+                                    {{ i.get_last_order.type_order|default:'' }} {{ i.get_last_order.order_number|default:'-' }} <br>
+                                    {{ i.get_last_order.status|default:'-' }}
+                                </td>
+                                <td>
+                                    {% if i.get_permit_bukis %}
+                                        <div class="ui orange label">{{ i.get_permit_bukis.get_status_display }}</div>
+                                    {% endif %}
+                                </td>
+                                <td class="right aligned">
+                                    {% if i.is_active %}
+                                    <div class="ui green label">Active</div>
+                                    {% else %}
+                                    <div class="ui red label">
+                                        Suspend
+                                        <div class="detail">{{ i.get_last_order.get_order_label_display }}</div>
+                                    </div>
+                                    <!-- <div class="ui label"></div> -->
+                                    {% endif %}
+                                </td>
+                                <td class="right aligned">
+                                    <a href="#">
+                                        <i class="dropdown icon"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+</div>
+{% endblock %}

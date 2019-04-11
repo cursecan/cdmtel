@@ -1,0 +1,211 @@
+{% extends 'som/base.html' %}
+{% load humanize %}
+
+
+{% block sub_content %}
+    <div class="ui basic vertical segment">
+        <div class="ui container">
+            <div class="ui stackable grid">
+                <div class="row" style="padding-top:50px">
+                    <div class="column">
+                        <div class="ui large breadcrumb">
+                            <a href="{% url 'som:unlose_persume' %}" class="section">Permintaan Bukis</a>
+                            <div class="divider">/</div>
+                            <div class="section active">{{ permin_bukis.sid }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="ten wide column">
+                        <h4 class="ui inverted top attached header">
+                            PERMINTAAN BUKIS DETAIL
+                        </h4>
+                        <div class="ui attached segment">
+                            <div class="ui relaxed list">
+                                <div class="item">
+                                    <div class="content">
+                                        <div class="header">Customer</div>
+                                        <div class="description">
+                                            {{ permin_bukis.sid.account.account_number }} - {{ permin_bukis.sid.account.customer_name }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="content">
+                                        <div class="header">Circuit</div>
+                                        <div class="description">
+                                            {{ permin_bukis.sid }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="content">
+                                        <div class="header">Suspend Order</div>
+                                        <div class="description">
+                                            {{ permin_bukis.suspend }} / {{ permin_bukis.suspend.status }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui attached right aligned segment">
+                            <a class="js-doc-btn" target-url="{% url 'som:doc_list' permin_bukis.id %}" href="#">
+                                <i class="paperclip icon"></i> Dok. Pendukung
+                            </a>
+                        </div>
+                        <div class="ui bottom attached segment">
+                            <div class="ui feed">
+                                <div class="event">
+                                    <div class="label">
+                                        <i class="pencil icon"></i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="summary">
+                                            <a>Post request</a> by <a>{{ permin_bukis.pic }}</a>
+                                        </div>
+                                        <div class="meta">
+                                            <div class="date">{{ permin_bukis.timestamp|date:"D, d, M Y H:i"}}</div>
+                                        </div>
+                                        <div class="extra text">{{ permin_bukis.message }}</div>
+                                    </div>
+                                </div>
+                                {% for i in permin_bukis.update_permin_bukis.all %}
+                                <div class="event">
+                                    <div class="label">
+                                        <i class="pencil icon"></i>
+                                    </div>
+                                    <div class="content">
+                                        <div class="summary">
+                                            <a>Update post</a> by <a>{{ permin_bukis.pic }}</a>
+                                        </div>
+                                        <div class="meta">
+                                            <div class="date">{{ i.timestamp|naturaltime }}</div>
+                                        </div>
+                                        <div class="extra text">{{ i.message }}</div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="ui segment">
+                            <div class="ui comments">
+                                <h4 class="ui header">
+                                    Comments Validation
+                                </h4>
+                                {% for i in permin_bukis.validation_set.all %}
+                                <div class="comment">
+                                    <a class="avatar">
+                                        <img src="https://semantic-ui.com/images/avatar/small/jenny.jpg" alt="">
+                                    </a>
+                                    <div class="content">
+                                        <a class="author">You</a> comment {{ i.get_action_display|title }} on
+                                        <div class="metadata">
+                                            <div class="date">{{ i.timestamp|date:"M d, Y H:i" }}</div>
+                                        </div>
+                                        <div class="text">{{ i.message }}</div>
+                                        <div class="extras">
+                                            <span class="like"><i class="like icon"></i> Like</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="six wide column">
+                        {% if not permin_bukis.validate %}
+                        <div class="ui segment">
+                            <h4 class="ui header">
+                                Validation
+                            </h4>
+                            <form action="" method="post" class="ui form">
+                                {% csrf_token %}
+                                <div class="field">
+                                    <label for="">Action</label>
+                                    {{ form.action }}
+                                </div>
+                                <div class="field">
+                                    <label for="">Ket. Validasi</label>
+                                    {{ form.message }}
+                                </div>
+                                <button class="ui teal button" type="submit">Submit Validate</button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <h4 class="ui inverted top attached header">
+                            Recording Resume Order
+                        </h4>
+                        <div class="ui bottom attached clearing segment">
+                            <form id="bukis-form" action="" method="post" class="ui form">
+                                {% csrf_token %}
+                                <div class="disabled field">
+                                    <label for="">Circuit</label>
+                                    {{ r_form.circuit }}
+                                    {% if r_form.circuit.errors %}
+                                    {% for error in r_form.circuit.errors %}
+                                        <small style="color:brown">* {{ error }}</small>
+                                    {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="field">
+                                    <label for="">Resume Order</label>
+                                    {{ r_form.order_number }}
+                                    {% if r_form.order_number.errors %}
+                                    {% for error in r_form.order_number.errors %}
+                                        <small style="color:brown">* {{ error }}</small>
+                                    {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <button form="bukis-form" class="ui orange right floated button" type="submit">Save Order</button>
+                            </form>
+                        </div>
+
+                        <div class="ui inverted top attached header">
+                            Manual Order Record
+                        </div>
+                        <div class="ui bottom attached clearing red segment">
+                            {% if permin_bukis.manual_bukis %}
+                            {{ permin_bukis.manualorder.message }}
+                            {% else %}
+                            <form id="manual-form" action="" method="post" class="ui form">
+                                {% csrf_token %}
+                                <div class="disabled field">
+                                    <label for="">Circuit</label>
+                                    {{ m_form.permintaan_resume }}
+                                </div>
+                                <div class="field">
+                                    <label for="">Ket. Error</label>
+                                    {{ m_form.message }}
+                                </div>
+                                <button type="submit" form="manual-form" class="ui right floated button">Submit Manual Record</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function() {
+    $('.js-doc-btn').click(function() {
+        var btn = $(this);
+        $.ajax({
+            url: btn.attr('target-url'),
+            dataType: 'json',
+            beforeSend: function() {
+            $('.ui.modal').addClass('mini').modal('show');
+            },
+            success: function(data) {
+            $('.ui.modal').html(data.html);
+            }
+        })
+    });
+});
+</script>
+{% endblock %}

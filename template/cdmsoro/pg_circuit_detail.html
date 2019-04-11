@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui basic vertical segment">
+    <div class="ui container">
+        <div class="ui text menu">
+            <a href="#" onclick="window.history.back(); return false;" class="header item">
+                <i class="left arrow icon"></i> Back
+            </a>
+        </div>
+        <h4 class="ui header">
+            {{ circuit.account.customer_name }}
+            <div class="sub header">
+                {{ circuit.account.bp }} / {{ circuit.account.account_number }}
+            </div>
+        </h4>
+        <form action="" method="post" class="ui form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="four wide disabled field">
+                <label for="">Link / Circuit</label>
+                {{ form.circuit }}
+                {% if form.circuit.errors %}
+                    {% for error in form.circuit.errors %}
+                    <small style="color:brown">* {{ error }}</small>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="eight wide field">
+                <label for="">Keterangan</label>
+                {{ form.message }}
+            </div>
+            <div class="eight wide field">
+                <label for="">Telegram Pic</label>
+                <div class="ui left icon input">
+                    {{ form.pic }}
+                    <i class="telegram blue icon"></i>
+                </div>
+                {% if form.pic.errors %}
+                    {% for error in form.pic.errors %}
+                    <small style="color:brown">* {{ error }}</small>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="eight wide field">
+                {{ form.avident }}
+                {% if form.avident.errors %}
+                    {% for error in form.avident.errors %}
+                    <small style="color:brown">* {{ error }}</small>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <button type="submit" class="ui primary button">Submit Per. Bukis</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -3,7 +3,7 @@ from django.core.exceptions import PermissionDenied
 
 def user_executor(function):
     def wrap(request, *args, **kwargs):
-        if request.user.profile.group == 'EX' or request.user.is_superuser :
+        if request.user.profile.group in ['EX', 'EC'] or request.user.is_superuser :
             return function(request, *args, **kwargs)
         else:
             raise PermissionDenied

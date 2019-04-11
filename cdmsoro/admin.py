@@ -3,7 +3,7 @@ from import_export.admin import ImportExportModelAdmin
 
 from .models import (
     PermintaanResume, UpdatePermintaan,
-    Validation, Avident, ManualOrderSoro
+    Validation, Avident, ManualOrderSoro, ManualOrder
 )
 
 from .resources import ManualOrderSoroResource
@@ -32,3 +32,7 @@ class ManualOrderSoro(ImportExportModelAdmin):
     ]
     resource_class = ManualOrderSoroResource
     
+
+# @admin.register(ManualOrder)
+# class ManualOrderAdmin(admin.ModelAdmin):
+#     pass

@@ -20,17 +20,21 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from cdmsoro.views.views import PermintaanBukisView as BukisView
+from cdmsoro.views.views import circuitListView as home_view
+
 from django.contrib.auth.views import LoginView, LogoutView
 
 from masterdata import views  as master_views
 
 urlpatterns = [
-    path('', BukisView.as_view(), name='home'),
+    path('', home_view, name='home'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('admingo/', admin.site.urls),
     path('cdm/', include('cdmsoro.urls')),
     path('bjt/', include('collection.urls')),
+    path('som/', include('som.urls')),
+
 
 
     path('bulk-update/', master_views.order_bulk_update_view, name='bulk_update'),

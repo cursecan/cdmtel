@@ -25,4 +25,9 @@ urlpatterns = [
     path('v2/manual-record/', v2.manual_bukis_list, name='manual_record'),
     path('v2/manual-record/<int:id>/', v2.detail_manual_bukis_view, name='detail_manual'),
     path('v2/comments/<int:id>/', v2.json_comment, name='comment_list'),
+
+    path('circuits/', views.circuitListView, name='v3_circuit_list'),
+    path('circuit/<int:id>/', views.circuitDetailView, name='v3_circuit_detail'),
+    path('permin-bukis-<int:id>/', views.perminBukisDetailview, name='v3_permin_bukis_detail'),
+    path('api/<int:id>/upload-doc/', views.jsPostPerminUploadDoc, name='json_upload_doc'),
 ]

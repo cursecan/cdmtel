@@ -1,0 +1,40 @@
+{% extends 'som/base.html' %}
+{% load humanize %}
+
+{% block sub_content %}
+<div class="ui basic vertical segment">
+    <div class="ui fluid container">
+        <div class="ui horizontally padded stackabel grid">
+            <div class="row">
+                <div class="column">
+                    <div class="ui top attached menu">
+
+                    </div>
+                    <table class="ui bottom attached small table">
+                        {% for i in permin_bukis_list %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <a href="#">{{ i.sid.account.account_number }} - {{ i.sid.account.customer_name }}</a> <br>
+                                {{ i.sid }}
+                            </td>
+                            <td>
+                                {{ i.suspend }} <br>
+                                {{ i.suspend.status }}
+                            </td>
+                            <td>
+                                {{ i.manualorder.message }}
+                            </td>
+                            <td class="right aligned">
+                                By <a>{{ i.pic }}</a> <br>
+                                {{ i.timestamp|naturaltime }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

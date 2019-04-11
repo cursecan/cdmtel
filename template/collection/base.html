@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'inner-base.html' %}
 
 {% block title %}
 Bukis CDM
@@ -11,26 +11,40 @@ Bukis CDM
 {% endblock %}
 
 {% block content %}
-<div class="ui basic vertical segment">
-    <div class="ui fluid container">
-        <div class="ui padded grid">
-            <div class="row">
-                <div class="three wide column">
-                    <div id="v2-menu" class="ui vertical fluid menu">
-                        <a href="{% url 'cdmsoro:per_bukis_list' %}" class="item">
-                            <i class="bars icon"></i> Permintaan Buka Isolir
-                        </a>
-                        <a href="{% url 'cdmsoro:uncomplete' %}" class="item">
-                            <i class="home icon"></i> Order No.Bilcom
-                        </a>
-                        <a href="{% url 'cdmsoro:manual_record' %}" class="item">
-                            <i class="user icon"></i> Manual Bukis Record
-                        </a>
+<div class="ui vertical inverted menu visible sidebar">
+    <div class="item">
+        <h4 class="ui icon inverted header">
+            <i class="gem outline icon"></i>
+            <div class="content">
+                CDMT
+            </div>
+        </h4>
+    </div>
+    <div class="item">
+        System Managemen Order
+        <div class="menu">
+            <a href="{% url 'som:unlose_persume' %}" class="item">Permintaan Buka Isolir</a>
+            <a href="{% url 'som:bukis_books' %}" class="item">Pencatatan Bukis</a>
+        </div>
+    </div>
+    <div class="item">
+        Biling Jatuh Tempo
+        <div class="menu">
+            <a href="{% url 'collection:validation' %}" class="item">Validasi</a>
+            <a href="{% url 'collection:approval' %}" class="item">Approval</a>
+        </div>
+    </div>
+</div>
+<div class="pusher">
+    {% include 'header.html' %}
+    <div class="ui basic vertical segment">
+        <div class="ui fluid container">
+            <div class="ui padded grid">
+                <div class="row">
+                    <div class="column">
+                        {% block sub_content %}
+                        {% endblock %}
                     </div>
-                </div>
-                <div class="thirteen wide column">
-                    {% block cdmsoro_content %}
-                    {% endblock %}
                 </div>
             </div>
         </div>

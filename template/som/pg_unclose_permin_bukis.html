@@ -1,0 +1,90 @@
+{% extends 'som/base.html' %}
+
+{% block title %}
+    Permintaan Buka Isolir
+{% endblock %}
+
+{% block sub_content %}
+<div class="ui basic vertical segment">
+    <div class="ui fluid container">
+        <div class="ui orizontally padded grid">
+            <div class="row">
+                <div class="column">
+                    <h3 class="ui header">
+                        Permintaan Buka Isolir
+                    </h3>
+                    
+                    <div class="ui top attached menu">
+
+                    </div>
+                    <table class="ui bottom attached striped small table">
+                        {% for i in permin_list %}
+                        <tr ondblclick="window.location.href='{% url 'som:unclose_detail' i.id %}'">
+                            <td>{{ forloop.counter0|add:permin_list.start_index }}</td>
+                            <td>
+                                <a href="{% url 'som:unclose_detail' i.id %}">{{ i.sid.account.account_number }} - {{ i.sid.account.customer_name }}</a> <br>
+                                {{ i.sid }}
+                            </td>
+                            <td>{{ i.suspend }} <br>{{ i.suspend.status }}</td>
+                            <td>{{ i.get_status_display }}</td>
+                            <td>
+                                {% if i.manual_bukis %}
+                                <div class="ui orange label">
+                                    Manual bukis
+                                </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="ui {% if i.suspend.order_label == 1 %} red {% else %} purple {% endif %} label">
+                                    Suspend
+                                    <div class="detail">
+                                        {{ i.suspend.get_order_label_display }}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="right aligned">
+                                By <a>{{ i.pic }}</a> <br>
+                                {{ i.timestamp|date:"d/m/Y H:i" }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+
+
+                    {% if permin_list.has_other_pages %}
+                        <div class="ui pagination menu js-page">
+                            {% if permin_list.has_previous %}
+                                <a href="?page={{ permin_list.previous_page_number }}" data-item="" class="item">&lt;</a>
+                            {% else %}
+                                <div class="item disabled">&lt;</div>
+                            {% endif %}            
+
+                            {% if permin_list.number|add:'-4' > 1 %}
+                            <a href="?page={{ permin_list.number|add:'-5' }}" data-item="" class="item">&hellip;</a>
+                            {% endif %}
+
+                            {% for i in permin_list.paginator.page_range %}
+                                {% if permin_list.number == i %}
+                                    <div class="item active ">{{ i }}</div>
+                                {% elif i > permin_list.number|add:'-5' and i < permin_list.number|add:'5' %}
+                                    <a href="?page={{ i }}" data-item="{{ i }}" class="item">{{ i }}</a>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if permin_list.paginator.num_pages > permin_list.number|add:'4' %}
+                            <a href="?page={{ permin_list.number|add:'5' }}" data-item="" class="item">&hellip;</a>
+                            {% endif %}
+
+                            {% if permin_list.has_next %}
+                                <a href="?page={{ permin_list.next_page_number }}" data-item="" class="item">&gt;</a>
+                            {% else %}
+                                <div class="item disabled">&gt;</div>
+                            {% endif %}   
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

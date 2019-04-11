@@ -8,14 +8,24 @@ from masterdata.models import (
  
 
 class PermintaanResume(CommonBase):
+    REJECT = 1
+    APPROVE = 2
+    WAITING = 3
+    LIST_STATUS = (
+        (REJECT, 'Rejected'),
+        (APPROVE, 'Approved'),
+        (WAITING, 'Process Validation')
+    )
     pic = models.CharField(max_length=100)
     message = models.TextField(max_length=500, blank=True)
-    sid = models.ForeignKey(Circuit, on_delete=models.CASCADE)
+    sid = models.ForeignKey(Circuit, on_delete=models.CASCADE, related_name='permin_bukis')
     suspend = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='suspend_order')
     resume = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True, related_name='resume_order')
     validate = models.BooleanField(default=False)
     executor = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     manual_bukis = models.BooleanField(default=False)
+    status = models.PositiveSmallIntegerField(choices=LIST_STATUS, default=WAITING)
+    closed = models.BooleanField(default=False)
 
 
     class Meta:
@@ -25,7 +35,7 @@ class PermintaanResume(CommonBase):
         return str(self.sid)
 
     def get_validation(self):
-        return self.validation_set.latest('timestamp')
+        return self.validation_set.filter(closed=False).latest('timestamp')
 
     def is_approved(self):
         return self.get_validation().action == 'APP'
@@ -63,11 +73,16 @@ class ManualOrder(CommonBase):
 
 
 class UpdatePermintaan(CommonBase):
-    permintaan_resume = models.ForeignKey(PermintaanResume, on_delete=models.CASCADE)
+    permintaan_resume = models.ForeignKey(PermintaanResume, on_delete=models.CASCADE, related_name='update_permin_bukis')
     message = models.TextField(max_length=500, blank=True)
 
     def __str__(self):
         return str(self.permintaan_resume)
+
+    class Meta:
+        ordering = [
+            'timestamp'
+        ]
 
 
 class Avident(models.Model):
@@ -82,10 +97,17 @@ class Validation(CommonBase):
         (APPROVE, 'APPROVED'),
         (DECLINE, 'REJECTED')
     )
-    message = models.TextField(max_length=500)
+    message = models.TextField(max_length=500, default='Approved!')
     action = models.CharField(max_length=3, choices=ACTION_LIST, default=DECLINE)
     permintaan_resume = models.ForeignKey(PermintaanResume, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    closed = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.permintaan_resume)
+
+
+    class Meta:
+        ordering = [
+            '-timestamp'
+        ]

@@ -1,0 +1,33 @@
+{% extends 'inner-base.html' %}
+
+{% block content %}
+    <div class="ui vertical inverted large menu visible sidebar">
+        <div class="item">
+            <h4 class="ui icon inverted header">
+                <i class="gem outline icon"></i>
+                <div class="content">
+                    CDMT
+                </div>
+            </h4>
+        </div>
+        <div class="item">
+            System Managemen Order
+            <div class="menu">
+                <a href="{% url 'som:unlose_persume' %}" class="item">Permintaan Buka Isolir</a>
+                <a href="{% url 'som:bukis_books' %}" class="item">Pencatatan Bukis</a>
+            </div>
+        </div>
+        <div class="item">
+            Biling Jatuh Tempo
+            <div class="menu">
+                <a href="{% url 'collection:validation' %}" class="item">Validasi</a>
+                <a href="{% url 'collection:approval' %}" class="item">Approval</a>
+            </div>
+        </div>
+    </div>
+    <div class="pusher">
+        {% include 'header.html' %}
+        {% block sub_content %}
+        {% endblock %}
+    </div>
+{% endblock %}
