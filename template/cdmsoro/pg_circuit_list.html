@@ -6,8 +6,8 @@ Circuit Suspend Order
 
 {% block content %}
 <div class="ui basic vertical segment">
-    <div class="ui fluid container">
-        <div class="ui horizontally padded stackable grid">
+    <div class="ui container">
+        <div class="ui stackable grid">
             <div class="row">
                 <div class="column">
                     <div class="ui secondary menu">
@@ -43,8 +43,7 @@ Circuit Suspend Order
                                     {{ i.account.customer_name }}
                                 </td>
                                 <td>
-                                    {{ i.sid }} <br>
-                                    -
+                                    {{ i.sid }}
                                 </td>
                                 <td>
                                     {{ i.get_last_order.type_order|default:'' }} {{ i.get_last_order.order_number|default:'-' }} <br>
@@ -75,6 +74,38 @@ Circuit Suspend Order
                             {% endfor %}
                         </tbody>
                     </table>
+
+                    {% if circuit_list.has_other_pages %}
+                        <div class="ui pagination menu js-page">
+                            {% if circuit_list.has_previous %}
+                                <a href="?page={{ circuit_list.previous_page_number }}" data-item="" class="item">&lt;</a>
+                            {% else %}
+                                <div class="item disabled">&lt;</div>
+                            {% endif %}            
+
+                            {% if circuit_list.number|add:'-4' > 1 %}
+                            <a href="?page={{ circuit_list.number|add:'-5' }}" data-item="" class="item">&hellip;</a>
+                            {% endif %}
+
+                            {% for i in circuit_list.paginator.page_range %}
+                                {% if circuit_list.number == i %}
+                                    <div class="item active ">{{ i }}</div>
+                                {% elif i > circuit_list.number|add:'-5' and i < circuit_list.number|add:'5' %}
+                                    <a href="?page={{ i }}" data-item="{{ i }}" class="item">{{ i }}</a>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if circuit_list.paginator.num_pages > circuit_list.number|add:'4' %}
+                            <a href="?page={{ circuit_list.number|add:'5' }}" data-item="" class="item">&hellip;</a>
+                            {% endif %}
+
+                            {% if circuit_list.has_next %}
+                                <a href="?page={{ circuit_list.next_page_number }}" data-item="" class="item">&gt;</a>
+                            {% else %}
+                                <div class="item disabled">&gt;</div>
+                            {% endif %}   
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

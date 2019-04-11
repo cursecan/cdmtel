@@ -360,7 +360,7 @@ def circuitListView(request):
     if q:
        circuit_objs = circuit_objs.annotate(
            search = SearchVector(
-               'sid__sid', 'account__account_number',
+               'sid', 'account__account_number',
                'account__bp', 'account__customer_name'
            )
        ).filter(search=q)
