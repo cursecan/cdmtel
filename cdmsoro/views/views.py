@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Max, Min, F, Q, ExpressionWrapper, PositiveIntegerField, OuterRef, Subquery
+from django.db.models import Count, Max, Min, F, Q, ExpressionWrapper, PositiveIntegerField, OuterRef, Subquery
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.contrib.postgres.search import SearchVector
@@ -369,6 +369,10 @@ def circuitListView(request):
 
     content = {
         'circuit_list': paginate_circuit,
+        'c_circuit': circuit_objs.aggregate(
+            c_suspend = Count('sid', filter=Q(is_active=False)),
+            c_active = Count('sid', filter=Q(is_active=True))
+        )
     }
     return render(request, 'cdmsoro/pg_circuit_list.html', content)
 

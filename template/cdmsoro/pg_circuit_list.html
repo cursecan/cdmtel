@@ -10,59 +10,107 @@ Circuit Suspend Order
         <div class="ui stackable grid">
             <div class="row">
                 <div class="column">
-                    <div class="ui secondary menu">
-                        <div class="right menu">
-                            <form action="" class="ui form">
-                                <div class="field">
-                                    <div class="ui right icon input">
-                                        <i class="search icon"></i>
-                                        <input style="border-radius:20px" type="text" name="q" placeholder="Search...">
-                                    </div>
+                    <div class="ui steps">
+                        <div class="step">
+                            <i class="search icon"></i>
+                            <div class="content">
+                                <div class="title">
+                                    Search
                                 </div>
-                            </form>
+                                <div class="description">
+                                    Cari customer atau sirkuit
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <i class="clipboard list icon"></i>
+                            <div class="content">
+                                <div class="title">Select</div>
+                                <div class="description">
+                                    Pilih sid yang tersuspend
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <i class="document form"></i>
+                            <i class="pencil icon"></i>
+                            <div class="content">
+                                <div class="title">
+                                    Fill
+                                </div>
+                                <div class="description">
+                                    Isi form buka isolir
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <form action="" class="ui form">
+                        <div class="four wide field">
+                            <div class="ui right icon input">
+                                <i class="search icon"></i>
+                                <input type="text" name="q" placeholder="Search..." style="border-radius:20px">
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
             <div class="row">
                 <div class="column">
                     <div class="ui top attached menu">
-                        
+                        <div class="right menu">
+                            <div class="item">{{ c_circuit.c_suspend }} Suspend</div>
+                        </div>
                     </div>
                     <table class="ui bottom attached small table">
                         <tbody>
                             {% for i in circuit_list %}
                             <tr ondblclick="window.location.href='{% url 'cdmsoro:v3_circuit_detail' i.id %}'">
                                 <td>
-                                    <div class="ui placeholder">
-                                        <div class="square image"></div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a>{{ i.account.bp }} / {{ i.account.account_number }}</a> <br>
-                                    {{ i.account.customer_name }}
-                                </td>
-                                <td>
+                                    <a href="{% if not i.is_active %}{% url 'cdmsoro:v3_circuit_detail' i.id %}{% endif %}">{{ i.account.customer_name }}</a> <br>
                                     {{ i.sid }}
                                 </td>
                                 <td>
-                                    {{ i.get_last_order.type_order|default:'' }} {{ i.get_last_order.order_number|default:'-' }} <br>
-                                    {{ i.get_last_order.status|default:'-' }}
+                                    <div class="ui list">
+                                        <div class="header">{{ i.get_last_order.type_order}} {{ i.get_last_order }}</div>
+                                        {{ i.get_last_order.status|default:'-' }}
+                                    </div>
                                 </td>
                                 <td>
                                     {% if i.get_permit_bukis %}
-                                        <div class="ui orange label">{{ i.get_permit_bukis.get_status_display }}</div>
+                                        <div class="ui feed">
+                                            <div class="event">
+                                                <div class="content">
+                                                    <div class="summary">
+                                                        Request bukis  by <a>{{ i.get_permit_bukis.pic }}</a>
+                                                    </div>
+                                                    <div class="meta">
+                                                        <div class="date">{{ i.get_permit_bukis.get_status_display }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     {% endif %}
                                 </td>
                                 <td class="right aligned">
                                     {% if i.is_active %}
-                                    <div class="ui green label">Active</div>
-                                    {% else %}
-                                    <div class="ui red label">
-                                        Suspend
-                                        <div class="detail">{{ i.get_last_order.get_order_label_display }}</div>
+                                    <div class="ui feed">
+                                        <div class="event">
+                                            <div class="content">
+                                                <div class="summary">Active</div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <!-- <div class="ui label"></div> -->
+                                    {% else %}
+                                    <div class="ui feed">
+                                            <div class="event">
+                                                <div class="content">
+                                                    <div class="summary">Suspend</div>
+                                                    <div class="meta">
+                                                        <div class="date">{{ i.get_last_order.get_order_label_display }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     {% endif %}
                                 </td>
                                 <td class="right aligned">

@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.db.models import Count
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.contrib.postgres.search import SearchVector
 
 from cdmsoro.models import (
     PermintaanResume, Avident,
@@ -49,6 +50,7 @@ def index(request):
 @user_executor
 def unclosePerminBukisView(request):
     page = request.GET.get('page', 1)
+    q = request.GET.get('q', None)
 
     permin_bukis_objs = PermintaanResume.objects.filter(
         closed = False
@@ -58,6 +60,14 @@ def unclosePerminBukisView(request):
         permin_bukis_objs = permin_bukis_objs.filter(
             executor=request.user
         )
+    
+    if q:
+        permin_bukis_objs = permin_bukis_objs.annotate(
+            search = SearchVector(
+                'sid__sid', 'sid__account__account_number',
+                'sid__account__bp', 'sid__account__customer_number'
+            )
+        ).filter(search=q)
 
     content = {
         'permin_list': get_paginator_set(permin_bukis_objs, 20, page)
@@ -134,6 +144,7 @@ def manualBukisListView(request):
 @user_executor
 def recordBukisListView(request):
     page = request.GET.get('page', 1)
+    q = request.GET.get('q', None)
 
     permin_bukis_objs = PermintaanResume.objects.filter(
         closed = True
@@ -145,6 +156,15 @@ def recordBukisListView(request):
         permin_bukis_objs = permin_bukis_objs.filter(
             suspend__order_label = 1 if request.user.profile.group == 'EX' else 2
         )
+    
+    if q:
+        permin_bukis_objs = permin_bukis_objs.annotate(
+            search = SearchVector(
+                'sid__sid', 'sid__account__account_number',
+                'sid__account__bp', 'sid__account__customer_number'
+            )
+        ).filter(search=q)
+
 
     content = {
         'permin_list': get_paginator_set(permin_bukis_objs, 20, page)
