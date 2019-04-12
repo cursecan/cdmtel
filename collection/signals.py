@@ -15,7 +15,8 @@ def is_target_collect(sender, instance, created, **kwargs):
     ).update(closed=True)
     
     Customer.objects.filter(coltarget_customer=instance).update(
-        has_target=True, has_validate=False, has_approve=False
+        status = 1
+        # has_target=True, has_validate=False, has_approve=False
     )
     ColTarget.objects.filter(id=instance.id).update(
         is_valid = False
@@ -35,11 +36,13 @@ def validation_triger(sender, instance, created, **kwargs):
     if created:  
         if instance.validate == 'AP':      
             Customer.objects.filter(bjt_cust_validate=instance).update(
-                has_validate=True
+                # has_validate=True
+                status = 2
             )
         else :
             Customer.objects.filter(bjt_cust_validate=instance).update(
-                has_target=False, has_validate=False, has_approve=False
+                # has_target=False, has_validate=False, has_approve=False
+                status = 3
             )
             instance.closed = True
             instance.save()
@@ -55,15 +58,17 @@ def approval_triger(sender, instance, created, **kwargs):
         cust_obj = Customer.objects.get(
             bjt_cust_validate__approval=instance
         )
-        cust_obj.has_approve=True
-        cust_obj.save()
 
         coltarget_obj = cust_obj.coltarget_customer.all()
 
         if instance.approve:
             coltarget_obj.update(is_valid=True)
+            cust_obj.status = 4
+            cust_obj.save()
         else :
             cust_obj.has_validate=False
+            cust_obj.status = 1
+            cust_obj.save()
             # coltarget_obj.update(is_valid=False)
 
         cust_obj.save()

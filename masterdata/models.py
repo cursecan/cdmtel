@@ -17,6 +17,20 @@ class Segment(CommonBase):
         return self.segment
 
 class Customer(CommonBase):
+    EMPTY = 10
+    WAIT_VALID = 1
+    WAIT_APP = 2
+    REJECT = 3
+    APPROVE = 4
+
+    LIST_STATUS = (
+        (EMPTY, None),
+        (WAIT_VALID, 'Waiting Validation'),
+        (WAIT_APP, 'Waiting Approval'),
+        (REJECT, 'Rejected'),
+        (APPROVE, 'Approved')
+    )
+
     account_number = models.CharField(max_length=8, unique=True)
     bp = models.CharField(max_length=30, blank=True)
     customer_name = models.CharField(max_length=200, blank=True)
@@ -29,6 +43,7 @@ class Customer(CommonBase):
     has_validate = models.BooleanField(default=False)
     has_approve = models.BooleanField(default=False)
     last_update = models.DateTimeField(blank=True, null=True)
+    status = models.PositiveSmallIntegerField(choices=LIST_STATUS, default=EMPTY)
 
     class Meta:
         ordering = ['-timestamp']

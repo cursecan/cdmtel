@@ -304,8 +304,8 @@ def jsonUploadDocView(request, id):
 @login_required
 @user_validator
 def collectionValidationView(request):
-    cust_obj = Customer.objects.filter(has_target=True).order_by(
-        'has_validate', 'has_approve', '-timestamp'
+    cust_obj = Customer.objects.filter(status=1).order_by(
+        '-timestamp'
     )
     if not request.user.is_superuser:
         cust_obj = cust_obj.filter(
@@ -338,7 +338,7 @@ def collectionValidationView(request):
 @login_required
 @user_validator
 def detailColValidationView(request, id):
-    cust_obj = get_object_or_404(Customer, pk=id, has_target=True, has_validate=False)
+    cust_obj = get_object_or_404(Customer, pk=id, status=1)
     form = ValidationForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
@@ -360,7 +360,7 @@ def detailColValidationView(request, id):
 @user_validator
 def approvalListView(request):
     validate_objs = Validation.objects.filter(
-        customer__has_validate=True, customer__has_approve=False, closed=False
+        customer__status=2, closed=False
     ).select_related('customer').order_by(
         'customer__is_approve', '-timestamp'
     )

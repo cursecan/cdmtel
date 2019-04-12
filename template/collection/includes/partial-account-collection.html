@@ -38,7 +38,7 @@
             <td>{{ customer.fbcc|default:'-' }}</td>
             <td>{{ customer.segment|default:'-' }}</td>
             <td>
-                {{ customer.get_response_cdm|default:'' }}
+                {{ customer.get_status_display|default:'' }}
                 {% if customer.bjt_cust_validate.exists %}
                 <a data-item="{{ customer.id }}" class="js-comment" title="View comments"><i class="question circle outline icon"></i></a>
                 {% endif %}

@@ -30,7 +30,7 @@ Approval
                                     {{ v.customer.customer_name }}
                                 </td>
                                 <td>{{ v.customer.cur_saldo|intcomma }}</td>
-                                <td>{{ v.customer.get_response_cdm }}</td>
+                                <td>{{ v.customer.get_status_display }}</td>
                                 <td>{{ v.timestamp }}</td>
                             </tr>
                             {% empty %}
