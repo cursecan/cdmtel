@@ -123,49 +123,49 @@ def record_data():
 
 @background(schedule=1)
 def record_data_contrak():
-    try:
-        con = cx_Oracle.connect(settings.AMDES_USER, settings.AMDES_PASS, settings.AMDES_SERVICE)
-        cur = con.cursor()
-        query = """
-            SELECT distinct \
-            ACCOUNTNAS, \
-            li_sid, \
-            order_id, \
-            li_milestone, \
-            ORDER_CREATED_DATE \
-            FROM \
-            AMDES.NCRM_AGREE_ORDER_LINE \
-            WHERE \
-            li_sid IS NOT NULL \
-            AND li_milestone IN ('FULFILL BILLING COMPLETE') \
-            AND order_subtype IN ('Suspend') \
-            AND ORDER_CREATEDBY_NAME IN ('Administrator, Siebel') \
-            AND CHANGE_REASON_CD IN ('System Request') \
-            AND CUST_SEGMEN like 'DES %'
-        """
-        
-        cur.execute(query)
-        datas = cur.fetchall()
-        cur.close()
-        con.close()
+    # try:
+    con = cx_Oracle.connect(settings.AMDES_USER, settings.AMDES_PASS, settings.AMDES_SERVICE)
+    cur = con.cursor()
+    query = """
+        SELECT distinct \
+        ACCOUNTNAS, \
+        li_sid, \
+        order_id, \
+        li_milestone, \
+        ORDER_CREATED_DATE \
+        FROM \
+        AMDES.NCRM_AGREE_ORDER_LINE \
+        WHERE \
+        li_sid IS NOT NULL \
+        AND li_milestone IN ('FULFILL BILLING COMPLETE') \
+        AND order_subtype IN ('Suspend') \
+        AND ORDER_CREATEDBY_NAME IN ('Administrator, Siebel') \
+        AND CHANGE_REASON_CD IN ('System Request') \
+        AND CUST_SEGMEN like 'DES %'
+    """
+    
+    cur.execute(query)
+    datas = cur.fetchall()
+    cur.close()
+    con.close()
 
-        for i in datas:
-            account, sid, order, status, create_on = i
-            try :
-                acc_obj, create = Customer.objects.get_or_create(account_number=account)
-                sid_obj, create = Circuit.objects.get_or_create(sid=sid, account=acc_obj)
-                order_obj, create = Order.objects.get_or_create(order_number=order, circuit=sid_obj)
-                order_obj.status = status if status else 'PENDING' 
-                order_obj.order_label = 2
-                if status == 'FULFILL BILLING COMPLETE':
-                    order.closed = True
-                order_obj.save()
-            except :
-                pass
+    for i in datas:
+        account, sid, order, status, create_on = i
+        # try :
+        acc_obj, create = Customer.objects.get_or_create(account_number=account)
+        sid_obj, create = Circuit.objects.get_or_create(sid=sid, account=acc_obj)
+        order_obj, create = Order.objects.get_or_create(order_number=order, circuit=sid_obj)
+        order_obj.status = status if status else 'PENDING' 
+        order_obj.order_label = 2
+        if status == 'FULFILL BILLING COMPLETE':
+            order.closed = True
+        order_obj.save()
+        # except :
+        #     pass
 
-        BackgTaskUpdate.objects.create(typetask='CSO')
-    except:
-        pass
+    BackgTaskUpdate.objects.create(typetask='CSO')
+    # except:
+    #     pass
 
 @background(schedule=1)
 def get_record_account():
