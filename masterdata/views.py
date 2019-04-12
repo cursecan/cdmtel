@@ -29,7 +29,7 @@ def daily_record_view(request):
 
 
 def daily_record_contrak_so(request):
-    record_data_contrak(repeat=10000, repeat_unntil=expired_date)
+    record_data_contrak(repeat=10000, repeat_until=expired_date)
     return JsonResponse({'daily_contrak': 1})
 
 
