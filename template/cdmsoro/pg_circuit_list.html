@@ -86,6 +86,9 @@ Circuit Suspend Order
                                                     <div class="meta">
                                                         <div class="date">{{ i.get_permit_bukis.get_status_display }}</div>
                                                     </div>
+                                                    {% i.get_permit_bukis.manual_bukis %}
+                                                    <div class="extra text">Manual RO by <a>OCS</a></div>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </div>
