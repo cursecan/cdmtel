@@ -365,7 +365,7 @@ def circuitListView(request):
            )
        ).filter(search=q)
 
-    paginate_circuit = set_obj_pagination(circuit_objs, 10, page)
+    paginate_circuit = set_obj_pagination(circuit_objs, 20, page)
 
     content = {
         'circuit_list': paginate_circuit,
