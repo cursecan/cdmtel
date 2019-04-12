@@ -48,6 +48,17 @@ Record Buka Isolir
                                 <a href="#" class="js-doc-btn" target-url="{% url 'som:doc_list' i.id %}"><i class="paperclip icon"></i> {{ i.doc_c }}</a>
                             </td>
                         </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5">
+                                <div class="ui placeholder basic segment">
+                                    <div class="ui icon header">
+                                        <i class="search icon"></i>
+                                        We don't have any documents matching your query
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
                         {% endfor %}
                     </table>
 

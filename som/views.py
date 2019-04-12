@@ -65,7 +65,7 @@ def unclosePerminBukisView(request):
         permin_bukis_objs = permin_bukis_objs.annotate(
             search = SearchVector(
                 'sid__sid', 'sid__account__account_number',
-                'sid__account__bp', 'sid__account__customer_number'
+                'sid__account__bp', 'sid__account__customer_name'
             )
         ).filter(search=q)
 
@@ -161,7 +161,7 @@ def recordBukisListView(request):
         permin_bukis_objs = permin_bukis_objs.annotate(
             search = SearchVector(
                 'sid__sid', 'sid__account__account_number',
-                'sid__account__bp', 'sid__account__customer_number'
+                'sid__account__bp', 'sid__account__customer_name'
             )
         ).filter(search=q)
 
