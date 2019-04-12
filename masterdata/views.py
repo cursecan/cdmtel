@@ -7,7 +7,7 @@ from django.utils import timezone
 from .models import Order
 from .tasks import (
     bulk_order_update, record_data,
-    get_record_account
+    get_record_account, record_data_contrak
 )
 
 import datetime
@@ -26,6 +26,11 @@ def order_bulk_update_view(request):
 def daily_record_view(request):
     record_data(repeat=10000, repeat_until=expired_date)
     return JsonResponse({'daily_record': '1'})
+
+
+def daily_record_contrak_so(request):
+    record_data_contrak(repeat=10000, repeat_unntil=expired_date)
+    return JsonResponse({'daily_contrak': 1})
 
 
 def record_account_view(request):

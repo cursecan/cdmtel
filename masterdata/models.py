@@ -123,6 +123,7 @@ class Order(CommonBase):
     create_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     order_create_date = models.DateTimeField(default=timezone.now)
     order_label = models.PositiveSmallIntegerField(choices=LIST_LABEL, default=1)
+    dbcreate_on = models.DateTimeField(default=timezone.now)
     closed = models.BooleanField(default=False)
 
     class Meta:
@@ -141,11 +142,13 @@ class Order(CommonBase):
 class BackgTaskUpdate(CommonBase):
     BJT = 'BJT'
     REQSO = 'RSO'
+    CONTSO = 'CSO'
     ORSTATUS = 'STA'
 
     LISTBG = (
         (BJT, 'BJT UPDATE'),
         (REQSO, 'RECORD ORDER'),
-        (ORSTATUS, 'STATUS ORDER')
+        (ORSTATUS, 'STATUS ORDER'),
+        (CONTSO, 'SO CONTRACT'),
     )
     typetask = models.CharField(max_length=3, choices=LISTBG)

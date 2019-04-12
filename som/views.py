@@ -96,7 +96,7 @@ def unclosePerminDetail(request, id):
             instance = perbukis_form.save(commit=False)
             instance.type_order = 'RO'
             instance.create_by = request.user
-            instance.order_label = 2
+            instance.order_label = permin_obj.suspend.order_label
             instance.save()
             
             permin_obj.resume = instance
