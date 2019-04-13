@@ -361,7 +361,7 @@ def circuitListView(request):
 
     if status:
         circuit_objs = circuit_objs.filter(
-            is_active = True if status else False
+            is_active = True if status == '1' else False
         )
     
     if q:
