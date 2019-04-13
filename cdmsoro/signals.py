@@ -62,7 +62,7 @@ def update_validation_triger(sender, instance, created, **kwargs):
             closed = True
         )
 
-        channel = '@cdm_cool_none'
+        channel = '@cdm_cool'
         if instance.permintaan_resume.suspend.order_label == 1:
             # CDM
             channel = '@cdm_cool'
@@ -77,7 +77,12 @@ def  create_manual_order(sender, instance, created, **kwargs):
             manualorder = instance
         ).update(manual_bukis=True)
 
-        sending_notif_manual_ro(instance.id, settings.TELEGRAM_KEY, settings.REMOT_TELEHOST)
+        channel = '@cdm_cool'
+        if instance.permintaan_resume.suspend.order_label == 1:
+            # CDM
+            channel = '@cdm_cool'
+
+        sending_notif_manual_ro(instance.id, settings.TELEGRAM_KEY, '@cdm_notif')
 
 
 @receiver(post_save, sender=ManualOrderSoro)

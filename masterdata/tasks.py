@@ -83,16 +83,10 @@ def record_data():
         con = cx_Oracle.connect(settings.AMDES_USER, settings.AMDES_PASS, settings.AMDES_SERVICE)
         cur = con.cursor()
         query = """
-            SELECT DISTINCT accountnas, li_sid, order_id, li_milestone, order_created_date, \
-            CASE \
-                WHEN li_createdby_name='SETIAWAN, ANDERI' THEN 'anderi' \
-                WHEN li_createdby_name='MAHARANI, FRISA' THEN 'frisa' \
-                WHEN li_createdby_name='SABARUDIN, RAHMAT' THEN '710045' \
-                ELSE 'hane' \
-            END createdby \
+            SELECT DISTINCT accountnas, li_sid, order_id, li_milestone, order_created_date, li_createdby_name \
             FROM eas_ncrm_agree_order_line@dbl_dwh_sales_aon \
             WHERE order_subtype='Suspend' \
-            AND li_createdby_name IN ('MAHARANI, FRISA', 'SETIAWAN, ANDERI', 'SABARUDIN, RAHMAT', 'HASANUDIN, HANE') \
+            AND li_createdby_name IN ('CHALIL, MUNAWAR', 'MAHARANI, FRISA', 'SETIAWAN, ANDERI', 'SABARUDIN, RAHMAT', 'HASANUDIN, HANE') \
             AND ORDER_CREATED_DATE >= TO_DATE('20190101', 'YYYYMMDD') \
             AND LI_SID IS NOT NULL
         """
@@ -110,6 +104,8 @@ def record_data():
                 sid_obj, create = Circuit.objects.get_or_create(sid=sid, account=acc_obj)
                 order_obj, create = Order.objects.get_or_create(order_number=order, circuit=sid_obj, create_by=user_obj)
                 order_obj.status = status if status else 'PENDING' 
+                order_obj.dbcreate_by = create_by
+                order_obj.dbcreate_on = create_on
                 if status == 'FULFILL BILLING COMPLETE':
                     order_obj.closed = True
                 order_obj.save()
@@ -132,7 +128,7 @@ def record_data_contrak():
             li_sid, \
             order_id, \
             li_milestone, \
-            ORDER_CREATED_DATE \
+            ORDER_CREATED_DATE, li_createdby_name \
             FROM \
             AMDES.NCRM_AGREE_ORDER_LINE \
             WHERE \
@@ -150,13 +146,15 @@ def record_data_contrak():
         con.close()
 
         for i in datas:
-            account, sid, order, status, create_on = i
+            account, sid, order, status, create_on, create_by = i
             try :
                 acc_obj, create = Customer.objects.get_or_create(account_number=account)
                 sid_obj, create = Circuit.objects.get_or_create(sid=sid, account=acc_obj)
                 order_obj, create = Order.objects.get_or_create(order_number=order, circuit=sid_obj)
                 order_obj.status = status if status else 'PENDING' 
                 order_obj.order_label = 2
+                order_obj.dbcreate_by = create_by
+                order_obj.dbcreate_on = create_on
                 if status == 'FULFILL BILLING COMPLETE':
                     order_obj.closed = True
                 order_obj.save()
@@ -200,46 +198,36 @@ def get_record_account():
 
         for i in datas:
             bpnum, acc, name, segmen, saldo, fbcc = i
-            # try :
-            if int(acc) < 4000000:
-                acc = '0'+ acc
+            try :
+                if int(acc) < 4000000:
+                    acc = '0'+ acc
 
-            seg_obj, create = Segment.objects.get_or_create(segment=segmen)
-            fbcc_obj, create = FbccSegment.objects.get_or_create(segment=fbcc)
+                seg_obj, create = Segment.objects.get_or_create(segment=segmen)
+                fbcc_obj, create = FbccSegment.objects.get_or_create(segment=fbcc)
 
-            cust_obj, create = Customer.objects.update_or_create(
-                account_number = acc,
-                defaults = {
-                    'account_number': acc,
-                    'bp': bpnum,
-                    'customer_name': name,
-                    'segment': seg_obj,
-                    'fbcc': fbcc_obj,
-                    'last_update': now
-                }
-            )
+                cust_obj, create = Customer.objects.update_or_create(
+                    account_number = acc,
+                    defaults = {
+                        'account_number': acc,
+                        'bp': bpnum,
+                        'customer_name': name,
+                        'segment': seg_obj,
+                        'fbcc': fbcc_obj,
+                        'last_update': now
+                    }
+                )
+                
+                Saldo.objects.update_or_create(
+                    customer = cust_obj,
+                    timestamp__date = now.date(),
+                    defaults = {
+                        'customer': cust_obj,
+                        'amount': saldo
+                    } 
+                )
 
-            # cust_obj, create = Customer.objects.get_or_create(
-            #     account_number = acc
-            # )
-            # cust_obj.bp = bpnum
-            # cust_obj.customer_name = name
-            # cust_obj.segment = seg_obj
-            # cust_obj.fbcc = fbcc_obj
-            # cust_obj.last_update = now
-            # cust_obj.save()
-            
-            Saldo.objects.update_or_create(
-                customer = cust_obj,
-                timestamp__date = now.date(),
-                defaults = {
-                    'customer': cust_obj,
-                    'amount': saldo
-                } 
-            )
-
-            # except:
-            #     pass
+            except:
+                pass
 
         # Update For Account Segment
         Customer.objects.exclude(last_update=now).update(

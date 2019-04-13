@@ -29,7 +29,7 @@ class PermintaanResume(CommonBase):
 
 
     class Meta:
-        ordering = ['update', 'timestamp']
+        ordering = ['-update', '-status']
 
     def __str__(self):
         return str(self.sid)

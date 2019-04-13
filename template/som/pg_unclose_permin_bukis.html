@@ -53,6 +53,10 @@
                                     </div>
                                 </div>
                             </td>
+                            <td>
+                                Validated by <br>
+                                <a>{{ i.executor.first_name|title }}</a>
+                            </td>
                             <td class="right aligned">
                                 By <a>{{ i.pic }}</a> <br>
                                 {{ i.timestamp|date:"d/m/Y H:i" }}
@@ -60,7 +64,7 @@
                         </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="7">
+                                <td colspan="8">
                                     <div class="ui placeholder basic segment">
                                         <div class="ui icon header">
                                             <i class="search icon"></i>

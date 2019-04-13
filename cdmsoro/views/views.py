@@ -355,8 +355,15 @@ def jsPostPerminUploadDoc(request, id):
 def circuitListView(request):
     page = request.GET.get('page', 1)
     q = request.GET.get('q', None)
+    status = request.GET.get('sto', None)
 
     circuit_objs = Circuit.objects.all()
+
+    if status:
+        circuit_objs = circuit_objs.filter(
+            is_active = True if status else False
+        )
+    
     if q:
        circuit_objs = circuit_objs.annotate(
            search = SearchVector(

@@ -103,10 +103,10 @@ def unclosePerminDetail(request, id):
             permin_obj.closed = True
             permin_obj.save()
 
-            channel = '@cdm_cool'
+            channel = '@cdm_notif'
             if permin_obj.suspend.order_label == 1:
                 # CDM Channel
-                channel = '@cdm_cool'
+                channel = '@cdm_notif'
                 
             sending_to_pic(permin_obj.id, settings.TELEGRAM_KEY, channel)
 

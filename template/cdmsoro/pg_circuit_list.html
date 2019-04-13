@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Circuit Suspend Order
+Record Suspended Link
 {% endblock %}
 
 {% block content %}
@@ -44,22 +44,46 @@ Circuit Suspend Order
                             </div>
                         </div>
                     </div>
-                    <form action="" class="ui form">
-                        <div class="four wide field">
-                            <div class="ui right icon input">
-                                <i class="search icon"></i>
-                                <input type="text" name="q" placeholder="Search..." style="border-radius:20px">
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </div>
+
             <div class="row">
                 <div class="column">
-                    <div class="ui top attached menu">
-                        <div class="right menu">
-                            <div class="item">{{ c_circuit.c_suspend }} Suspend</div>
+                    <div class="ui text menu">
+                        <form action="" class="ui form item">
+                            <div class="field">
+                                <div class="ui right icon input">
+                                    <i class="search icon"></i>
+                                    <input type="text" name="q" placeholder="Search..." style="border-radius:20px">
+                                </div>
+                            </div>
+                        </form>
+                        <div class="ui link dropdown item">
+                            <!-- Dropdown -->
+                            <i class="filter icon"></i>
+                            <div class="text">Filter</div>
+                            <div class="menu">
+                                <a href="" class="item">
+                                    <div class="ui empty green circular label"></div>
+                                    Active Link
+                                </a>
+                                <a href="" class="item">
+                                    <div class="ui empty red circular label"></div>
+                                    Suspend
+                                </a>
+                            </div>
                         </div>
+                        <div class="right menu">
+                            <div class="item">
+                                <a href="https://t.me/cdm_notif" target="_blank" class="ui basic blue circular button">
+                                    <i class="telegram icon"></i>
+                                    Join Our Notif Channel
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui top attached menu">
+            
                     </div>
                     <table class="ui bottom attached small table">
                         <tbody>

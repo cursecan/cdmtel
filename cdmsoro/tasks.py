@@ -67,7 +67,7 @@ def sending_telegram(data_id, token, send_to):
 def sending_to_pic(data_id, token, send_to):
     order_obj = PermintaanResume.objects.get(pk=data_id)
     url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
-    msg = '[+] Sudah bukis SID {} dengan nomor RO {}, {}.\nTerima kasih~'.format(order_obj.sid.sid, order_obj.resume.order_number, order_obj.pic)
+    msg = '[+] Sudah bukis {} dengan nomor RO {}, {}.\nTerima kasih~'.format(order_obj.sid.sid, order_obj.resume.order_number, order_obj.pic)
     payload = {
         'chat_id': send_to,
         'text': msg,
@@ -82,7 +82,7 @@ def sending_to_pic(data_id, token, send_to):
 def sending_notif_manual_ro(data_id, token, send_to):
     man_obj = ManualOrder.objects.get(pk=data_id)
     url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
-    msg = '[+] SID {} belum bisa input RO di NCX (kendala) , sudah minta percepatan ke DSO FFM/OCS.'.format(man_obj.permintaan_resume.sid.sid)
+    msg = '[+] Permintaan bukis {} belum bisa input RO di NCX (kendala) , sudah diminta RO percepatan ke DSO FFM/OCS.'.format(man_obj.permintaan_resume.sid.sid)
     payload = {
         'chat_id': send_to,
         'text': msg,

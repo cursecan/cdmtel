@@ -121,9 +121,9 @@ class Order(CommonBase):
     status = models.CharField(max_length=100, blank=True)
     circuit = models.ForeignKey(Circuit, on_delete=models.CASCADE)
     create_by = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-    order_create_date = models.DateTimeField(default=timezone.now)
     order_label = models.PositiveSmallIntegerField(choices=LIST_LABEL, default=1)
     dbcreate_on = models.DateTimeField(default=timezone.now)
+    dbcreate_by = models.CharField(max_length=100, blank=True)
     closed = models.BooleanField(default=False)
 
     class Meta:
