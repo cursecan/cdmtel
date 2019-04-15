@@ -28,7 +28,7 @@ def permintaa_resume_trigerting(sender, instance, created, **kwargs):
             counter = F('counter') + 1
         )
 
-        channel = '@cdm_cool'
+        channel = '@AAAAAEmt1lYsRQ-GBpVFzA'
         if instance.suspend.order_label == 1:
             # CDM
             channel = '@cdm_cool'
@@ -62,7 +62,7 @@ def update_validation_triger(sender, instance, created, **kwargs):
             closed = True
         )
 
-        channel = '@cdm_cool'
+        channel = '@AAAAAEmt1lYsRQ-GBpVFzA'
         if instance.permintaan_resume.suspend.order_label == 1:
             # CDM
             channel = '@cdm_cool'
@@ -77,7 +77,7 @@ def  create_manual_order(sender, instance, created, **kwargs):
             manualorder = instance
         ).update(manual_bukis=True)
 
-        channel = '@cdm_cool'
+        channel = '@AAAAAEmt1lYsRQ-GBpVFzA'
         if instance.permintaan_resume.suspend.order_label == 1:
             # CDM
             channel = '@cdm_cool'
