@@ -133,11 +133,11 @@ def record_data_contrak():
             AMDES.NCRM_AGREE_ORDER_LINE \
             WHERE \
             li_sid IS NOT NULL \
-            AND li_milestone IN ('FULFILL BILLING COMPLETE') \
             AND order_subtype IN ('Suspend') \
             AND ORDER_CREATEDBY_NAME IN ('Administrator, Siebel') \
             AND CHANGE_REASON_CD IN ('System Request') \
-            AND CUST_SEGMEN like 'DES %'
+            AND CUST_SEGMEN like 'DES %' \
+            AND ORDER_CREATED_DATE > TO_DATE('20190324', 'YYYYMMDD')
         """
         
         cur.execute(query)
