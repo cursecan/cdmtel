@@ -39,7 +39,7 @@
                             <td>{{ i.suspend }} <br>{{ i.suspend.status }}</td>
                             <td>
                                 {{ i.get_status_display }} <br>
-                                <a>{{ i.executor.first_name|title }}</a>
+                                by <a>{{ i.executor.first_name|title }}</a>
                             </td>
                             <td>
                                 {% if i.manual_bukis %}
