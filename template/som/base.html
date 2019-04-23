@@ -60,6 +60,10 @@
                             </div>
                         </h4>
                     </div>
+                    <a href="{% url 'home' %}" class="item">
+                        <i class="home icon"></i>
+                        Home
+                    </a>
                     <div class="item">
                         System Managemen Order
                         <div class="menu">
@@ -77,7 +81,6 @@
                 </div>
             </div>
             <div class="article">
-                {% include 'header.html' %}
                 {% block sub_content %}
                 {% endblock %}
             </div>
