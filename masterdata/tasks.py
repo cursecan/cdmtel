@@ -98,11 +98,10 @@ def record_data():
 
         for i in datas:
             account, sid, order, status, create_on, create_by = i
-            user_obj = User.objects.get(username=create_by)
             try :
                 acc_obj, create = Customer.objects.get_or_create(account_number=account)
                 sid_obj, create = Circuit.objects.get_or_create(sid=sid, account=acc_obj)
-                order_obj, create = Order.objects.get_or_create(order_number=order, circuit=sid_obj, create_by=user_obj)
+                order_obj, create = Order.objects.get_or_create(order_number=order, circuit=sid_obj)
                 order_obj.status = status if status else 'PENDING' 
                 order_obj.dbcreate_by = create_by
                 order_obj.dbcreate_on = create_on
