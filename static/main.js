@@ -1,6 +1,4 @@
 // js
-$('.ui.sidebar').sidebar('toggle');
-
 $('.ui.modal').modal();
 
 $('.ui.accordion').accordion();

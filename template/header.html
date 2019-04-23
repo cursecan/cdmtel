@@ -1,10 +1,10 @@
 <div class="ui vertical inverted brown segment">
     <div class="ui inverted secondary menu container">
-        <div class="item">
+        <!-- <div class="item">
             <div class="ui basic inverted icon button bars-btn">
                 <i class="bars icon"></i>
             </div>
-        </div>
+        </div> -->
         <a href="{% url 'home' %}" title="Permintaan Bukis Datin" class="item">HOME</a>
         <a href="{% url 'collection:index' %}" title="Billing Jatuh Tempo" class="item">BILLING JATUH TEMPO</a>
         {% if user.is_authenticated %}

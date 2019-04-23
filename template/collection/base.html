@@ -10,8 +10,31 @@ Bukis CDM
     {% endblock %}
 {% endblock %}
 
+{% block css %}
+<style>
+    .full.height {
+        display: flex;
+        flex-direction: row;
+    }
+    .full.height > .toc {
+        position: fixed;
+        z-index: 1;
+        width: 200px;
+        flex: 0 0 auto;
+        -webkit-box-flex: 0;
+        background-color: #1b1c1d;
+        min-height: 2000px;
+    }
+    .full.height > .article {
+        flex: 1 1 auto;
+        margin-left: 200px;
+        min-width: 0px;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="ui vertical inverted menu visible sidebar">
+<div class="ui vertical inverted menu sidebar">
     <div class="item">
         <h4 class="ui icon inverted header">
             <i class="gem outline icon"></i>
@@ -36,14 +59,44 @@ Bukis CDM
     </div>
 </div>
 <div class="pusher">
-    {% include 'header.html' %}
-    <div class="ui basic vertical segment">
-        <div class="ui fluid container">
-            <div class="ui padded grid">
-                <div class="row">
-                    <div class="column">
-                        {% block sub_content %}
-                        {% endblock %}
+    <div class="full height">
+        <div class="toc">
+            <div class="ui vertical inverted fluid menu">
+                <div class="item">
+                    <h4 class="ui icon inverted header">
+                        <i class="gem outline icon"></i>
+                        <div class="content">
+                            CDMT
+                        </div>
+                    </h4>
+                </div>
+                <div class="item">
+                    System Managemen Order
+                    <div class="menu">
+                        <a href="{% url 'som:unlose_persume' %}" class="item">Permintaan Buka Isolir</a>
+                        <a href="{% url 'som:bukis_books' %}" class="item">Pencatatan Bukis</a>
+                    </div>
+                </div>
+                <div class="item">
+                    Biling Jatuh Tempo
+                    <div class="menu">
+                        <a href="{% url 'collection:validation' %}" class="item">Validasi</a>
+                        <a href="{% url 'collection:approval' %}" class="item">Approval</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="article">
+            {% include 'header.html' %}
+            <div class="ui basic vertical segment">
+                <div class="ui fluid container">
+                    <div class="ui padded grid">
+                        <div class="row">
+                            <div class="column">
+                                {% block sub_content %}
+                                {% endblock %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
