@@ -69,7 +69,7 @@ def bulk_order_update():
                     if get_order[0] is not None and get_order[0] != '':
                         if get_order[0] == 'FULFILL BILLING COMPLETE':
                             order_obj.update(
-                                status = get_order[0], dbcreate_on=get_order[2]
+                                status = get_order[0], dbcreate_on=get_order[2],
                                 closed=True
                             )
                         else:
