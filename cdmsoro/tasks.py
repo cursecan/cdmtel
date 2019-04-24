@@ -99,7 +99,7 @@ def reject_notification(data_id, send_to):
     obj = Validation.objects.get(pk=data_id)
     url = 'https://api.telegram.org/bot{}/sendMessage'.format(settings.TELEGRAM_KEY)
     msg = 'Request <b>{}</b>\nSID : {}\nFollow link <a href="http://10.35.31.78/?q={}">here</a>\n{}'.format(
-        obj.get_action_display.title(),
+        obj.get_action_display().title(),
         obj.permintaan_resume.sid.sid,
         obj.permintaan_resume.sid.sid,
         obj.permintaan_resume.pic,
