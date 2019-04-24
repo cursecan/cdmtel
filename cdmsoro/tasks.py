@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from userprofile.models import Profile
 
 from cdmsoro.models import (
-    PermintaanResume, ManualOrder
+    PermintaanResume, ManualOrder, Validation
 )
 
 from masterdata.models import Order
@@ -83,6 +83,27 @@ def sending_notif_manual_ro(data_id, token, send_to):
     man_obj = ManualOrder.objects.get(pk=data_id)
     url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
     msg = '[+] Permintaan bukis {} belum bisa input RO di NCX (kendala) , sudah diminta RO percepatan ke DSO FFM/OCS.'.format(man_obj.permintaan_resume.sid.sid)
+    payload = {
+        'chat_id': send_to,
+        'text': msg,
+        'parse_mode': 'HTML'
+    }
+    try :
+        r = requests.post(url, data=payload, timeout=15)
+    except:
+        pass
+
+
+@background(schedule=1)
+def reject_notification(data_id, send_to):
+    obj = Validation.objects.get(pk=data_id)
+    url = 'https://api.telegram.org/bot{}/sendMessage'.format(settings.TELEGRAM_KEY)
+    msg = 'Request <b>{}</b>\nSID : {}\nFollow link <a href="http://10.35.31.78/?q={}">here</a>\n{}'.format(
+        obj.get_action_display.title(),
+        obj.permintaan_resume.sid.sid,
+        obj.permintaan_resume.sid.sid,
+        obj.permintaan_resume.pic,
+    )
     payload = {
         'chat_id': send_to,
         'text': msg,

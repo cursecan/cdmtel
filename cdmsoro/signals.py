@@ -12,7 +12,7 @@ from .models import (
 )
 from .tasks import (
     notify_new_request, notifi_validation_req,
-    sending_notif_manual_ro
+    sending_notif_manual_ro, reject_notification
 )
 
 from masterdata.models import (
@@ -47,6 +47,10 @@ def validation_triger(sender, instance, created, **kwargs):
             PermintaanResume.objects.filter(id=instance.permintaan_resume.id).update(
                 validate=False, status=1
             )
+
+            # post to telegram msg
+            reject_notification(instance.id, '@cdm_notif')
+
 
         # if instance.action == 'APP':
         #     notifi_validation_req(instance.permintaan_resume.id, verbose_name="New Validation", creator=instance.permintaan_resume)
