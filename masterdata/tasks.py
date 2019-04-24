@@ -19,24 +19,27 @@ def bulk_order_update():
         con = cx_Oracle.connect(settings.ORACLE_USER, settings.ORACLE_PASS, settings.ORACLE_SERVICE)
         cur = con.cursor()
         query = """
-            SELECT DISTINCT\
-            T1.milestone_code AS MILESTONE,\
-            T1.service_num AS SID_NUM,\
-            T2.order_num AS ORDER_NUM,\
-            T2.rev_num AS REV,\
-            T4.attrib_05 AS ORDER_SUBTYPE,\
-            T5.x_pti1_accnt_nas AS ACCNAS\
-            FROM\
-                sblprd.s_order_item T1\
-            LEFT JOIN sblprd.s_order T2 ON\
-                T2.row_id = T1.order_id\
-            LEFT JOIN sblprd.s_order_x T4 ON\
-                T4.par_row_id = T2.row_id\
-            LEFT JOIN sblprd.s_org_ext T5 ON\
-                T5.row_id = T2.bill_accnt_id\
-            LEFT JOIN SBLPRD.S_USER T9 ON\
-                T1.CREATED_BY = T9.ROW_ID\
-            WHERE T9.LOGIN IN ('710045', 'CDAS041188', 'CDHH171076', 'ESFM290596')\
+            SELECT DISTINCT \
+            T1.milestone_code AS MILESTONE, \
+            T1.service_num AS SID_NUM, \
+            T2.order_num AS ORDER_NUM, \
+            T2.rev_num AS REV, \
+            T4.attrib_05 AS ORDER_SUBTYPE, \
+            T5.x_pti1_accnt_nas AS ACCNAS, \
+            T2.created, t2.status_cd \
+            FROM \
+                sblprd.s_order_item T1 \
+            LEFT JOIN sblprd.s_order T2 ON \
+                T2.row_id = T1.order_id \
+            LEFT JOIN sblprd.s_order_x T4 ON \
+                T4.par_row_id = T2.row_id \
+            LEFT JOIN sblprd.s_org_ext T5 ON \
+                T5.row_id = T2.bill_accnt_id \
+            LEFT JOIN SBLPRD.S_USER T9 ON \
+                T1.CREATED_BY = T9.ROW_ID \
+            WHERE T9.LOGIN IN ('710045', 'CDAS041188', 'CDHH171076', 'ESFM290596', '900039') \
+            AND T2.status_cd NOT IN ('Failed', 'Abandoned', 'Cancelled') \
+            AND T2.created >= to_date('20190101','YYYYMMDD') \
             AND T1.service_num IS NOT NULL
         """
         cur.execute(query)
