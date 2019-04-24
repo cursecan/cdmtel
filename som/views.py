@@ -49,6 +49,8 @@ def index(request):
 @login_required
 @user_executor
 def unclosePerminBukisView(request):
+    request.session.set_expiry(300)
+    
     page = request.GET.get('page', 1)
     q = request.GET.get('q', None)
 

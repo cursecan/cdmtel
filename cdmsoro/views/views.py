@@ -47,10 +47,7 @@ def set_obj_pagination(obj_v, rownum, page):
 
 @login_required
 def index(request):
-    if request.user.is_authenticated:
-        return redirect('cdmsoro:per_bukis_list')
-    
-    return redirect('cdmsoro:bukis')
+    return redirect('home')
 
 
 @method_decorator(login_required, name='dispatch')

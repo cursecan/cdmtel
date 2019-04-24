@@ -70,6 +70,17 @@ Bukis CDM
                         </div>
                     </h4>
                 </div>
+                <div class="item">
+                    <h4 class="ui inverted header">
+                        <i class="user icon"></i>
+                        <div class="content">
+                            <div class="sub header">
+                                Welcome, 
+                            </div>
+                            {{ user.first_name|title }}                               
+                        </div>
+                    </h4>
+                </div>
                 <a href="{% url 'home' %}" class="item">
                     <i class="home icon"></i>
                     Home
@@ -88,6 +99,10 @@ Bukis CDM
                         <a href="{% url 'collection:approval' %}" class="item">Approval</a>
                     </div>
                 </div>
+                <a href="{% url 'logout' %}" class="item">
+                    <i class="logout icon"></i>
+                    Logout
+                </a>
             </div>
         </div>
         <div class="article">

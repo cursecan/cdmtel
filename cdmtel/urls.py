@@ -25,6 +25,7 @@ from cdmsoro.views.views import circuitListView as home_view
 from django.contrib.auth.views import LoginView, LogoutView
 
 from masterdata import views  as master_views
+from core.forms import LoginForm as CoreLogin
 
 urlpatterns = [
     path('', home_view, name='home'),
