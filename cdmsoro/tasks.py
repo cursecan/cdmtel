@@ -65,9 +65,15 @@ def sending_telegram(data_id, token, send_to):
 
 @background(schedule=1)
 def sending_to_pic(data_id, token, send_to):
-    order_obj = PermintaanResume.objects.get(pk=data_id)
+    obj = PermintaanResume.objects.get(pk=data_id)
     url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
-    msg = '[+] Sudah bukis {} dengan nomor RO {}, {}.\nTerima kasih~'.format(order_obj.sid.sid, order_obj.resume.order_number, order_obj.pic)
+    msg = 'Request <b>Approved</b>\nTelah bukis layanan oleh permintaan {},\nSID : {}\nSO : {}\nRO : {}.'.format(
+        obj.pic,
+        obj.sid.sid,
+        obj.suspend.order_number,
+        obj.resume.order_number,
+    )
+    
     payload = {
         'chat_id': send_to,
         'text': msg,
@@ -80,9 +86,15 @@ def sending_to_pic(data_id, token, send_to):
 
 @background(schedule=1)
 def sending_notif_manual_ro(data_id, token, send_to):
-    man_obj = ManualOrder.objects.get(pk=data_id)
+    obj = ManualOrder.objects.get(pk=data_id)
     url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
-    msg = '[+] Permintaan bukis {} belum bisa input RO di NCX (kendala) , sudah diminta RO percepatan ke DSO FFM/OCS.'.format(man_obj.permintaan_resume.sid.sid)
+    msg = 'Request <b>Approved</b>\nTelah bukis manual oleh permintaan {},\nSID : {}\nSO : {}\nRO : {}\nKet. : {}.'.format(
+        obj.permintaan_resume.pic,
+        obj.permintaan_resume.sid.sid,
+        obj.permintaan_resume.suspend.order_number,
+        'MANUAL RO OCS/FFM',
+        obj.message
+    )
     payload = {
         'chat_id': send_to,
         'text': msg,

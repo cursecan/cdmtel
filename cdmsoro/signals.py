@@ -81,11 +81,6 @@ def  create_manual_order(sender, instance, created, **kwargs):
             manualorder = instance
         ).update(manual_bukis=True)
 
-        channel = '@AAAAAEmt1lYsRQ-GBpVFzA'
-        if instance.permintaan_resume.suspend.order_label == 1:
-            # CDM
-            channel = '@cdm_cool'
-
         sending_notif_manual_ro(instance.id, settings.TELEGRAM_KEY, '@cdm_notif')
 
 
