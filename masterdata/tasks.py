@@ -47,13 +47,13 @@ def bulk_order_update():
         dict_data = dict()
         for data in datas:
             # data from table
-            # ['milestone', 'sid', 'order_num', 'rev']
+            # ['milestone', 'sid', 'order_num', 'rev', 'order_subtype', 'accnas', created_on, order_status]
             if data[2] not in dict_data:
-                dict_data[data[2]] = (data[0], data[3]) # status dan seq
+                dict_data[data[2]] = (data[0], data[3], data[6], data[7]) # miles, seq, tgl, status_order
             else :
                 if data[3] > dict_data[data[2]][1]:
                     try :
-                        dict_data[data[2]] = (data[0], data[3])
+                        dict_data[data[2]] = (data[0], data[3], data[6], data[7])
                     except:
                         pass
 
@@ -61,16 +61,23 @@ def bulk_order_update():
             # unclose order list
             get_order = dict_data.get(order[0], None)
             if get_order:
-                if get_order[0] is not None and get_order[0] != '':
-                    order_obj = Order.objects.filter(order_number=order[0])
-                    if get_order[0] == 'FULFILL BILLING COMPLETE':
-                        Order.objects.filter(order_number=order[0], closed=False).update(
-                            status = get_order[0], closed=True
-                        )
+                order_obj = Order.objects.filter(order_number=order[0], closed=False)
+                if order_obj.exists():
+                    if get_order[0] is not None and get_order[0] != '':
+                        if get_order[0] == 'FULFILL BILLING COMPLETE':
+                            order_obj.update(
+                                status = get_order[0], dbcreate_on=get_order[2]
+                                closed=True
+                            )
+                        else:
+                            order_obj.update(
+                                status = get_order[0], dbcreate_on=get_order[2]
+                            )
                     else:
-                        Order.objects.filter(order_number=order[0], closed=False).update(
-                            status = get_order[0]
+                        order_obj.update(
+                            status = get_order[3], dbcreate_on=get_order[2]
                         )
+                    
         
         BackgTaskUpdate.objects.create(typetask='STA')
     except:
