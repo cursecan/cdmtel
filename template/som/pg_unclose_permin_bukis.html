@@ -40,10 +40,18 @@
                                 <a href="{% url 'som:unclose_detail' i.id %}">{{ i.sid.account.account_number }} - {{ i.sid.account.customer_name|truncatechars:15 }}</a> <br>
                                 {{ i.sid }}
                             </td>
-                            <td>{{ i.suspend }} <br>{{ i.suspend.status }}</td>
                             <td>
-                                {{ i.get_status_display }} <br>
-                                by <a>{{ i.executor.first_name|title }}</a>
+                                <div class="header">
+                                    {{ i.suspend }}
+                                </div>
+                                {{ i.suspend.status }}</td>
+                            <td>
+                                <div class="ui list">
+                                    <div class="item">
+                                            <div class="header">{{ i.get_status_display }}</div>
+                                            <p>by <a>{{ i.executor.first_name|title }}</a></p>
+                                    </div>
+                                </div>
                             </td>
                             <td>
                                 {% if i.manual_bukis %}
@@ -61,7 +69,7 @@
                                 </div>
                             </td>
                             <td class="right aligned">
-                                By <a>{{ i.pic|truncatechars:10 }}</a> <br>
+                                By <a>{{ i.pic|truncatechars:15 }}</a> <br>
                                 {{ i.timestamp|date:"d/m/Y H:i" }}
                             </td>
                         </tr>
