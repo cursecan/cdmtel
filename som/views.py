@@ -196,28 +196,33 @@ def documentUploadView(request, id):
 @login_required
 def iPaymentView(request, id):
     obj = get_object_or_404(PermintaanResume, pk=id)
-    data = dict()
 
     payuser = settings.IPAYMENT_USER
     paypass = settings.IPAYMENT_PASS
+    data = None
 
     s = requests.session()
     s.headers.update({'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.108 Safari/537.36'})
 
-    # Pre Login
-    s.get('http://i-payment.telkom.co.id')
+    try :
+        # Pre Login
+        s.get('http://i-payment.telkom.co.id')
 
-    # Login
-    s.get('http://i-payment.telkom.co.id/script/intag_login.php?uid={}&pwd={}'.format(payuser, paypass))
+        # Login
+        s.get('http://i-payment.telkom.co.id/script/intag_login.php?uid={}&pwd={}'.format(payuser, paypass))
 
-    # Get data
-    r = s.get(
-        'http://i-payment.telkom.co.id/script/intag_search_trems.php',
-        params = {
-            'via' : 'TREMS',
-            'phone' : obj.sid.account.account_number
-        }
-    )
-    s.close()
+        # Get data
+        r = s.get(
+            'http://i-payment.telkom.co.id/script/intag_search_trems.php',
+            params = {
+                'via' : 'TREMS',
+                'phone' : obj.sid.account.account_number
+            }, timeout=20
+        )
+        s.close()
+        r.raise_for_status()
+        data = r.text
+    except:
+        pass
 
-    return HttpResponse('<html><body>{}</body></html>'.format(r.text))
+    return render(request, 'som/ipayment.html', {'ipayment': data})
