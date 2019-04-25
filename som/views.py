@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.db.models import Count
@@ -23,6 +23,8 @@ from masterdata.forms import (
 )
 
 from cdmsoro.tasks import sending_to_pic, sending_notif_manual_ro
+
+import requests
 
 
 def get_paginator_set(obj, rows, page):
@@ -188,3 +190,34 @@ def documentUploadView(request, id):
         content, request=request
     )
     return JsonResponse(data)
+
+
+
+@login_required
+def iPaymentView(request, id):
+    obj = get_object_or_404(PermintaanResume, pk=id)
+    data = dict()
+
+    payuser = settings.IPAYMENT_USER
+    paypass = settings.IPAYMENT_PASS
+
+    s = requests.session()
+    s.headers.update({'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.108 Safari/537.36'})
+
+    # Pre Login
+    s.get('http://i-payment.telkom.co.id')
+
+    # Login
+    s.get('http://i-payment.telkom.co.id/script/intag_login.php?uid={}&pwd={}'.format(payuser, paypass))
+
+    # Get data
+    r = s.get(
+        'http://i-payment.telkom.co.id/script/intag_search_trems.php',
+        params = {
+            'via' : 'TREMS',
+            'phone' : obj.sid.account.account_number
+        }
+    )
+    s.close()
+
+    return HttpResponse('<html><body>{}</body></html>'.format(r.text))

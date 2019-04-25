@@ -10,5 +10,7 @@ urlpatterns = [
     path('manual-books/', views.manualBukisListView, name='manual_unclosed'),
     path('books/', views.recordBukisListView, name='bukis_books'),
 
+    path('ipay/<int:id>/', views.iPaymentView, name='ipayment'),
     path('api/docs/<int:id>/', views.documentUploadView, name='doc_list'),
+
 ]

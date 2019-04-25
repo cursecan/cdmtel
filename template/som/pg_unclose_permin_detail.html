@@ -52,6 +52,10 @@
                             </div>
                         </div>
                         <div class="ui attached right aligned segment">
+                            <a href="{% url 'som:ipayment' permin_bukis.id %}" target="_blank">
+                                <i class="paypal icon"></i>
+                                iPayment
+                            </a>
                             <a class="js-doc-btn" target-url="{% url 'som:doc_list' permin_bukis.id %}" href="#">
                                 <i class="paperclip icon"></i> Dok. Pendukung
                             </a>
