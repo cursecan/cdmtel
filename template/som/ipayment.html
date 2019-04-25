@@ -12,7 +12,7 @@
     </head>
     <body>
         <div id="result">
-            {{ ipayment }}
+            {{ ipayment|safe|escape }}
         </div>
     </body>
 </html>
