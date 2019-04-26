@@ -304,6 +304,7 @@ def jsonUploadDocView(request, id):
 @login_required
 @user_validator
 def collectionValidationView(request):
+    request.session.set_expiry(900)
     cust_obj = Customer.objects.filter(status=1).order_by(
         '-timestamp'
     )
