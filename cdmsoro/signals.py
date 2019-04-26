@@ -66,7 +66,7 @@ def update_validation_triger(sender, instance, created, **kwargs):
             closed = True
         )
 
-        channel = '@AAAAAEmt1lYsRQ-GBpVFzA'
+        channel = '@bukisendcontract'
         if instance.permintaan_resume.suspend.order_label == 1:
             # CDM
             channel = '@cdm_cool'
