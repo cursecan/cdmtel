@@ -42,7 +42,6 @@ def get_paginator_set(obj, rows, page):
 
 @login_required
 def index(request):
-    request.session.set_expiry(900)
     group = request.user.profile.group
     if group in ['EX', 'EC']:
         return redirect('som:unlose_persume')
@@ -52,7 +51,6 @@ def index(request):
 @login_required
 @user_executor
 def unclosePerminBukisView(request):
-    request.session.set_expiry(900)
     
     page = request.GET.get('page', 1)
     q = request.GET.get('q', None)
