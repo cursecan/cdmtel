@@ -28,7 +28,7 @@ def permintaa_resume_trigerting(sender, instance, created, **kwargs):
             counter = F('counter') + 1
         )
 
-        channel = '@AAAAAEmt1lYsRQ-GBpVFzA'
+        channel = '@bukisendcontract'
         if instance.suspend.order_label == 1:
             # CDM
             channel = '@cdm_cool'
