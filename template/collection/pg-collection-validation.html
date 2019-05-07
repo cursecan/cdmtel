@@ -33,6 +33,7 @@ BJT Validation
                         <tr>
                             <th>#</th>
                             <th>CUSTOMER</th>
+                            <th>UNLOCK</th>
                             <th>FBCC</th>
                             <th>SEGMEN</th>
                             <th>PIUTANG</th>
@@ -48,6 +49,11 @@ BJT Validation
                                 <p>
                                     {{ cust.customer_name|upper }}
                                 </p>
+                            </td>
+                            <td>
+                                {% if customer.unlock %}
+                                    <i class="check circle green icon"></i>
+                                {% endif %}
                             </td>
                             <td>{{ cust.fbcc.segment |default:'-' }}</td>
                             <td>{{ cust.segment.segment|default:'-' }}</td>

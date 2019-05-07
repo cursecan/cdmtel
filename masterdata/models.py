@@ -44,6 +44,7 @@ class Customer(CommonBase):
     has_approve = models.BooleanField(default=False)
     last_update = models.DateTimeField(blank=True, null=True)
     status = models.PositiveSmallIntegerField(choices=LIST_STATUS, default=EMPTY)
+    unlock = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-timestamp']

@@ -16,6 +16,7 @@ Approval
                             <tr>
                                 <th>#</th>
                                 <th>CUSTOMER</th>
+                                <th>UNLOCK</th>
                                 <th>PIUTANG</th>
                                 <th>STATUS</th>
                                 <th></th>
@@ -28,6 +29,11 @@ Approval
                                 <td>
                                     <a href="#">{{ v.customer.bp }} / {{ v.customer.account_number }}</a><br>
                                     {{ v.customer.customer_name }}
+                                </td>
+                                <td>
+                                    {% if customer.unlock %}
+                                        <i class="check circle green icon"></i>
+                                    {% endif %}
                                 </td>
                                 <td>{{ v.customer.cur_saldo|intcomma }}</td>
                                 <td>{{ v.customer.get_status_display }}</td>

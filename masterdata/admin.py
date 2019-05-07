@@ -18,7 +18,7 @@ class SegmentAdmin(admin.ModelAdmin):
 class CustomerAdmin(ImportExportModelAdmin):
     list_display = [
         'account_number', 'bp', 'customer_name','segment','fbcc',
-        'cur_saldo'
+        'cur_saldo', 'unlock'
     ]
     resource_class = CustomerResource
     search_fields = [
