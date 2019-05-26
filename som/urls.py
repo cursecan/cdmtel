@@ -5,6 +5,7 @@ from . import views
 app_name = 'som'
 urlpatterns = [
     path('', views.index, name='index'),
+    path('dashboard/', views.bukisDashboard, name='bukis_dashboard'),
     path('persume-books/', views.unclosePerminBukisView, name='unlose_persume'),
     path('persume-book/<int:id>/', views.unclosePerminDetail, name='unclose_detail'),
     path('manual-books/', views.manualBukisListView, name='manual_unclosed'),

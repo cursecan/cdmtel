@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.template.loader import render_to_string
 from django.conf import settings
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.postgres.search import SearchVector
 
@@ -44,9 +44,37 @@ def get_paginator_set(obj, rows, page):
 def index(request):
     group = request.user.profile.group
     if group in ['EX', 'EC']:
-        return redirect('som:unlose_persume')
+        return redirect('som:dashboard')
     
     return redirect('collection:validation')
+
+
+@login_required
+@user_executor
+def bukisDashboard(request):
+    permin_bukis = PermintaanResume.objects.filter(
+        closed=False
+    )
+
+    validation_objs = Validation.objects.all()[:5]
+
+    if not request.user.is_superuser:
+        permin_bukis = permin_bukis.filter(
+            executor=request.user
+        )
+
+    permin_bukis_resume = permin_bukis.aggregate(
+        waiting = Count('sid', filter=Q(status=3)),
+        in_process = Count('sid', filter=Q(status=2) & Q(manual_bukis=False)),
+        in_manual = Count('sid', filter=Q(manual_bukis=True))
+    )
+
+    content = {
+        'per_bukis_resume': permin_bukis_resume,
+        'validation': validation_objs
+    }
+
+    return render(request, 'som/pg_dashboard_perminbukis.html', content)
 
 @login_required
 @user_executor

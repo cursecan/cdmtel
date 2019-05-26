@@ -24,7 +24,7 @@ def notify_new_request(req_id, channel):
     }
 
     try:
-        requests.post(url=url+'sendMessage', data=payload)
+        requests.post(url=url+'sendMessage', data=payload, timeout=15)
     except:
         pass
 
@@ -41,7 +41,7 @@ def notifi_validation_req(req_id):
     }
 
     try:
-        requests.post(url=url+'sendMessage', data=payload)
+        requests.post(url=url+'sendMessage', data=payload, timeout=15)
     except:
         pass
 

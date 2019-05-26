@@ -1,0 +1,96 @@
+{% extends 'som/base.html' %}
+{% load humanize %}
+
+{% block title %}
+Bukis Dahsboard
+{% endblock %}
+
+{% block sub_content %}
+<div class="ui basic vertical segment">
+    <div class="ui fluid container">
+        <div class="ui horizontally padded grid">
+            <div class="row">
+                <div class="column">
+                    <h3 class="ui header">
+                        Dashboard Permintaan Bukis
+                    </h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <div class="ui four cards">
+                        <div class="orange card">
+                            <div class="content">
+                                <div class="ui small orange statistic">
+                                    <div class="value">
+                                        {{ per_bukis_resume.waiting }}
+                                    </div>
+                                    <div class="label">Waiting Validation</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="brown card">
+                            <div class="content">
+                                <div class="ui small brown statistic">
+                                    <div class="value">
+                                        {{ per_bukis_resume.in_process }}
+                                    </div>
+                                    <div class="label">In Progress</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gray card">
+                            <div class="content">
+                                    <div class="ui small gray statistic">
+                                            <div class="value">
+                                                {{ per_bukis_resume.in_manual }}
+                                            </div>
+                                            <div class="label">Unclosed Manual Order</div>
+                                        </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    
+                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <h4 class="ui header">
+                        5 Latest Validation
+                    </h4>
+                    <div class="ui feed">
+                        {% for i in validation %}
+                        <div class="event">
+                            <div class="label">
+                                <i class="bell icon"></i>
+                            </div>
+                            <div class="content">
+                                <div class="date">
+                                    {{ i.timestamp|naturaltime }}
+                                </div>
+                                <div class="summary">
+                                    Validate {{ i.permintaan_resume.sid }}
+                                    by <a class="user">{{ i.user }}</a>
+                                </div>
+                                <div class="extra text">
+                                    {{ i.message }}
+                                </div>
+                                <div class="meta">
+                                    <a class="like">
+                                        <i class="pencil icon"></i>
+                                        {{ i.get_action_display|title }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
