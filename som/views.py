@@ -7,6 +7,8 @@ from django.db.models import Count, Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.postgres.search import SearchVector
 
+import datetime
+
 from cdmsoro.models import (
     PermintaanResume, Avident,
     Validation
@@ -85,7 +87,7 @@ def unclosePerminBukisView(request):
 
     permin_bukis_objs = PermintaanResume.objects.filter(
         closed = False
-    )
+    ).exclude(status=1, timestamp__lte=datetime.datetime.now()-datetime.timedelta(days=10))
 
     if not request.user.is_superuser:
         permin_bukis_objs = permin_bukis_objs.filter(
