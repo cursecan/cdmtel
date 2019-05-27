@@ -44,7 +44,7 @@ def get_paginator_set(obj, rows, page):
 def index(request):
     group = request.user.profile.group
     if group in ['EX', 'EC']:
-        return redirect('som:dashboard')
+        return redirect('som:bukis_dashboard')
     
     return redirect('collection:validation')
 
