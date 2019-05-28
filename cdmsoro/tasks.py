@@ -67,8 +67,10 @@ def sending_telegram(data_id, token, send_to):
 def sending_to_pic(data_id, token, send_to):
     obj = PermintaanResume.objects.get(pk=data_id)
     url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
-    msg = 'Request <b>Approved</b>\nTelah bukis layanan oleh permintaan {},\nSID : {}\nSO : {}\nRO : {}.'.format(
+    msg = 'Request <b>Approved</b>\nTelah bukis layanan oleh permintaan {},\n{} - {}\nSID : {}\nSO : {}\nRO : {}.'.format(
         obj.pic,
+        obj.sid.account.account_number,
+        obj.sid.account.customer_name,
         obj.sid.sid,
         obj.suspend.order_number,
         obj.resume.order_number,
@@ -88,8 +90,10 @@ def sending_to_pic(data_id, token, send_to):
 def sending_notif_manual_ro(data_id, token, send_to):
     obj = ManualOrder.objects.get(pk=data_id)
     url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
-    msg = 'Request <b>Approved</b>\nTelah bukis manual oleh permintaan {},\nSID : {}\nSO : {}\nRO : {}\nKet. : {}.'.format(
+    msg = 'Request <b>Approved</b>\nTelah bukis manual oleh permintaan {},\n{} - {}\nSID : {}\nSO : {}\nRO : {}\nKet. : {}.'.format(
         obj.permintaan_resume.pic,
+        obj.permintaan_resume.sid.account.account_number,
+        obj.permintaan_resume.sid.account.customer_name,
         obj.permintaan_resume.sid.sid,
         obj.permintaan_resume.suspend.order_number,
         'MANUAL RO OCS/FFM',
@@ -110,8 +114,10 @@ def sending_notif_manual_ro(data_id, token, send_to):
 def reject_notification(data_id, send_to):
     obj = Validation.objects.get(pk=data_id)
     url = 'https://api.telegram.org/bot{}/sendMessage'.format(settings.TELEGRAM_KEY)
-    msg = 'Request <b>{}</b>\nSID : {}\nFollow link <a href="http://10.35.31.78/?q={}">here</a>\n{}'.format(
+    msg = 'Request <b>{}</b>\n{} - {}\nSID : {}\nFollow link <a href="http://10.35.31.78/?q={}">here</a>\n{}'.format(
         obj.get_action_display().title(),
+        obj.permintaan_resume.sid.account.account_number,
+        obj.permintaan_resume.sid.account.customer_name,
         obj.permintaan_resume.sid.sid,
         obj.permintaan_resume.sid.sid,
         obj.permintaan_resume.pic,
