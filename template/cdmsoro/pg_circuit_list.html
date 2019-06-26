@@ -96,7 +96,7 @@ Record Suspended Link
                                 <td>
                                     <div class="ui list">
                                         <div class="header">{{ i.get_last_order.type_order}} {{ i.get_last_order }}</div>
-                                        {{ i.get_last_order.status|default:'-' }}
+                                        {{ i.get_last_order.get_status_order|default:'-' }}
                                     </div>
                                 </td>
                                 <td>

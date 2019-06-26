@@ -3,7 +3,7 @@ from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 
 from .models import (
-    Customer, Circuit, Order, Segment
+    Customer, Circuit, Order, Segment, CancelOrder
 )
 from .resources import (
     CustomerResource, CircuitResource, OrderResource
@@ -48,3 +48,8 @@ class OrderAdmin(ImportExportModelAdmin):
     search_fields = [
         'order_number', 'circuit__sid', 'circuit__account__account_number'
     ]
+
+
+@admin.register(CancelOrder)
+class CancelOrderAdmin(admin.ModelAdmin):
+    pass

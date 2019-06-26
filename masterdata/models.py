@@ -126,6 +126,7 @@ class Order(CommonBase):
     dbcreate_on = models.DateTimeField(default=timezone.now)
     dbcreate_by = models.CharField(max_length=100, blank=True)
     closed = models.BooleanField(default=False)
+    is_cancel = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-timestamp']
@@ -138,6 +139,11 @@ class Order(CommonBase):
 
     def get_account(self):
         return self.circuit.account.account_number
+
+    def get_status_order(self):
+        if self.is_cancel:
+            return 'CANCELED ORDER'
+        return self.status
 
 
 class BackgTaskUpdate(CommonBase):
@@ -153,3 +159,10 @@ class BackgTaskUpdate(CommonBase):
         (CONTSO, 'SO CONTRACT'),
     )
     typetask = models.CharField(max_length=3, choices=LISTBG)
+
+
+class CancelOrder(models.Model):
+    order_num = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.order_num
