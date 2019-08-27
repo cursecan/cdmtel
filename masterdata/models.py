@@ -104,7 +104,9 @@ class Circuit(CommonBase):
         return self.permin_bukis.filter(closed=False).latest('timestamp')
 
     def is_active_order(self):
-        return True and (self.get_last_order().type_order != 'SO')
+        if self.get_last_order:
+            return True and (self.get_last_order().type_order != 'SO')
+        return True
 
 
 class Order(CommonBase):
