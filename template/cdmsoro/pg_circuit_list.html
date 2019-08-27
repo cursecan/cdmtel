@@ -90,7 +90,7 @@ Record Suspended Link
                             {% for i in circuit_list %}
                             <tr ondblclick="window.location.href='{% url 'cdmsoro:v3_circuit_detail' i.id %}'">
                                 <td>
-                                    <a href="{% if not i.is_active_order %}{% url 'cdmsoro:v3_circuit_detail' i.id %}{% endif %}">{{ i.account.customer_name }}</a> <br>
+                                    <a href="{% if not i.is_active %}{% url 'cdmsoro:v3_circuit_detail' i.id %}{% endif %}">{{ i.account.customer_name }}</a> <br>
                                     {{ i.sid }}
                                 </td>
                                 <td>
