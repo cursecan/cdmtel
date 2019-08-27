@@ -36,6 +36,10 @@ class CircuitAdmin(ImportExportModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(ImportExportModelAdmin):
+    actions = [
+        'action_publish',
+        'action_unpublish',
+    ]
     resource_class = OrderResource
     list_display = [
         'get_sid', 'get_account',
@@ -43,12 +47,21 @@ class OrderAdmin(ImportExportModelAdmin):
     ]
     list_per_page = 50
     list_filter = [
-        'status'
+        'status',
+        'publish'
     ]
     search_fields = [
         'order_number', 'circuit__sid', 'circuit__account__account_number'
     ]
 
+    def action_publish(self, request, queryset):
+        queryset.filter(publish=False).update(publish=True)
+
+    def action_unpublish(self, request, queryset):
+        queryset.filter(publish=True).update(publish=False)
+
+    action_publish.short_description = 'Publish selected Orders'
+    action_unpublish.short_description = 'Unpublish selected Orders'
 
 @admin.register(CancelOrder)
 class CancelOrderAdmin(admin.ModelAdmin):
