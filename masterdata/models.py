@@ -95,13 +95,16 @@ class Circuit(CommonBase):
         return self.sid
 
     def get_suspend_order(self):
-        return self.order_set.filter(type_order='SO').latest('timestamp')
+        return self.order_set.filter(type_order='SO', publish=True).latest('timestamp')
 
     def get_last_order(self):
         return self.order_set.filter(publish=True).latest('timestamp')
 
     def get_permit_bukis(self):
         return self.permin_bukis.filter(closed=False).latest('timestamp')
+
+    def is_active_order(self):
+        return True and (self.get_last_order().type_order != 'SO')
 
 
 class Order(CommonBase):
