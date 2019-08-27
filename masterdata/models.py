@@ -98,7 +98,7 @@ class Circuit(CommonBase):
         return self.order_set.filter(type_order='SO').latest('timestamp')
 
     def get_last_order(self):
-        return self.order_set.latest('timestamp')
+        return self.order_set.filter(publish=True).latest('timestamp')
 
     def get_permit_bukis(self):
         return self.permin_bukis.filter(closed=False).latest('timestamp')
@@ -127,6 +127,7 @@ class Order(CommonBase):
     dbcreate_by = models.CharField(max_length=100, blank=True)
     closed = models.BooleanField(default=False)
     is_cancel = models.BooleanField(default=False)
+    publish = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['-timestamp']

@@ -55,7 +55,7 @@ def index(request):
 @user_executor
 def bukisDashboard(request):
     permin_bukis = PermintaanResume.objects.filter(
-        closed=False
+        closed=False, suspend__publish=True
     )
 
     validation_objs = Validation.objects.all()[:5]
@@ -86,7 +86,7 @@ def unclosePerminBukisView(request):
     q = request.GET.get('q', None)
 
     permin_bukis_objs = PermintaanResume.objects.filter(
-        closed = False
+        closed = False, suspend__publish=True
     ).exclude(status=1, timestamp__lte=datetime.datetime.now()-datetime.timedelta(days=10))
 
     if not request.user.is_superuser:
@@ -111,7 +111,7 @@ def unclosePerminBukisView(request):
 @login_required
 @user_executor
 def unclosePerminDetail(request, id):
-    permin_obj = get_object_or_404(PermintaanResume, pk=id, closed=False)
+    permin_obj = get_object_or_404(PermintaanResume, pk=id, closed=False, suspend__publish=True)
     form = BukisValidationForm(request.POST or None)
 
     perbukis_form = ResumeOrderForm(permin_obj.sid.sid, id, request.POST or None, initial={'circuit': permin_obj.sid})
@@ -164,7 +164,7 @@ def unclosePerminDetail(request, id):
 @user_executor
 def manualBukisListView(request):
     manual_perbukis = PermintaanResume.objects.filter(
-        closed= False, manual_bukis=True
+        closed= False, manual_bukis=True, suspend__publish=True
     )
     content = {
         'permin_bukis_list': manual_perbukis
@@ -180,7 +180,7 @@ def recordBukisListView(request):
     q = request.GET.get('q', None)
 
     permin_bukis_objs = PermintaanResume.objects.filter(
-        closed = True
+        closed = True, suspend__publish=True
     ).annotate(
         doc_c = Count('avident__document')
     )
@@ -208,7 +208,7 @@ def recordBukisListView(request):
 
 
 def documentUploadView(request, id):
-    permin_obj = get_object_or_404(PermintaanResume, pk=id)
+    permin_obj = get_object_or_404(PermintaanResume, pk=id, suspend__publish=True)
     data = dict()
     content = {
         'permin_bukis': permin_obj,
