@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 
+{% block title %}
+    Permintaan Koreksi
+{% endblock %}
 
 {% block content %}
     <div class="ui vertical basic segment">
@@ -17,7 +20,7 @@
             <div class="ui info message">
                 <div class="ui header">Penting!</div>
                 <p>Silahkan upload permintaan koreksi dalam format <strong>.xls</strong> dengan template yang kami sediakan sebagai berikut.</p>
-                <a href="#" class="ui basic icon button">
+                <a href="/media/{{ doc.doc }}" class="ui basic icon button">
                     <i class="file excel outline icon"></i> Template.xls
                 </a>
             </div>

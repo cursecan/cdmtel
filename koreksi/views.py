@@ -7,7 +7,9 @@ from tablib import Dataset
 from .resources import (
     InputKoreksiResource, ExportKoreksiResource
 )
-from .models import InputKoreksi
+from .models import (
+    InputKoreksi, DocumentImportTemplate,
+)
 
 
 class InputKoreksiTemplateView(TemplateView):
@@ -19,6 +21,7 @@ class InputKoreksiListView(ListView):
     paginate_by = 10
 
 def simple_upload(request):
+    docs = DocumentImportTemplate.objects.filter(is_valid=True)
     if request.method == 'POST':
         person_resource = InputKoreksiResource()
         dataset = Dataset()
@@ -29,8 +32,11 @@ def simple_upload(request):
         
         if not result.has_errors():
             person_resource.import_data(dataset, dry_run=False)  # Actually import now
-
-    return render(request, 'koreksi/simple-upload-pg.html')
+    
+    content = {
+        'doc': docs.first(),
+    }
+    return render(request, 'koreksi/simple-upload-pg.html', content)
 
 
 def export(request):
