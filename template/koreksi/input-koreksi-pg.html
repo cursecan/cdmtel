@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="ui vertical basic segment">
+    <div class="ui fluid container">
+        <div class="ui secondary pointing menu">
+            <a href="{% url 'koreksi:input_koreksi' %}" class="active item"><i class="list icon"></i> List Koreksi</a>
+            <a href="{% url 'koreksi:simple_upload' %}" class="item"><i class="upload icon"></i> Upload Data Masal</a>
+            <div class="right menu">
+                <a href="{% url 'koreksi:export' %}" class="item">
+                    <i class="download icon"></i> Export
+                </a>
+            </div>
+        </div>
+        <table class="ui small table">
+            <thead>
+                <tr>
+                    <th class="collapsing">Timestamp</th>
+                    <th class="collapsing">Segmen</th>
+                    <th class="collapsing">SBF</th>
+                    <th class="collapsing">BP</th>
+                    <th>Customer Name</th>
+                    <th>SID</th>
+                    <th class="collapsing">Periode Koreksi</th>
+                    <th class="collapsing">Ammount</th>
+                    <th class="collapsing">Status</th>
+                    <th class="collapsing">Ket.Error</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in object_list %}
+                <tr title="{{ obj.error_text }}" class="{% if obj.state == 2 %}positive{% elif obj.state == 3%}negative{% endif %}">
+                    <td class="collapsing">{{ obj.timestamp|date:"d/m/Y h:i:s" }}</td>
+                    <td class="collapsing">{{ obj.segmen }}</td>
+                    <td class="collapsing">{{ obj.sbf_account }}</td>
+                    <td class="collapsing">{{ obj.bp_number }}</td>
+                    <td>{{ obj.customer_nm }}</td>
+                    <td>{{ obj.sid }}</td>
+                    <td class="collapsing">{{ obj.periode }}</td>
+                    <td class="collapsing">{{ obj.amount|intcomma }}</td>
+                    <td class="collapsing">{{ obj.get_state_display }}</td>
+                    <td class="collapsing">{{ obj.error_text}}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9">
+                        <div class="ui placeholder basic segment">
+                            <div class="ui icon header">
+                                <i class="search icon"></i>
+                                No Data Found
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+        {% if is_paginated %}
+            <div class="ui pagination menu js-page">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" data-item="" class="item">&lt;</a>
+                {% else %}
+                    <div class="item disabled">&lt;</div>
+                {% endif %}            
+
+                {% if page_obj.number|add:'-4' > 1 %}
+                <a href="?page={{ page_obj.number|add:'-5' }}" data-item="" class="item">&hellip;</a>
+                {% endif %}
+
+                {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <div class="item active ">{{ i }}</div>
+                    {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+                        <a href="?page={{ i }}" data-item="{{ i }}" class="item">{{ i }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+                <a href="?page={{ page_obj.number|add:'5' }}" data-item="" class="item">&hellip;</a>
+                {% endif %}
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" data-item="" class="item">&gt;</a>
+                {% else %}
+                    <div class="item disabled">&gt;</div>
+                {% endif %}   
+            </div>
+        {% endif %}
+
+
+    </div>
+</div>
+{% endblock %}

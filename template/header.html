@@ -7,6 +7,7 @@
         </div> -->
         <a href="{% url 'home' %}" title="Permintaan Bukis Datin" class="item">HOME</a>
         <a href="{% url 'collection:index' %}" title="Billing Jatuh Tempo" class="item">BILLING JATUH TEMPO</a>
+        <a href="{% url 'koreksi:input_koreksi' %}" title="Pencatatan Koreksi" class="item">KOREKSI</a>
         {% if user.is_authenticated %}
             <a href="{% url 'som:index' %}" class="item">MANAGE</a>
         {% endif %}

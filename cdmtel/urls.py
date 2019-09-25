@@ -35,6 +35,7 @@ urlpatterns = [
     path('cdm/', include('cdmsoro.urls')),
     path('bjt/', include('collection.urls')),
     path('som/', include('som.urls')),
+    path('koreksi/', include('koreksi.urls')),
 
 
 

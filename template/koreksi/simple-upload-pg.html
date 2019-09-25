@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <div class="ui vertical basic segment">
+        <div class="ui fluid container">
+            <div class="ui fluid container">
+                <div class="ui secondary pointing menu">
+                    <a href="{% url 'koreksi:input_koreksi' %}" class="item"><i class="list icon"></i> List Koreksi</a>
+                    <a href="{% url 'koreksi:simple_upload' %}" class="item active"><i class="upload icon"></i> Upload Data Masal</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui vertical basic segment">
+        <div class="ui text container">
+            <div class="ui info message">
+                <div class="ui header">Penting!</div>
+                <p>Silahkan upload permintaan koreksi dalam format <strong>.xls</strong> dengan template yang kami sediakan sebagai berikut.</p>
+                <a href="#" class="ui basic icon button">
+                    <i class="file excel outline icon"></i> Template.xls
+                </a>
+            </div>
+            <form method="post" class="ui inline form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="inline field">
+                    <input type="file" name="myfile">
+                    <button class="ui orange button" type="submit">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

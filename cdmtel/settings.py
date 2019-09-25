@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'masterdata',
     'userprofile',
     'collection',
+    'koreksi',
 ]
 
 MIDDLEWARE = [
