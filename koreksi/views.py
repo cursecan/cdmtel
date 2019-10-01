@@ -22,6 +22,8 @@ class InputKoreksiListView(ListView):
 
 def simple_upload(request):
     docs = DocumentImportTemplate.objects.filter(is_valid=True)
+    msg = None
+    is_valid = False
     if request.method == 'POST':
         person_resource = InputKoreksiResource()
         dataset = Dataset()
@@ -30,11 +32,18 @@ def simple_upload(request):
         imported_data = dataset.load(new_persons.read())
         result = person_resource.import_data(dataset, dry_run=True)  # Test the data import
         
+        msg = 'Error while uploading data. Invalid data resource.'
+        is_valid = False
         if not result.has_errors():
-            person_resource.import_data(dataset, dry_run=False)  # Actually import now
-    
+            if not result.has_validation_errors():
+                msg = 'Upload data completed.'
+                is_valid = True
+                person_resource.import_data(dataset, dry_run=False)  # Actually import now
+            
     content = {
         'doc': docs.first(),
+        'msg': msg,
+        'is_valid': is_valid,
     }
     return render(request, 'koreksi/simple-upload-pg.html', content)
 

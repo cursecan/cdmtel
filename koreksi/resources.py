@@ -1,4 +1,4 @@
-from import_export.resources import ModelResource
+from import_export.resources import ModelResource, ValidationError
 
 from .models import (
     InputKoreksi,
@@ -6,6 +6,7 @@ from .models import (
 from masterdata.models import (
     Customer,
 )
+import datetime
 
 
 class InputKoreksiResource(ModelResource):
@@ -13,20 +14,40 @@ class InputKoreksiResource(ModelResource):
         model = InputKoreksi
         fields = [
             'id', 'segmen', 'sbf_account', 'bp_number',
-            'customer_nm', 'description', 'sid', 'wb',
+            'customer_nm', 'description', 'sid', 'bandwidth',
             'periode', 'amount', 'keterangan', 'sudah_input_ncx',
             'last_order', 'type_last_order', 'status_order',
-            'abonemen', 'per_last_biling',
+            'abonemen', 'per_last_biling', 'layanan'
         ]
         export_order = [
             'id', 'segmen', 'sbf_account', 'bp_number',
-            'customer_nm', 'description', 'sid', 'wb',
+            'customer_nm', 'description', 'sid', 'bandwidth',
             'periode', 'amount', 'keterangan', 'sudah_input_ncx',
             'last_order', 'type_last_order', 'status_order',
-            'abonemen', 'per_last_biling',
+            'abonemen', 'per_last_biling','layanan',
         ]
         skip_unchanged = True
         report_skipped = False
+
+    def before_import_row(self, row, **kwargs):
+        if row['id']:
+            raise ValidationError(
+                'Error field ID must keep blank.'
+            )
+        row['periode'] = str(int(row['periode']))
+        row['sbf_account'] = str(int(row['sbf_account']))
+        row['bp_number'] = str(int(row['bp_number']))
+        if row['per_last_biling'] == '':
+            row['per_last_biling'] = '999901'
+
+        try :
+            datetime.datetime.strptime(row['periode'], '%Y%m')
+            datetime.datetime.strptime(row['per_last_biling'], '%Y%m')
+        except:
+            raise ValidationError(
+                'Error not valid periode field.'
+            )
+
 
     def after_save_instance(self, instance, using_transactions, dry_run):
         objs = Customer.objects.filter(account_number=instance.sbf_account)
@@ -49,14 +70,14 @@ class ExportKoreksiResource(ModelResource):
         model = InputKoreksi
         fields = [
             'segmen', 'sbf_account', 'bp_number',
-            'customer_nm', 'description', 'sid', 'wb',
+            'customer_nm', 'description', 'sid', 'bandwidth', 'layanan',
             'periode', 'amount', 'keterangan', 'sudah_input_ncx',
             'last_order', 'type_last_order', 'status_order',
             'abonemen', 'per_last_biling', 'error_text',
         ]
         export_order = [
             'segmen', 'sbf_account', 'bp_number',
-            'customer_nm', 'description', 'sid', 'wb',
+            'customer_nm', 'description', 'sid', 'bandwidth', 'layanan',
             'periode', 'amount', 'keterangan', 'sudah_input_ncx',
             'last_order', 'type_last_order', 'status_order',
             'abonemen', 'per_last_biling', 'error_text'
