@@ -17,8 +17,14 @@ class InputKoreksiTemplateView(TemplateView):
 
 class InputKoreksiListView(ListView):
     template_name = 'koreksi/input-koreksi-pg.html'
-    model = InputKoreksi
     paginate_by = 10
+
+    def get_queryset(self):
+        query = InputKoreksi.objects.all()
+        due = self.request.GET.get('duedate', None)
+        if due:
+            query = query.filter(timestamp__date=due)
+        return query
 
 def simple_upload(request):
     docs = DocumentImportTemplate.objects.filter(is_valid=True)
