@@ -178,6 +178,8 @@ def manualBukisListView(request):
 def recordBukisListView(request):
     page = request.GET.get('page', 1)
     q = request.GET.get('q', None)
+    sdate = request.GET.get('sdate', None)
+    rdate = request.GET.get('rdate', None)
 
     permin_bukis_objs = PermintaanResume.objects.filter(
         closed = True, suspend__publish=True
@@ -188,6 +190,15 @@ def recordBukisListView(request):
     if not request.user.is_superuser:
         permin_bukis_objs = permin_bukis_objs.filter(
             suspend__order_label = 1 if request.user.profile.group == 'EX' else 2
+        )
+
+    if sdate:
+        permin_bukis_objs = permin_bukis_objs.filter(
+            suspend__dbcreate_on__date=sdate
+        )
+    if rdate:
+        permin_bukis_objs = permin_bukis_objs.filter(
+            resume__dbcreate_on__date=rdate
         )
     
     if q:

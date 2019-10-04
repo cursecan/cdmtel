@@ -13,57 +13,100 @@ Record Buka Isolir
                     <h3 class="ui center aligned header">
                         Record Hasil Buka Isolir
                     </h3>
-                    <form action="" class="ui form">
-                        <div class="three wide field">
-                            <div class="ui right icon input">
-                                <i class="search icon"></i>
-                                <input type="text" name="q" placeholder="Search..." style="border-radius:20px">
+                    <div class="ui segment">
+                        <form action="" class="ui form">
+                            <div class="fields">
+                                <div class="field">
+                                    <label for="">Tanggal Suspend</label>
+                                    <div class="ui custom calendar">
+                                        <div class="ui icon input">
+                                            <i class="calendar icon"></i>
+                                            <input name="sdate" readonly type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label for="">Tanngal Resume</label>
+                                    <div class="ui custom calendar">
+                                        <div class="ui icon input">
+                                            <i class="calendar icon"></i>
+                                            <input name="rdate" readonly type="text">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                            <div class="field">
+                                <label for="">Search Text</label>
+                                <input name="q" type="text">
+                            </div>
+                            <div class="field">
+                                <button class="ui orange button">
+                                    <i class="search icon"></i>
+                                    Search
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="column">
-                    <div class="ui top attached menu">
-
-                    </div>
-                    <table class="ui bottom attached striped small table">
-                        {% for i in permin_list %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>
-                                <a href="#">{{ i.sid.account.account_number }} - {{ i.sid.account.customer_name }}</a> <br>
-                                {{ i.sid }}
-                            </td>
-                            <td>
-                                <a>SO</a> {{ i.suspend }} <br>
-                                {{ i.suspend.status|default:'-' }}
-                            </td>
-                            <td>
-                                <a>RO</a> {{ i.resume }} <br>
-                                {{ i.resume.status|default:'-' }}
-                            </td>
-                            <td>
-                                Validated by <br>
-                                <a>{{ i.executor.first_name|title }}</a>
-                            </td>
-                            <td class="right aligned">
-                                <a href="#" class="js-doc-btn" target-url="{% url 'som:doc_list' i.id %}"><i class="paperclip icon"></i> {{ i.doc_c }}</a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="6">
-                                <div class="ui placeholder basic segment">
-                                    <div class="ui icon header">
-                                        <i class="search icon"></i>
-                                        We don't have any documents matching your query
+                    <table class="ui striped small table">
+                        <thead>
+                            <tr>
+                                <th class="collapsing">#</th>
+                                <th>Account</th>
+                                <th>Susupend</th>
+                                <th>Suspend Date</th>
+                                <th>Resume</th>
+                                <th>Resume Date</th>
+                                <th>Validator</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in permin_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <a href="#">{{ i.sid.account.account_number }} - {{ i.sid.account.customer_name }}</a> <br>
+                                    {{ i.sid }}
+                                </td>
+                                <td>
+                                    <div class="ui sub header">
+                                        SO {{ i.suspend }}
                                     </div>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
+                                    <span>{{ i.suspend.status|default:'-' }}</span>
+                                </td>
+                                <td>{{ i.suspend.dbcreate_on|date:"d/m/Y H:i" }}</td>
+                                <td>
+                                    <div class="ui sub header">
+                                        RO {{ i.resume }}
+                                    </div>
+                                    <span>{{ i.resume.status|default:'-' }}</span>
+                                </td>
+                                <td>{{ i.resume.dbcreate_on|date:"d/m/Y H:i" }}</td>
+                                <td>
+                                    Validated by <br>
+                                    <a>{{ i.executor.first_name|title }}</a>
+                                </td>
+                                <td class="collapsing">
+                                    <a href="#" class="js-doc-btn" target-url="{% url 'som:doc_list' i.id %}"><i class="paperclip icon"></i> {{ i.doc_c }}</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6">
+                                    <div class="ui placeholder basic segment">
+                                        <div class="ui icon header">
+                                            <i class="search icon"></i>
+                                            We don't have any documents matching your query
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
                     </table>
 
                     {% if permin_list.has_other_pages %}
@@ -107,6 +150,19 @@ Record Buka Isolir
 {% block js %}
 <script>
 $(document).ready(function() {
+    $('.ui.custom.calendar').calendar({
+        monthFirst: false,
+        type: 'date',
+        formatter: {
+        date: function (date, settings) {
+            if (!date) return '';
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+            return year + '-' + month + '-' + day;
+        }
+        }
+    });
     $('.js-doc-btn').click(function() {
         var btn = $(this);
         $.ajax({
