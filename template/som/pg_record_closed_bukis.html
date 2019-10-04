@@ -1,4 +1,6 @@
 {% extends 'som/base.html' %}
+{% load templatehelpers %}
+
 
 {% block title %}
 Record Buka Isolir
@@ -19,30 +21,33 @@ Record Buka Isolir
                                 <div class="field">
                                     <label for="">Tanggal Suspend</label>
                                     <div class="ui custom calendar">
-                                        <div class="ui icon input">
+                                        <div class="ui left icon input">
                                             <i class="calendar icon"></i>
-                                            <input name="sdate" readonly type="text">
+                                            <input name="sdate" value="{{ data.sdate|default:'' }}" readonly type="text">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label for="">Tanngal Resume</label>
                                     <div class="ui custom calendar">
-                                        <div class="ui icon input">
+                                        <div class="ui left icon input">
                                             <i class="calendar icon"></i>
-                                            <input name="rdate" readonly type="text">
+                                            <input name="rdate" value="{{ data.rdate|default:'' }}" readonly type="text">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="field">
                                 <label for="">Search Text</label>
-                                <input name="q" type="text">
+                                <input name="q" type="text" value="{{ data.q|default:'' }}">
                             </div>
                             <div class="field">
-                                <button class="ui orange button">
+                                <button type="submit" class="ui orange button">
                                     <i class="search icon"></i>
                                     Search
+                                </button>
+                                <button onclick="window.location.href='{% url 'som:bukis_books' %}'" class="ui button" type="button">
+                                    <i class="refresh icon"></i> Reset
                                 </button>
                             </div>
                         </form>
@@ -67,7 +72,7 @@ Record Buka Isolir
                         <tbody>
                             {% for i in permin_list %}
                             <tr>
-                                <td>{{ forloop.counter }}</td>
+                                <td>{{ forloop.counter0|add:permin_list.start_index }}</td>
                                 <td>
                                     <a href="#">{{ i.sid.account.account_number }} - {{ i.sid.account.customer_name }}</a> <br>
                                     {{ i.sid }}
@@ -112,29 +117,29 @@ Record Buka Isolir
                     {% if permin_list.has_other_pages %}
                         <div class="ui pagination menu js-page">
                             {% if permin_list.has_previous %}
-                                <a href="?page={{ permin_list.previous_page_number }}" data-item="" class="item">&lt;</a>
+                                <a href="{% relative_url permin_list.previous_page_number 'page' request.GET.urlencode %}" data-item="" class="item">&lt;</a>
                             {% else %}
                                 <div class="item disabled">&lt;</div>
                             {% endif %}            
 
                             {% if permin_list.number|add:'-4' > 1 %}
-                            <a href="?page={{ permin_list.number|add:'-5' }}" data-item="" class="item">&hellip;</a>
+                            <a href="{% relative_url permin_list.number|add:'-5' 'page' request.GET.urlencode %}" data-item="" class="item">&hellip;</a>
                             {% endif %}
 
                             {% for i in permin_list.paginator.page_range %}
                                 {% if permin_list.number == i %}
                                     <div class="item active ">{{ i }}</div>
                                 {% elif i > permin_list.number|add:'-5' and i < permin_list.number|add:'5' %}
-                                    <a href="?page={{ i }}" data-item="{{ i }}" class="item">{{ i }}</a>
+                                    <a href="{% relative_url i 'page' request.GET.urlencode %}" data-item="{{ i }}" class="item">{{ i }}</a>
                                 {% endif %}
                             {% endfor %}
 
                             {% if permin_list.paginator.num_pages > permin_list.number|add:'4' %}
-                            <a href="?page={{ permin_list.number|add:'5' }}" data-item="" class="item">&hellip;</a>
+                            <a href="{% relative_url permin_list.number|add:'5' 'page' request.GET.urlencode %}" data-item="" class="item">&hellip;</a>
                             {% endif %}
 
                             {% if permin_list.has_next %}
-                                <a href="?page={{ permin_list.next_page_number }}" data-item="" class="item">&gt;</a>
+                                <a href="{% relative_url permin_list.next_page_number 'page' request.GET.urlencode %}" data-item="" class="item">&gt;</a>
                             {% else %}
                                 <div class="item disabled">&gt;</div>
                             {% endif %}   

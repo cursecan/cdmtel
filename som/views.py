@@ -181,6 +181,8 @@ def recordBukisListView(request):
     sdate = request.GET.get('sdate', None)
     rdate = request.GET.get('rdate', None)
 
+    data = dict()
+
     permin_bukis_objs = PermintaanResume.objects.filter(
         closed = True, suspend__publish=True
     ).annotate(
@@ -193,15 +195,18 @@ def recordBukisListView(request):
         )
 
     if sdate:
+        data['sdate'] = sdate
         permin_bukis_objs = permin_bukis_objs.filter(
             suspend__dbcreate_on__date=sdate
         )
     if rdate:
+        data['rdate'] = rdate
         permin_bukis_objs = permin_bukis_objs.filter(
             resume__dbcreate_on__date=rdate
         )
     
     if q:
+        data['q'] = q
         permin_bukis_objs = permin_bukis_objs.annotate(
             search = SearchVector(
                 'sid__sid', 'sid__account__account_number',
@@ -211,6 +216,7 @@ def recordBukisListView(request):
 
 
     content = {
+        'data': data,
         'permin_list': get_paginator_set(permin_bukis_objs, 20, page)
     }
     return render(request, 'som/pg_record_closed_bukis.html', content)

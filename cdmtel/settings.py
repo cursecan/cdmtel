@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'userprofile',
     'collection',
     'koreksi',
+    'som',
 ]
 
 MIDDLEWARE = [
