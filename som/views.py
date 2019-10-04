@@ -197,12 +197,12 @@ def recordBukisListView(request):
     if sdate:
         data['sdate'] = sdate
         permin_bukis_objs = permin_bukis_objs.filter(
-            suspend__dbcreate_on__date=sdate
+            suspend__dbcreate_on__date__gte=sdate
         )
     if rdate:
         data['rdate'] = rdate
         permin_bukis_objs = permin_bukis_objs.filter(
-            resume__dbcreate_on__date=rdate
+            resume__dbcreate_on__date__lte=rdate
         )
     
     if q:
