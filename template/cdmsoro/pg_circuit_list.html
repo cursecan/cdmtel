@@ -88,9 +88,9 @@ Record Suspended Link
                     <table class="ui bottom attached small table">
                         <tbody>
                             {% for i in circuit_list %}
-                            <tr ondblclick="window.location.href='{% url 'cdmsoro:v3_circuit_detail' i.id %}'">
+                            <tr ondblclick="window.location.href='{% if not i.is_lock %}{% url 'cdmsoro:v3_circuit_detail' i.id %}{% endif %}'">
                                 <td>
-                                    <a href="{% if not i.is_active_order %}{% url 'cdmsoro:v3_circuit_detail' i.id %}{% endif %}">{{ i.account.customer_name }}</a> <br>
+                                    <a href="{% if not i.is_lock and not i.is_active_order %}{% url 'cdmsoro:v3_circuit_detail' i.id %}{% endif %}">{{ i.account.customer_name }}</a> <br>
                                     {{ i.sid }}
                                 </td>
                                 <td>
@@ -131,7 +131,7 @@ Record Suspended Link
                                     <div class="ui feed">
                                             <div class="event">
                                                 <div class="content">
-                                                    <div class="summary">Suspend</div>
+                                                    <div class="summary">{% if i.is_lock %} Lock {% endif %} Suspend</div>
                                                     <div class="meta">
                                                         <div class="date">{{ i.get_last_order.get_order_label_display }}</div>
                                                     </div>

@@ -87,6 +87,7 @@ class Circuit(CommonBase):
     sid = models.CharField(max_length=30, unique=True)
     account = models.ForeignKey(Customer, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
+    is_lock = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-timestamp']

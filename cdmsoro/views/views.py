@@ -382,7 +382,7 @@ def circuitListView(request):
 
 
 def circuitDetailView(request, id):
-    circuit_obj = get_object_or_404(Circuit, pk=id, is_active=False)
+    circuit_obj = get_object_or_404(Circuit, pk=id, is_active=False, is_lock=False)
     unclosed_permin_bukis = circuit_obj.permin_bukis.filter(closed=False)
     if unclosed_permin_bukis.exists():
         return redirect('cdmsoro:v3_permin_bukis_detail', unclosed_permin_bukis.latest('timestamp').id)
