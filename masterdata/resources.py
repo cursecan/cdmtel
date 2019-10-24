@@ -4,8 +4,18 @@ from import_export import resources
 from import_export.widgets import ForeignKeyWidget
 
 from .models import (
-    Customer, Circuit, Order
+    Customer, Circuit, Order, LockCircuit
 )
+
+class LockCircuitResource(resources.ModelResource):
+    class Meta:
+        model = LockCircuit
+        fields = ['id', 'circuit', 'keterangan']
+        import_id_fields = ['id']
+        export_order = ['id', 'circuit', 'keterangan']
+        skip_unchanged = True
+        report_skipped = False
+
 
 class CustomerResource(resources.ModelResource):
     class Meta:

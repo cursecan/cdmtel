@@ -174,3 +174,14 @@ class CancelOrder(models.Model):
 
     def __str__(self):
         return self.order_num
+
+
+class LockCircuit(CommonBase):
+    circuit = models.CharField(max_length=50)
+    keterangan = models.CharField(max_length=220)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = [
+            'id',
+        ]

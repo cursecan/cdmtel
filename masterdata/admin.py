@@ -3,12 +3,16 @@ from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 
 from .models import (
-    Customer, Circuit, Order, Segment, CancelOrder
+    Customer, Circuit, Order, Segment, CancelOrder,
+    LockCircuit,
 )
 from .resources import (
-    CustomerResource, CircuitResource, OrderResource
+    CustomerResource, CircuitResource, OrderResource, LockCircuitResource,
 )
 
+@admin.register(LockCircuit)
+class LockCircuitAdmin(ImportExportModelAdmin):
+    resource_class = LockCircuitResource
 
 @admin.register(Segment)
 class SegmentAdmin(admin.ModelAdmin):

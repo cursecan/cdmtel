@@ -16,6 +16,17 @@ Formulir Buka Isolir
             FORM PERMINTAAN BUKA ISOLIR
         </h3>
         <br>
+        {% if lock_sid %}
+        <div class="ui red message">
+            <h4 class="ui header">
+                {{ circuit.account.customer_name }}
+                <div class="sub header">
+                    {{ circuit.account.bp }} / {{ circuit.account.account_number }}
+                </div>
+            </h4>
+            <p>Lananan ini di- <strong>Lock</strong> dengan alasan: <br>{{ lock_sid.keterangan }}</p>
+        </div>
+        {% else %}
         <h4 class="ui header">
             {{ circuit.account.customer_name }}
             <div class="sub header">
@@ -59,6 +70,7 @@ Formulir Buka Isolir
             </div>
             <button type="submit" class="ui primary button">Submit Per. Bukis</button>
         </form>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

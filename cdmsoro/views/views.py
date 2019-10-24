@@ -25,7 +25,7 @@ from cdmsoro.models import (
 )
 from userprofile.models import Profile
 from masterdata.models import (
-    Circuit, Order
+    Circuit, Order, LockCircuit
 )
 from  masterdata.forms import ResumeOrderForm
 
@@ -382,13 +382,21 @@ def circuitListView(request):
 
 
 def circuitDetailView(request, id):
-    circuit_obj = get_object_or_404(Circuit, pk=id, is_active=False, is_lock=False)
+    circuit_obj = get_object_or_404(Circuit, pk=id, is_active=False)
     unclosed_permin_bukis = circuit_obj.permin_bukis.filter(closed=False)
     if unclosed_permin_bukis.exists():
         return redirect('cdmsoro:v3_permin_bukis_detail', unclosed_permin_bukis.latest('timestamp').id)
 
     form = BukisForm(request.POST or None, request.FILES or None, initial={'circuit': circuit_obj.sid})
-    if request.method == 'POST':
+    
+
+    lock_sids = LockCircuit.objects.filter(circuit=circuit_obj.sid)
+    lock_sid = None
+    if lock_sids.exists():
+        lock_sid = lock_sids.latest('timestamp')
+
+    
+    if request.method == 'POST' and not lock_sids.exists():
         if form.is_valid():
             circuit = form.cleaned_data['circuit']
             pic = form.cleaned_data['pic']
@@ -436,6 +444,7 @@ def circuitDetailView(request, id):
     content = {
         'circuit': circuit_obj,
         'form': form,
+        'lock_sid': lock_sid,
     }
     return render(request, 'cdmsoro/pg_circuit_detail.html', content)
 
