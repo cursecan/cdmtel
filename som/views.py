@@ -280,9 +280,9 @@ def iPaymentView(request, id):
 @login_required
 def soroReportView(request):
     user_obj = User.objects.filter(
-        profile__group = 'EX', level='OF'
+        profile__group = 'EX', profile__level='OF'
     ).annotate(
-        c_order = Count('orderes', filter=Q(closed=False))
+        c_order = Count('orderes', filter=Q(orderes__closed=False))
     )
 
     content = {
