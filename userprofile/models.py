@@ -33,6 +33,7 @@ class Profile(CommonBase):
     multiple = models.PositiveSmallIntegerField(default=1)
     level = models.CharField(max_length=2, choices=LEVEL_LIST, default=OFFICER)
     superior = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='worker')
+    name_alias = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
         return self.user.username

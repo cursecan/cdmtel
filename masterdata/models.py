@@ -135,6 +135,7 @@ class Order(CommonBase):
     closed = models.BooleanField(default=False)
     is_cancel = models.BooleanField(default=False)
     publish = models.BooleanField(default=True)
+    create_by2 = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='orderes', editable=False)
 
     class Meta:
         ordering = ['-timestamp']

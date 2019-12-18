@@ -14,6 +14,8 @@ from cdmsoro.models import (
     Validation
 )
 
+from django.contrib.auth.models import User
+
 from masterdata.models import Order
 from core.decorators import user_executor, user_validator
 
@@ -273,3 +275,17 @@ def iPaymentView(request, id):
         pass
 
     return render(request, 'som/ipayment.html', {'ipayment': data})
+
+
+@login_required
+def soroReportView(request):
+    user_obj = User.objects.filter(
+        profile__group = 'EX', level='OF'
+    ).annotate(
+        c_order = Count('orderes', filter=Q(closed=False))
+    )
+
+    content = {
+        'officer': user_obj,
+    }
+    return render(request, 'som/pg_soro_report.html', content)

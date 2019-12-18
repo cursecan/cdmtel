@@ -1,0 +1,43 @@
+{% extends 'som/base.html' %}
+{% load templatehelpers %}
+
+
+{% block title %}
+Report Order Eksekutor Tunggakan
+{% endblock %}
+
+{% block sub_content %}
+<div class="ui basic vertical segment">
+    <div class="ui fluid container">
+        <div class="ui orizontally padded grid">
+            <div class="row">
+                <div class="column">
+                    <h3 class="ui center aligned header">
+                        Report Order Tunggakan Eksekutor
+                    </h3>
+                    <table class="ui table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Total OGP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in officer %}
+                            <tr>
+                                <td>
+                                    {{ i.user}}
+                                </td>
+                                <td>
+                                    {{ i.c_order }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

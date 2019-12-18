@@ -10,6 +10,7 @@ urlpatterns = [
     path('persume-book/<int:id>/', views.unclosePerminDetail, name='unclose_detail'),
     path('manual-books/', views.manualBukisListView, name='manual_unclosed'),
     path('books/', views.recordBukisListView, name='bukis_books'),
+    path('report/', views.soroReportView, name='report'),
 
     path('ipay/<int:id>/', views.iPaymentView, name='ipayment'),
     path('api/docs/<int:id>/', views.documentUploadView, name='doc_list'),
