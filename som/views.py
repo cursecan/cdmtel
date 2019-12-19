@@ -89,7 +89,7 @@ def unclosePerminBukisView(request):
     q = request.GET.get('q', None)
 
     permin_bukis_objs = PermintaanResume.objects.filter(
-        closed = False, suspend__publish=True
+        closed = False, suspend__publish=True, abandoned=False
     ).exclude(status=1, timestamp__lte=datetime.datetime.now()-datetime.timedelta(days=10))
 
     if not request.user.is_superuser:
@@ -114,7 +114,7 @@ def unclosePerminBukisView(request):
 @login_required
 @user_executor
 def unclosePerminDetail(request, id):
-    permin_obj = get_object_or_404(PermintaanResume, pk=id, closed=False, suspend__publish=True)
+    permin_obj = get_object_or_404(PermintaanResume, pk=id, closed=False, suspend__publish=True, abandoned=False)
     form = BukisValidationForm(request.POST or None)
 
     perbukis_form = ResumeOrderForm(permin_obj.sid.sid, id, request.POST or None, initial={'circuit': permin_obj.sid})
@@ -187,7 +187,7 @@ def recordBukisListView(request):
     data = dict()
 
     permin_bukis_objs = PermintaanResume.objects.filter(
-        closed = True, suspend__publish=True
+        closed = True, suspend__publish=True, abandoned=False
     ).annotate(
         doc_c = Count('avident__document')
     )
