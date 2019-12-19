@@ -37,9 +37,9 @@ def bulk_order_update():
                 T5.row_id = T2.bill_accnt_id \
             LEFT JOIN SBLPRD.S_USER T9 ON \
                 T1.CREATED_BY = T9.ROW_ID \
-            WHERE T9.LOGIN IN ('710045', 'CDAS041188', 'CDHH171076', 'ESFM290596', '900039') \
+            WHERE T9.LOGIN IN ('CDAM040695', 'CDMW190884' ,'710045', 'CDAS041188', 'CDHH171076', 'ESFM290596', '900039') \
             AND T2.status_cd NOT IN ('Failed', 'Abandoned', 'Cancelled') \
-            AND T2.created >= to_date('20190101','YYYYMMDD') \
+            AND T2.created BETWEEN SYSDATE-60 AND SYSDATE \
             AND T1.service_num IS NOT NULL
         """
         cur.execute(query)
@@ -96,8 +96,8 @@ def record_data():
             SELECT DISTINCT accountnas, li_sid, order_id, li_milestone, order_created_date, li_createdby_name \
             FROM eas_ncrm_agree_order_line@dbl_dwh_sales_aon \
             WHERE order_subtype='Suspend' \
-            AND li_createdby_name IN ('CHALIL, MUNAWAR', 'MAHARANI, FRISA', 'SETIAWAN, ANDERI', 'SABARUDIN, RAHMAT', 'HASANUDIN, HANE') \
-            AND ORDER_CREATED_DATE >= TO_DATE('20190101', 'YYYYMMDD') \
+            AND li_createdby_name IN ('WIDYA SARI, MAYA' ,'MUTIARA LIWANRI, AFIFAH' ,'CHALIL, MUNAWAR', 'MAHARANI, FRISA', 'SETIAWAN, ANDERI', 'SABARUDIN, RAHMAT', 'HASANUDIN, HANE') \
+            AND ORDER_CREATED_DATE BETWEEN SYSDATE-10 AND SYSDATE \
             AND LI_SID IS NOT NULL
         """
         
@@ -146,7 +146,7 @@ def record_data_contrak():
             AND ORDER_CREATEDBY_NAME IN ('Administrator, Siebel') \
             AND CHANGE_REASON_CD IN ('System Request') \
             AND CUST_SEGMEN like 'DES %' \
-            AND ORDER_CREATED_DATE > TO_DATE('20190324', 'YYYYMMDD')
+            AND ORDER_CREATED_DATE BETWEEN SYSDATE-10 AND SYSDATE
         """
         
         cur.execute(query)
