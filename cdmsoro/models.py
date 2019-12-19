@@ -26,6 +26,7 @@ class PermintaanResume(CommonBase):
     manual_bukis = models.BooleanField(default=False)
     status = models.PositiveSmallIntegerField(choices=LIST_STATUS, default=WAITING)
     closed = models.BooleanField(default=False)
+    abandoned = models.BooleanField(default=False)
 
 
     class Meta:

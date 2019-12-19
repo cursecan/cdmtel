@@ -27,4 +27,7 @@ def generate_cancel_triger(sender, instance, created, **kwargs):
             Circuit.objects.filter(order__order_number=instance.order_num).update(
                 is_active =  True
             )
+            PermintaanResume.objects.filter(
+                suspend__order_number=instance.order_num
+            ).update(abandoned=True)
 
