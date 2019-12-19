@@ -34,6 +34,6 @@ def daily_record_contrak_so(request):
 
 
 def record_account_view(request):
-    get_record_account(repeat=Task.DAILY, repeat_until=expired_date)
+    get_record_account(repeat=Task.EVERY_4_WEEKS, repeat_until=expired_date)
     return JsonResponse({'daily_record': '1'})
 

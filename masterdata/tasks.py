@@ -226,14 +226,14 @@ def get_record_account():
                     }
                 )
                 
-                Saldo.objects.update_or_create(
-                    customer = cust_obj,
-                    timestamp__date = now.date(),
-                    defaults = {
-                        'customer': cust_obj,
-                        'amount': saldo
-                    } 
-                )
+                # Saldo.objects.update_or_create(
+                #     customer = cust_obj,
+                #     timestamp__date = now.date(),
+                #     defaults = {
+                #         'customer': cust_obj,
+                #         'amount': saldo
+                #     } 
+                # )
 
             except:
                 pass
