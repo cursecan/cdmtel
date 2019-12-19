@@ -22,7 +22,7 @@ def generate_cancel_triger(sender, instance, created, **kwargs):
     if created:
         order_obj = Order.objects.filter(order_number=instance.order_num)
         if order_obj.exists():
-            order_obj.update(is_cancel=True, closed=True)
+            order_obj.update(is_cancel=True, closed=True, status='ABANDONED')
             
             Circuit.objects.filter(order__order_number=instance.order_num).update(
                 is_active =  True
