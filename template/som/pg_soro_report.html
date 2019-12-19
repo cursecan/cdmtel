@@ -30,7 +30,7 @@ Report Order Eksekutor Tunggakan
                         <tbody>
                             {% for i in order_resume %}
                             <tr>
-                                <td>{{ i.status }</td>
+                                <td>{{ i.status }}</td>
                                 <td><a href="{% url 'som:order_list' %}?status={{ i.status }}&create_by=SETIAWAN, ANDERI">{{ i.anderi }}</a></td>
                                 <td><a href="{% url 'som:order_list' %}?status={{ i.status }}&create_by=MUTIARA LIWANRI, AFIFAH">{{ i.diva }}</a></td>
                                 <td><a href="{% url 'som:order_list' %}?status={{ i.status }}&create_by=MAHARANI, FRISA">{{ i.frisa }}</a></td>
