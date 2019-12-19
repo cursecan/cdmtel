@@ -181,23 +181,17 @@ def get_record_account():
         con = cx_Oracle.connect(settings.BILCOS_USER, settings.BILCOS_PASS, settings.BILCOS_SERVICE)
         cur = con.cursor()
         query = """
-            SELECT \
+            SELECT distinct \
                 a.bp_num, \
                 a.akun, \
                 b.bpname, \
                 a.CBASE_2016, \
-                SUM(b.CURRENT_BALANCE) saldo, \
+                0 saldo, \
                 a.FBCC_SEGMENT \
             FROM \
                 z_des_openitem a \
             LEFT JOIN mybrains.trems_np_cyc b ON \
-                a.bp_num = b.partner \
-            GROUP BY \
-                a.bp_num, \
-                a.akun, \
-                b.bpname,\
-                a.CBASE_2016, \
-                a.FBCC_SEGMENT
+                a.bp_num = b.partner
         """
         
         cur.execute(query)
