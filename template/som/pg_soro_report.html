@@ -13,27 +13,44 @@ Report Order Eksekutor Tunggakan
             <div class="row">
                 <div class="column">
                     <h3 class="ui center aligned header">
-                        Report Order Tunggakan Eksekutor
+                        Laporan Order Tunggakan
                     </h3>
-                    <table class="ui table">
+                    <table class="ui striped very basic table">
                         <thead>
                             <tr>
-                                <th>User</th>
-                                <th>Total OGP</th>
+                                <th>STATUS</th>
+                                <th>ANDERI.S</th>
+                                <th>DIVA</th>
+                                <th>FRISA.M</th>
+                                <th>MAYA.W</th>
+                                <th>MUNAWAR.C</th>
+                                <th>RAHMAT.S</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for i in officer %}
+                            {% for i in order_resume %}
                             <tr>
-                                <td>
-                                    {{ i.username }}
-                                </td>
-                                <td>
-                                    {{ i.c_order }}
-                                </td>
+                                <td>{{ i.status }}</td>
+                                <td>{{ i.anderi }}</td>
+                                <td>{{ i.diva }}</td>
+                                <td>{{ i.frisa }}</td>
+                                <td>{{ i.maya }}</td>
+                                <td>{{ i.munawar }}</td>
+                                <td>{{ i.rahmat }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>TOTAL</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

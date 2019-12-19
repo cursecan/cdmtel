@@ -279,13 +279,18 @@ def iPaymentView(request, id):
 
 @login_required
 def soroReportView(request):
-    user_obj = User.objects.filter(
-        profile__group = 'EX', profile__level='OF'
-    ).annotate(
-        c_order = Count('orderes', filter=Q(orderes__closed=False))
-    )
+    objs = Order.objects.filter(
+        closed=False
+    ).values('status').annotate(
+        anderi = Count('status', filter=Q(dbcreate_by='SETIAWAN, ANDERI')),
+        rahmat = Count('status', filter=Q(dbcreate_by='SABARUDIN, RAHMAT')),
+        munawar = Count('status', filter=Q(dbcreate_by='CHALIL, MUNAWAR')),
+        frisa = Count('status', filter=Q(dbcreate_by='MAHARANI, FRISA')),
+        maya = Count('status', filter=Q(dbcreate_by='WIDYA SARI, MAYA')),
+        diva = Count('status', filter=Q(dbcreate_by='MUTIARA LIWANRI, AFIFAH')),
+    ).order_by('anderi')
 
     content = {
-        'officer': user_obj,
+        'order_resume': objs,
     }
     return render(request, 'som/pg_soro_report.html', content)
