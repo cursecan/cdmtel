@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.template.loader import render_to_string
@@ -294,3 +295,20 @@ def soroReportView(request):
         'order_resume': objs,
     }
     return render(request, 'som/pg_soro_report.html', content)
+
+
+class OrderView(ListView):
+    template_name = 'som/pg_order_list.html'
+    context_object_name = 'order_list'
+    paginate_by = 25
+
+    def get_queryset(self):
+        query = Order.objects.all()
+        state = self.request.GET.get('status', None)
+        create_by = self.request.GET.get('create_by', None)
+
+        if state:
+            query = query.filter(status=state)
+        if create_by:
+            query = query.filter(dbcreate_by=create_by)
+        return query

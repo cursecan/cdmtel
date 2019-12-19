@@ -1,0 +1,45 @@
+{% extends 'som/base.html' %}
+{% load templatehelpers %}
+
+
+{% block title %}
+Report Order Eksekutor Tunggakan
+{% endblock %}
+
+{% block sub_content %}
+<div class="ui basic vertical segment">
+    <div class="ui fluid container">
+        <div class="ui orizontally padded grid">
+            <div class="row">
+                <div class="ui header">
+                    Record Order
+                </div>
+                <table class="ui striped basic table">
+                    <thead>
+                        <tr>
+                            <th class="collapsing">#</th>
+                            <th>Order Num</th>
+                            <th>Type</th>
+                            <th>Create on</th>
+                            <th>Create by</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in order_list %}
+                        <tr>
+                            <td class="collapsing">{{ forloop.counter }}</td>
+                            <td>{{ i.order_number }}</td>
+                            <td>{{ i.get_type_order_display }}</td>
+                            <td>{{ i.dbcreate_on }}</td>
+                            <td>{{ i.dbcreate_by }}</td>
+                            <td>{{ i.status }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -30,13 +30,13 @@ Report Order Eksekutor Tunggakan
                         <tbody>
                             {% for i in order_resume %}
                             <tr>
-                                <td>{{ i.status }}</td>
-                                <td>{{ i.anderi }}</td>
-                                <td>{{ i.diva }}</td>
-                                <td>{{ i.frisa }}</td>
-                                <td>{{ i.maya }}</td>
-                                <td>{{ i.munawar }}</td>
-                                <td>{{ i.rahmat }}</td>
+                                <td>{{ i.status }</td>
+                                <td><a href="{% url 'som:order_list' %}?status={{ i.status }}&create_by=SETIAWAN, ANDERI">{{ i.anderi }}</a></td>
+                                <td><a href="{% url 'som:order_list' %}?status={{ i.status }}&create_by=MUTIARA LIWANRI, AFIFAH">{{ i.diva }}</a></td>
+                                <td><a href="{% url 'som:order_list' %}?status={{ i.status }}&create_by=MAHARANI, FRISA">{{ i.frisa }}</a></td>
+                                <td><a href="{% url 'som:order_list' %}?status={{ i.status }}&create_by=WIDYA SARI, MAYA">{{ i.maya }}</a></td>
+                                <td><a href="{% url 'som:order_list' %}?status={{ i.status }}&create_by=CHALIL, MUNAWAR">{{ i.munawar }}</a></td>
+                                <td><a href="{% url 'som:order_list' %}?status={{ i.status }}&create_by=SABARUDIN, RAHMAT">{{ i.rahmat }}</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>
