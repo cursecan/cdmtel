@@ -8,6 +8,7 @@ from .models import (
 )
 from .resources import (
     CustomerResource, CircuitResource, OrderResource, LockCircuitResource,
+    CancelOrderResource
 )
 
 @admin.register(LockCircuit)
@@ -68,5 +69,5 @@ class OrderAdmin(ImportExportModelAdmin):
     action_unpublish.short_description = 'Unpublish selected Orders'
 
 @admin.register(CancelOrder)
-class CancelOrderAdmin(admin.ModelAdmin):
-    pass
+class CancelOrderAdmin(ImportExportModelAdmin):
+    resource_class = CancelOrderResource
