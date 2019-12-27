@@ -112,12 +112,13 @@ def record_data():
                 acc_obj, create = Customer.objects.get_or_create(account_number=account)
                 sid_obj, create = Circuit.objects.get_or_create(sid=sid, account=acc_obj)
                 order_obj, create = Order.objects.get_or_create(order_number=order, circuit=sid_obj)
-                order_obj.status = status if status else 'PENDING' 
-                order_obj.dbcreate_by = create_by
-                order_obj.dbcreate_on = create_on
-                if status == 'FULFILL BILLING COMPLETE':
-                    order_obj.closed = True
-                order_obj.save()
+                if not order_obj.is_cancel:
+                    order_obj.status = status if status else 'PENDING' 
+                    order_obj.dbcreate_by = create_by
+                    order_obj.dbcreate_on = create_on
+                    if status == 'FULFILL BILLING COMPLETE':
+                        order_obj.closed = True
+                    order_obj.save()
             except :
                 pass
 
